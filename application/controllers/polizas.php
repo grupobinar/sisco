@@ -74,28 +74,6 @@ class Polizas extends CI_Controller {
 		$this->load->view('polizas/polizas',$datos);
 		$this->load->view('layout/footer');
 	}
-	
-
-	
-	public function guardar_tpoliza(){
-
-		$tpoliza=$_POST['tpoliza'];
-		
-
-		$fecha=date("d/m/Y");
-		$usuario = $this->session->userdata('id_usuario');	
-		
-		$guser = $this->config_model->guardar_tpoliza(
-			$tpoliza,
-			$fecha,
-			$usuario
-		);
-
-		echo "<script> alert('".$guser."') </script>";
-
-		
-		$this->tpoliza();
-	}
 
 
 	public function guardar_venta(){
@@ -135,7 +113,7 @@ class Polizas extends CI_Controller {
 		echo "<script> alert('".$guser."') </script>";
 
 		
-		$this->tomador();
+		redirect('/polizas/ventas', 'refresh');
 	}
 
 	public function editar(){
@@ -161,7 +139,7 @@ class Polizas extends CI_Controller {
 		echo "<script> alert('".$guser."') </script>";
 
 		
-		$this->index();
+		redirect('/polizas', 'refresh');
 	}
 
 	public function guardar(){
@@ -185,7 +163,7 @@ class Polizas extends CI_Controller {
 		echo "<script> alert('".$guser."') </script>";
 
 		
-		$this->index();
+		redirect('/config/polizas', 'refresh');
 	}
 
 
@@ -221,7 +199,7 @@ class Polizas extends CI_Controller {
 
 
 
-		public function tomador()
+		public function ventas()
 	{
 
 		$data = $this->polizas_model->listvendedores();
@@ -323,7 +301,7 @@ class Polizas extends CI_Controller {
 
 		$this->load->view('layout/header');
 		$this->load->view('layout/nav');
-		$this->load->view('polizas/tomadores',$datos);
+		$this->load->view('polizas/ventas',$datos);
 		$this->load->view('layout/footer');
 	}
 	
