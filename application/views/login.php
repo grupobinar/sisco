@@ -1,6 +1,6 @@
 <div class="login-box">
   <div class="login-logo">
-    <a href="../../index2.html"><b>SIS</b>CO | PROJECT</a>
+    <a href="#"><b>SIS</b>CO | PROJECT</a>
   </div>
     <?=form_open_multipart(base_url().'index.php/login/home')?>
   <!-- /.login-logo -->

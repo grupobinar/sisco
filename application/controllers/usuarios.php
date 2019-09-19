@@ -96,7 +96,7 @@ class Usuarios extends CI_Controller {
 		echo "<script> alert('".$guser."') </script>";
 
 		
-		$this->index();
+		redirect('/usuarios', 'refresh');
 	}
 
 	public function guardar_vendedor(){
@@ -127,7 +127,7 @@ class Usuarios extends CI_Controller {
 		echo "<script> alert('".$guser."') </script>";
 
 		
-		$this->vendedores();
+		redirect('/usuarios/vendedores', 'refresh');
 	}
 
 	public function editar(){
@@ -157,7 +157,7 @@ class Usuarios extends CI_Controller {
 		echo "<script> alert('".$guser."') </script>";
 
 		
-		$this->index();
+		redirect('/usuarios', 'refresh');
 	}
 
 	public function editar_vendedor(){
@@ -184,7 +184,7 @@ class Usuarios extends CI_Controller {
 		echo "<script> alert('".$guser."') </script>";
 
 		
-		$this->vendedores();
+		redirect('/usuarios/vendedores', 'refresh');
 	}
 
 	public function buscarUsuario(){

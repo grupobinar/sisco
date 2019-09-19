@@ -299,9 +299,11 @@ class Polizas extends CI_Controller {
 		$datos['tpago']=$lista_w;
 
 
+
 		$this->load->view('layout/header');
 		$this->load->view('layout/nav');
 		$this->load->view('polizas/ventas',$datos);
+		$this->load->view('polizas/addventas',$datos);
 		$this->load->view('layout/footer');
 	}
 	
