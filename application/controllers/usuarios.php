@@ -235,21 +235,17 @@ class Usuarios extends CI_Controller {
 	}
 
 
-	public function roles(){	
+	public function roles($mensaje = false){	
 
 		$data = $this->usuarios_model->listRoles();
 
 		$i=0;
 
 		if ($data<>"") {
-		foreach($data as $sheet) {	
-
-			$i++;		
-			
-			$listar[$i]["rol"]=$sheet->rol;
-			$listar[$i]["id_rol"]=$sheet->id_rol;
-
-			
+			foreach($data as $sheet) {	
+				$i++;		
+				$listar[$i]["rol"]=$sheet->rol;
+				$listar[$i]["id_rol"]=$sheet->id_rol;
 			}
 		}
 
@@ -273,7 +269,7 @@ class Usuarios extends CI_Controller {
 		}
 
 		$datos['opmenu']=$lista;
-
+		$datos['mensaje_proceso'] = ($mensaje != false) ? $mensaje : '';
 		$this->load->view('layout/header');
 		$this->load->view('layout/nav');
 		$this->load->view('usuarios/roles',$datos);
@@ -285,12 +281,12 @@ class Usuarios extends CI_Controller {
 		if(!preg_match('~[0-9]+~', $_POST['rol']) && is_array($_POST['opciones'])){
 			$result = $this->usuarios_model->saveRol();
 			if ($result) {
-				echo 'Insercion Correcta';
+				$this->roles(['Insercion Correcta', 'success']);
 			} else {
-				echo 'Error';
+				$this->roles(['Error de Validacion', 'error']);
 			}
 		}else{
-			echo 'Datos Incorrectos';
+			$this->roles(['Datos Incorrectos', 'error']);
 		}
 	}
 
@@ -304,16 +300,30 @@ class Usuarios extends CI_Controller {
 	}
 
 	public function updateRol(){
-		//var_dump($_REQUEST); die();
-		if(!preg_match('~[0-9]+~', $_POST['rol_descripcion']) && is_array($_POST['menu_selected'])){
-			$result = $this->usuarios_model->updateRol();
-			if ($result) {
-				echo 'Actualizacion Correcta';
-			} else {
-				echo 'Error';
-			}
+		if ($_POST['rol_descripcion'] != '') {
+			if(!preg_match('~[0-9]+~', $_POST['rol_descripcion']) && is_array($_POST['menu_selected'])){
+				$result = $this->usuarios_model->updateRol();
+				if ($result) {
+					echo json_encode(array('Actualizacion Correcta', 'success'));
+				} else {
+					echo json_encode(array('Error de Validacion', 'error'));
+				}
+			}else{
+				echo json_encode(array('Datos Incorrectos', 'error'));
+			}		
 		}else{
-			echo 'Datos Incorrectos';
+			echo json_encode(array('La descripcion del Rol no puede estar vacia', 'warning'));
+		}
+
+	}
+
+	public function eliminarRol(){
+		$result = $this->usuarios_model->getRol();
+		if (count($result) > 0) {
+			$delete = $this->usuarios_model->deleteRol();
+			echo json_encode($delete);
+		}else{
+			echo json_encode('Error, el rol no existe.', 'error');
 		}
 	}
 	

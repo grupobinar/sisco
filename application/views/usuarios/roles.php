@@ -1,4 +1,24 @@
-<?php //print_r($_ci_vars) ?>
+<?php //print_r($_ci_vars); die(); ?>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
+
+<script>
+  function message(mensaje, tipo){
+    Swal.fire(
+      mensaje,
+      'Click en el boton para cerrar',
+      tipo
+    );
+  }
+
+</script>
+
+<?php if ($_ci_vars['mensaje_proceso'] != '') { ?>
+  <script>
+    message('<?= $_ci_vars['mensaje_proceso'][0] ?>', '<?= $_ci_vars['mensaje_proceso'][1] ?>');
+  </script>
+<?php } ?>
+
+
 <div class="col-lg-12"> <br> </div>
 
 <div class="col-lg-4"> 
@@ -92,11 +112,10 @@
 
 <div class="modal fade" id="Editar" role="dialog">
     <div class="modal-dialog">
-    
       <!-- Modal content-->
       <div class="modal-content">
         <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <button class="close" data-dismiss="modal">&times;</button>
           <h4 class="modal-title"><i class="fa fa-spinner"></i> Editar Rol </h4>
         </div>
         <div class="modal-body">
@@ -105,43 +124,46 @@
               <form method="post" id="edit_menu_rol">
                 <div class="col-lg-12">Descripcion del Rol</div>
                 <div class="col-xs-12">
-                  <input class="form-control" placeholder="Rol" name="rol_edit" id="rol_edit" type="text" required>
-                  <input class="form-control" name="rol_edit_id" id="rol_edit_id" type="hidden" required>
+                  <input disabled="disabled" required='false' placeholder="Rol" name="rol_edit" id="rol_edit" type="text">
+                  <input disabled="disabled" required='false' name="rol_edit_id" id="rol_edit_id" type="hidden">
                 </div>
+                <div class="col-lg-12"> <br> </div>
+                <div class="col-lg-12"><b>Opciones de menú</b></div>
+                <div class="col-lg-12">
+                  <?php foreach($_ci_vars['opmenu'] as $opmenu){ ?>
+                    <?php if ($opmenu['id_padre']==0) { ?>
+                      <div class="checkbox">
+                        <label>
+                          <input type="checkbox" <?= $d ?> value="<?= $opmenu['id_menu'] ?>" name="opciones[]" id="ed_<?= $opmenu['id_menu'] ?>">
+                            <?= $opmenu['item'] ?>
+                        </label>
+                      </div>
+                    <?php } ?>
 
-                <?php foreach($_ci_vars['opmenu'] as $opmenu){ ?>
-                  <?php if ($opmenu['id_padre']==0) { ?>
-                    <div class="checkbox">
-                      <label>
-                        <input type="checkbox" <?= $d ?> value="<?= $opmenu['id_menu'] ?>" name="opciones[]" id="ed_<?= $opmenu['id_menu'] ?>">
-                          <?= $opmenu['item'] ?>
-                      </label>
-                    </div>
-                  <?php } ?>
+                    <?php if ($opmenu['hijos']>0) { ?>
 
-                  <?php if ($opmenu['hijos']>0) { ?>
-
-                    <?php foreach($_ci_vars['opmenu'] as $opsubmenu){ ?>
-                      <?php if ($opmenu['id_menu']==$opsubmenu['id_padre']) { ?>
-                                            
-                        <div class="checkbox" style="padding-left:20px">
-                          <label>
-                            <input type="checkbox" class="hijo" value="<?= $opsubmenu['id_menu'] ?>" name="opciones[]" id="ed_<?= $opsubmenu['id_menu'] ?>">
-                              <?= $opsubmenu['item'] ?>
-                          </label>
-                        </div>
-                      
-                      <?php } ?> 
+                      <?php foreach($_ci_vars['opmenu'] as $opsubmenu){ ?>
+                        <?php if ($opmenu['id_menu']==$opsubmenu['id_padre']) { ?>
+                                              
+                          <div class="checkbox" style="padding-left:20px">
+                            <label>
+                              <input type="checkbox" class="hijo" value="<?= $opsubmenu['id_menu'] ?>" name="opciones[]" id="ed_<?= $opsubmenu['id_menu'] ?>">
+                                <?= $opsubmenu['item'] ?>
+                            </label>
+                          </div>
+                        
+                        <?php } ?> 
+                      <?php } ?>
                     <?php } ?>
                   <?php } ?>
-                <?php } ?> 
+                </div> 
               </form>
             </div>
           </div>
         </div>
         <div class="modal-footer">
-          <input type="button" name="btn_editar" id="btn_editar" onclick=updateMenuRol() class="btn btn-primary" value="Editar Rol">
-          <input type="button" class="btn btn-default" onclick=seleccion() data-dismiss="modal" value="Cancelar" id="_editar" name="_editar">
+          <input name="btn_editar" id="btn_editar" onclick=updateMenuRol() class="btn btn-primary" value="Editar Rol">
+          <input class="btn btn-default" data-dismiss="modal" value="Cancelar" id="_editar" name="_editar">
         </div>
       </div>
       <!-- /.modal-content -->
@@ -156,21 +178,21 @@
       <!-- Modal content-->
       <div class="modal-content">
         <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title"><i class="fa fa-spinner"></i> Eliminar tipo de cobro</h4>
+          <button class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title"><i class="fa fa-spinner"></i>Eliminar Rol</h4>
         </div>
         <div class="modal-body">
           <div class="container-fluid">
             <div class="row" id="row_desactivar">
-              <div class="col-lg-12">Una vez eliminado el tipo de cobro no podra utilizarlo ni recuperarlo.</div>
+              <div class="col-lg-12">Una vez eliminado el rol no podra utilizarlo ni recuperarlo.</div>
               <div class="col-lg-12">¿Desea continuar?</div>
               <input type="hidden" name="id_desactivar" id="id_desactivar">
             </div>
           </div>
         </div>
         <div class="modal-footer">
-          <input type="button" name="btn_desactivar" id="btn_desactivar" class="btn btn-primary" value="Desactivar Poliza">
-          <input type="button" class="btn btn-default"  data-dismiss="modal" value="Cancelar" id="_desctivar" name="_desctivar">
+          <input name="btn_desactivar" id="btn_desactivar" class="btn btn-primary" value="Eliminar Rol">
+          <input class="btn btn-default"  data-dismiss="modal" value="Cancelar" id="_desctivar" name="_desctivar">
         </div>
       </div>
       <!-- /.modal-content -->
@@ -180,29 +202,30 @@
 </div>
 
 
- 
  <script type="text/javascript">
   function modal(id_rol) {
     rol_descripcion = document.getElementById('e_'+id_rol);
-    document.getElementById('rol_edit').value = rol_descripcion.textContent;
-    document.getElementById('rol_edit_id').value = id_rol;
+    rol_edit_input  = document.getElementById('rol_edit');
+    rol_edit_id     = document.getElementById('rol_edit_id');
+    rol_edit_input.value = rol_descripcion.textContent;
+    rol_edit_id.value    = id_rol;
+    rol_edit_input.removeAttribute("disabled");
+    rol_edit_id.removeAttribute("disabled");
     menu_id = getMenuId(id_rol);
   }
 
   function getMenuId(id_rol) {
     $.post("<?php echo base_url() ?>/index.php/usuarios/getMenuRol", { id:id_rol }, function(data){
       menu_json = JSON.parse(data);
-      console.log(menu_json);
       for (let index = 0; index < menu_json.length; index++) {
         document.getElementById('ed_'+menu_json[index].id_menu).checked = true;
       }
     });
   }
 
-  function seleccion(){
-    //FIXME: ESTO TIENE QUE ACOMODARSE SI O SI
-    location.reload();
-  }
+  $('#Editar').on('hidden.bs.modal', function () {
+    //FIXME: desactivar todos los check
+  })
 
   function updateMenuRol(){
     var rol_descripcion = document.getElementById('rol_edit').value;
@@ -214,53 +237,51 @@
     });
 
     $.post("<?php echo base_url() ?>/index.php/usuarios/updateRol", menu_rol, function(data){
-      if (data === 'Actualizacion Correcta') {
+      data_json = JSON.parse(data);
+      $('#Editar').modal('hide');
+
+      Swal.fire({
+        title: data_json[0],
+        text:  'Click en el boton para cerrar',
+        type:  data_json[1],
+        confirmButtonText: 'Cerrar'
+      }).then((result) => {
         location.reload();
-      }
-    });
-  }
-
-  $(document).ready(function(){
-
-     $(".desactivar").click(function() {
-
-      var id=$(this).attr("id");
-
-        $("#id_desactivar").val(id);
-
-    });
-
-     $(".hijo").click(function() {
-
-        var id=$(this).attr("id");
-
-        $("#p_"+id).prop("checked", true);
-     });
-
-
-
-
-
-
-    $("#btn_desactivar").click(function() {
-
-      var ide = $("#id_desactivar").val();
-
-      $.post("<?php echo base_url() ?>/index.php/config/eliminarTpago", { id:$("#id_desactivar").val() }, function(data){
-
-        $("#row_desactivar").html("<div><p class='text-light-blue'>"+data+"</p></div>");
-
-        $("#fila_"+ide).hide();
-
-        $("#btn_desactivar").css("display", "none").delay(1000);
-
-
-        $("#_desctivar").val("Cerrar");
-
-
       });
 
     });
+  }
 
+  $(document).ready(function(){    
+     $(".desactivar").click(function() {
+      var id=$(this).attr("id");
+      $("#id_desactivar").val(id);
+    });
+
+     $(".hijo").click(function() {
+        var id=$(this).attr("id");
+        $("#p_"+id).prop("checked", true);
+     });
+
+    $("#btn_desactivar").click(function() {
+      var ide = $("#id_desactivar").val();
+
+      $.post("<?php echo base_url() ?>/index.php/usuarios/eliminarRol", { id:$("#id_desactivar").val() }, function(data){
+        data_json = JSON.parse(data);
+        $('#Desactivar').modal('hide');
+
+        Swal.fire({
+          title: data_json[0],
+          text:  'Click en el boton para cerrar',
+          type:  data_json[1],
+          confirmButtonText: 'Cerrar'
+        }).then((result) => {
+          if (data_json[1] === 'success') {
+            location.reload();
+          }
+        });
+      });
+
+    });
   });
 </script>
