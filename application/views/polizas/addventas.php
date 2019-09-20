@@ -24,15 +24,23 @@
 
               <div class="col-lg-12"><b class="text-light-blue">Datos del tomador</b></div>
               <div class="col-lg-12"><b>Cedula</b></div>
-              <div class="col-lg-1">
-                <select class="" id="nac" name="nac">
-                  <option value="V">V</option>
-                  <option value="E">E</option>
-                  <option value="J">J</option>
-                  <option value="G">G</option>
-                </select>
+              <div class="col-lg-3">
+                <table>
+                  <tr>
+                    <td style="width: 50px">
+                      <select class="form-control" id="nac" name="nac">
+                        <option value="V">V</option>
+                        <option value="E">E</option>
+                        <option value="J">J</option>
+                        <option value="G">G</option>
+                      </select>
+                    </td>
+                    <td>
+                      <input type="text" name="cedula" id="cedula" class="form-control numero">
+                    </td>
+                  </tr>
+                </table>
               </div>
-              <div class="col-lg-2"><input type="text" name="cedula" id="cedula" class="form-control numero"></div>
               <div class="col-lg-12"></div>
 
               <div class="col-lg-3"><b>Apellidos</b></div>
@@ -102,26 +110,38 @@
             </div>
             <div class="col-lg-3"><b>Cedula</b></div>
             <div class="col-lg-3"><b>Apellidos y nombres</b></div>
-            <div class="col-lg-3"><b>Edad</b></div>
+            <div class="col-lg-1"><b>Edad</b></div>
             <div class="col-lg-3"><b>Parentesco</b></div>
             <div class="add_adicionales">
-              <div class="col-lg-1">
-                <select class="" id="nac" name="nac">
-                  <option value="V">V</option>
-                  <option value="E">E</option>
-                  <option value="J">J</option>
-                  <option value="G">G</option>
-                </select>
+              <div class="col-lg-3">
+                <table>
+                  <tr>
+                    <td style="width: 50px">
+                      <select class="form-control" id="nac" name="nac">
+                        <option value="V">V</option>
+                        <option value="E">E</option>
+                        <option value="J">J</option>
+                        <option value="G">G</option>
+                      </select>
+                    </td>
+                    <td>
+                      <input type="text" name="cedula" id="cedula" class="form-control numero">
+                    </td>
+                  </tr>
+                </table>
               </div>
-              <div class="col-lg-2"><input type="text" name="cedula" id="cedula" class="form-control numero"></div>
               <div class="col-lg-3">
                 <input type="text" name="adicional_name" id="adicional_name" class="form-control">
               </div>
-              <div class="col-lg-3">
+              <div class="col-lg-1">
                 <input type="text" name="adicional_edad" id="adicional_edad" class="form-control">
               </div>
               <div class="col-lg-3">
                 <input type="text" name="adicional_edad" id="adicional_edad" class="form-control">
+              </div>
+              <div class="col-lg-2">
+                <input type="button" name="adicional_edad" id="adicional_edad" class="btn btn-default" value="+">
+                <input type="button" name="adicional_edad" id="adicional_edad" class="btn btn-default" value="x">
               </div>
             </div>
 
