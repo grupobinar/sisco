@@ -281,4 +281,96 @@ class Usuarios_model extends CI_Model{
 
 	}
 
+	function saveRol(){
+		$data = array(
+			'rol'=> $_POST['rol'],
+			'estatus_rol'=> 0
+		);
+
+		$insert = ($this->db->insert('public.t_roles', $data)) ? intval($this->db->insert_id()) : false;
+
+		if(is_int($insert)){
+
+			$this->db->where_in('t_menu.id_menu', $_POST['opciones']);
+			$menu = $this->db->get('public.t_menu');
+
+			if ($menu->num_rows() === count($_POST['opciones'])) {
+
+				for ($i=0; $i < $menu->num_rows(); $i++) { 
+					$data = array(
+						'id_rol'=> $insert,
+						'id_menu'=> $_POST['opciones'][$i]
+					);
+
+					$insert_menu_rol = ($this->db->insert('public.menu_rol', $data)) ? true : false;
+
+					if (!$insert_menu_rol) {
+						return $insert_menu_rol;
+					}
+				}
+
+				return true;
+			} else {
+				echo 'Error de Carga';
+			}
+
+		}else{
+			return $insert;
+		}
+	}
+
+	function getMenuRol(){
+		$this->db->where('menu_rol.id_rol',$_REQUEST['id']);
+		$menu_rol = $this->db->get('public.menu_rol');
+		return $menu_rol->result_array();
+	}
+
+	function updateRol(){
+		$data = array(
+			'rol'=> $_POST['rol_descripcion'],
+			'estatus_rol'=> 0
+		);
+
+		$this->db->where('id_rol', $_POST['rol_id']);
+		$update = ($this->db->update('t_roles', $data)) ? true : false;
+
+		if($update){
+			//FIXME: Error en la plantilla de la modal que se trae un valor de ejemplo
+			array_shift($_POST['menu_selected']);
+			
+			$this->db->where('id_rol', $_POST['rol_id']);
+			$delete_menu_rol = ($this->db->delete('public.menu_rol')) ? true : false;
+				
+			if (!$delete_menu_rol) {
+				return $delete_menu_rol;
+			}
+			
+			$this->db->where_in('t_menu.id_menu', $_POST['menu_selected']);
+			$menu = $this->db->get('public.t_menu');
+
+			if ($menu->num_rows() === count($_POST['menu_selected'])) {
+
+				for ($i=0; $i < $menu->num_rows(); $i++) { 
+					$data = array(
+						'id_rol'=> $_POST['rol_id'],
+						'id_menu'=> $_POST['menu_selected'][$i]
+					);
+
+					$insert_menu_rol = ($this->db->insert('public.menu_rol', $data)) ? true : false;
+
+					if (!$insert_menu_rol) {
+						return $insert_menu_rol;
+					}
+				}
+
+				return true;
+			} else {
+				echo 'Error de Carga';
+			}
+			
+			return true;
+		}else{
+			return $update;
+		}
+	}
 }

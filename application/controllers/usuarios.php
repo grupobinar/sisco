@@ -235,7 +235,7 @@ class Usuarios extends CI_Controller {
 	}
 
 
-	public function roles(){
+	public function roles(){	
 
 		$data = $this->usuarios_model->listRoles();
 
@@ -279,6 +279,42 @@ class Usuarios extends CI_Controller {
 		$this->load->view('usuarios/roles',$datos);
 		$this->load->view('layout/footer');
 
+	}
+
+	public function guardarRoles(){
+		if(!preg_match('~[0-9]+~', $_POST['rol']) && is_array($_POST['opciones'])){
+			$result = $this->usuarios_model->saveRol();
+			if ($result) {
+				echo 'Insercion Correcta';
+			} else {
+				echo 'Error';
+			}
+		}else{
+			echo 'Datos Incorrectos';
+		}
+	}
+
+	public function getMenuRol(){
+	 	if (is_int(intval($_REQUEST['id']))) {
+			$result = $this->usuarios_model->getMenuRol();
+			echo json_encode($result);
+	 	} else {
+			return false;
+		}
+	}
+
+	public function updateRol(){
+		//var_dump($_REQUEST); die();
+		if(!preg_match('~[0-9]+~', $_POST['rol_descripcion']) && is_array($_POST['menu_selected'])){
+			$result = $this->usuarios_model->updateRol();
+			if ($result) {
+				echo 'Actualizacion Correcta';
+			} else {
+				echo 'Error';
+			}
+		}else{
+			echo 'Datos Incorrectos';
+		}
 	}
 	
 }
