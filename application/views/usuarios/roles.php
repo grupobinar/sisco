@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 <?php //print_r($_ci_vars); die(); ?>
+=======
+<?php //echo $this->session->flashdata('message'); die(); ?>
+>>>>>>> origin/thomas
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
 
 <script>
@@ -12,9 +16,15 @@
 
 </script>
 
+<<<<<<< HEAD
 <?php if ($_ci_vars['mensaje_proceso'] != '') { ?>
   <script>
     message('<?= $_ci_vars['mensaje_proceso'][0] ?>', '<?= $_ci_vars['mensaje_proceso'][1] ?>');
+=======
+<?php if ($this->session->flashdata('message') != '') { ?>
+  <script>
+    message('<?= $this->session->flashdata('message')[0] ?>', '<?= $this->session->flashdata('message')[1] ?>');
+>>>>>>> origin/thomas
   </script>
 <?php } ?>
 
@@ -246,7 +256,11 @@
         type:  data_json[1],
         confirmButtonText: 'Cerrar'
       }).then((result) => {
+<<<<<<< HEAD
         location.reload();
+=======
+        window.location.replace('<?= base_url().'index.php/usuarios/guardarRoles' ?>');
+>>>>>>> origin/thomas
       });
 
     });

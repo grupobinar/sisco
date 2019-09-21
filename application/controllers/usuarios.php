@@ -281,7 +281,12 @@ class Usuarios extends CI_Controller {
 		if(!preg_match('~[0-9]+~', $_POST['rol']) && is_array($_POST['opciones'])){
 			$result = $this->usuarios_model->saveRol();
 			if ($result) {
+<<<<<<< HEAD
 				$this->roles(['Insercion Correcta', 'success']);
+=======
+				$this->session->set_flashdata('message', ['Rol creado con exito', 'success']);
+				header('Location: '.$_SERVER['HTTP_REFERER']);
+>>>>>>> origin/thomas
 			} else {
 				$this->roles(['Error de Validacion', 'error']);
 			}
@@ -311,6 +316,7 @@ class Usuarios extends CI_Controller {
 			}else{
 				echo json_encode(array('Datos Incorrectos', 'error'));
 			}		
+<<<<<<< HEAD
 		}else{
 			echo json_encode(array('La descripcion del Rol no puede estar vacia', 'warning'));
 		}
@@ -324,9 +330,23 @@ class Usuarios extends CI_Controller {
 			echo json_encode($delete);
 		}else{
 			echo json_encode('Error, el rol no existe.', 'error');
+=======
+		}else{
+			echo json_encode(array('La descripcion del Rol no puede estar vacia', 'warning'));
+>>>>>>> origin/thomas
 		}
+
 	}
-	
+
+	public function eliminarRol(){
+		$result = $this->usuarios_model->getRol();
+		if (count($result) > 0) {
+			$delete = $this->usuarios_model->deleteRol();
+			echo json_encode($delete);
+		}else{
+			echo json_encode('Error, el rol no existe.', 'error');
+		}
+	}	
 }
 
 /* End of file welcome.php */
