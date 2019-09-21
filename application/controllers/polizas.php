@@ -78,6 +78,9 @@ class Polizas extends CI_Controller {
 
 	public function guardar_venta(){
 
+		echo "<pre>"; print_r($_POST); echo "</pre>";
+		//break;
+
 		$nac=$_POST['nac'];
 		$cedula=$_POST['cedula'];
 		$rpago=$_POST['rpago'];
@@ -89,6 +92,19 @@ class Polizas extends CI_Controller {
 		$cobertura=$_POST['cobertura'];
 		$tpoliza=$_POST['tpoliza'];
 		$tpago=$_POST['tpago'];
+
+		$tventa=$_POST['tventa'];
+		$nsolicitud=$_POST['nsolicitud'];
+		$correo=$_POST['correo'];
+		$telefono=$_POST['telefono'];
+		$cod_vendedor=$_POST['cod_vendedor'];
+		$adicionales=$_POST['adicionales'];
+		$ad_nac=$_POST['ad_nac'];
+		$ad_cedula=$_POST['ad_cedula'];
+		$ad_name=$_POST['ad_name'];
+		$ad_edad=$_POST['adicional_edad'];
+		$ad_parent=$_POST['adicional_parent'];
+
 		
 
 		$fecha=date("d/m/Y");
@@ -107,7 +123,18 @@ class Polizas extends CI_Controller {
 			$tpoliza,
 			$tpago,
 			$fecha,
-			$usuario
+			$usuario,
+			$tventa,
+			$nsolicitud,
+			$correo,
+			$telefono,
+			$cod_vendedor,
+			$adicionales,
+			$ad_nac,
+			$ad_cedula,
+			$ad_name,
+			$ad_edad,
+			$ad_parent
 		);
 
 		echo "<script> alert('".$guser."') </script>";
@@ -303,7 +330,6 @@ class Polizas extends CI_Controller {
 		$this->load->view('layout/header');
 		$this->load->view('layout/nav');
 		$this->load->view('polizas/ventas',$datos);
-		$this->load->view('polizas/addventas',$datos);
 		$this->load->view('layout/footer');
 	}
 	

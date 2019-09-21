@@ -207,15 +207,14 @@ class Polizas_model extends CI_Model{
 
 	}
 
-	function guardar_venta($nac,$cedula,$rpago,$monto,$ccancelada,$nombres,$apellidos,$tplan,$cobertura,$tpoliza,$tpago,$fecha,$usuario){ 
+	function guardar_venta($nac,$cedula,$rpago,$monto,$ccancelada,$nombres,$apellidos,$tplan,$cobertura,$tpoliza,$tpago,$fecha,$usuario,$tventa,$nsolicitud,$correo,$telefono,$cod_vendedor,$adicionales,$ad_nac,$ad_cedula,$ad_name,$ad_edad,$ad_parent){ 
 
 		$q = $this->db->query("SELECT id_tomador FROM t_tomadores WHERE identificacion='".$nac."-".$cedula."'");
 		  $count = $q->num_rows(); 
 
 		 $id_tomador = $q->row()->id_tomador;
 
-		 
-		  if($count==0){ 
+		  if($count==0){
 
 		  	$identificacion=$nac.'-'.$cedula;
 
@@ -223,14 +222,23 @@ class Polizas_model extends CI_Model{
 				'nombres'=>$nombres,
 				'apellidos'=>$apellidos,
 				'identificacion'=>$identificacion,
+				'correo'=>$correo,
+				'telefono'=>$telefono,
+				'usuario'=>$usuario,
+				'fecha_registro'=>$fecha,
+				'ult_mod'=>$fecha,
 			);
+
 
 			$this->db->insert('public.t_tomadores',$data);
 			$id_tomador =  $this->db->insert_id(); 
 
+			//break;
 
 
 			$data = array(
+				'tventa'=>$tventas,
+				'solicitud'=>$nsolicitud,
 				'referencia_pago'=>$rpago,
 				'monto'=>$monto,
 				'cuotas_canceladas'=>$ccancelada,
@@ -240,9 +248,39 @@ class Polizas_model extends CI_Model{
 				'id_tpoliza'=>$tpoliza,
 				'id_tomador'=>$id_tomador,
 				'tipo_pago'=>$tpago,
+				'id_vendedor'=>$cod_vendedor,
+				'id_usuario'=>$usuario,
+				'fecha_registro'=>$fecha,
+				'ult_mod'=>$fecha,
 			);
 
 			$this->db->insert('public.t_ventas',$data);
+			
+			$id_venta =  $this->db->insert_id();
+
+			$i=0;
+			if ($adicionales=='on') {
+				foreach ($ad_nac as $key) {
+				$identificacion_ad=$key.'-'.$ad_cedula[$i];
+
+				$data = array(
+				'identificacion'=>$identificacion_ad,
+				'nombres'=>$ad_name[$i],
+				'edad'=>$ad_edad[$i],
+				'tomador'=>$identificacion,
+				'id_venta'=>$id_venta,
+				'id_parentesco'=>$ad_parent[$i],
+				'id_usuario'=>$usuario,
+				'fecha_registro'=>$fecha,
+				'ult_mod'=>$fecha,
+			);
+
+			$this->db->insert('public.t_adicionales',$data);
+
+				}
+			}
+
+
 
 			$retorno="Poliza Vendida";
 
