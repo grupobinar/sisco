@@ -18,25 +18,19 @@
       <th>Tipo Poliza</th>
       <th>Plan</th>
       <th>cobertura</th>
-      <th>Ref. pago</th>
-      <th>Monto</th>
-      <th>Cuotas canceladas</th>
       <th>Tipo de pago</th>
-      <th>Fecha</th>
+      <th>Semana</th>
     </tr>
     </thead>
     <tbody>
     <?php if ($_ci_vars[ventas]<>"") { foreach ($_ci_vars[ventas] as $key) { ?>
     <tr>
+      <td><?php echo ucwords($key['cedula']);?></td>
       <td><?php echo ucwords($key['apellidos'].' '.$key['nombres']);?></td>
       <td><?php echo ucwords($key['tpoliza']);?></td>
       <td><?php echo ucwords($key['tplan']);?></td>
       <td><?php echo ucwords($key['cobertura']);?></td>
-      <td><?php echo ucwords($key['referencia_pago']);?></td>
-      <td><?php echo number_format($key['monto'], 2, ',', '.');?></td>
-      <td><?php echo ucwords($key['cuotas_canceladas']);?></td>
-      <td><?php echo ucwords($key['tpago']);?></td>
-      <td><?php echo ucwords($key['fecha_registro']);?></td>
+      <td><?php echo ucwords('['.$key['nsem'].'] '.$key['desde'].' | '.$key['hasta']);?></td>
     </tr>
     <?php }} ?>
     </tfoot>

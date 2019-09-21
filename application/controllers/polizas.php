@@ -255,11 +255,7 @@ class Polizas extends CI_Controller {
 		foreach($data as $sheet) {
 			$i++;		
 			
-			$lista[$i]["referencia_pago"]=$sheet->referencia_pago;
-			$lista[$i]["monto"]=$sheet->monto;
-			$lista[$i]["cuotas_canceladas"]=$sheet->cuotas_canceladas;
-			$lista[$i]["fecha_registro"]=$sheet->fecha_registro;
-
+			$lista[$i]["cedula"]=$sheet->identificacion;
 			$lista[$i]["nombres"]=$sheet->nombres;
 			$lista[$i]["apellidos"]=$sheet->apellidos;
 			$lista[$i]["telefono"]=$sheet->telefono;
@@ -268,7 +264,12 @@ class Polizas extends CI_Controller {
 			$lista[$i]["tplan"]=$sheet->tplan;
 			$lista[$i]["cobertura"]=$sheet->cobertura;
 			$lista[$i]["tpoliza"]=$sheet->tpoliza;
-			$lista[$i]["tpago"]=$sheet->tpago;		
+			$lista[$i]["tpago"]=$sheet->tpago;	
+
+			$lista[$i]["nsem"]=$sheet->nsem;	
+			$lista[$i]["desde"]=$sheet->desde;	
+			$lista[$i]["hasta"]=$sheet->hasta;	
+
 			}
 		}
 
