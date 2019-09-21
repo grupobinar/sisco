@@ -281,7 +281,8 @@ class Usuarios extends CI_Controller {
 		if(!preg_match('~[0-9]+~', $_POST['rol']) && is_array($_POST['opciones'])){
 			$result = $this->usuarios_model->saveRol();
 			if ($result) {
-				$this->roles(['Insercion Correcta', 'success']);
+				$this->session->set_flashdata('message', ['Rol creado con exito', 'success']);
+				header('Location: '.$_SERVER['HTTP_REFERER']);
 			} else {
 				$this->roles(['Error de Validacion', 'error']);
 			}
