@@ -255,6 +255,7 @@ class Polizas extends CI_Controller {
 		foreach($data as $sheet) {
 			$i++;		
 			
+			$lista[$i]["id_venta"]=$sheet->id_venta;
 			$lista[$i]["cedula"]=$sheet->identificacion;
 			$lista[$i]["nombres"]=$sheet->nombres;
 			$lista[$i]["apellidos"]=$sheet->apellidos;
@@ -332,6 +333,43 @@ class Polizas extends CI_Controller {
 		$this->load->view('layout/nav');
 		$this->load->view('polizas/ventas',$datos);
 		$this->load->view('layout/footer');
+	}
+
+	public function ver_ventas(){
+		$data = $this->polizas_model->buscarventa($_GET['id']);
+
+		$i=0;
+
+
+		if ($data<>"") {
+			
+			$lista_w["referencia_pago"]=$data->referencia_pago;
+			$lista_w["monto"]=$data->monto;
+			$lista_w["cuotas_canceladas"]=$data->cuotas_canceladas;
+			$lista_w["solicitud"]=$data->solicitud;
+			$lista_w["cedula"]=$data->identificacion;
+			$lista_w["nombres"]=$data->apellidos.' '.$data->nombres;
+			$lista_w["telefono"]=$data->telefono;
+			$lista_w["correo"]=$data->correo;
+			$lista_w["plan"]=$data->tplan;
+			$lista_w["cobertura"]=$data->cobertura;
+			$lista_w["suma"]=$data->suma;
+			$lista_w["num_poliza"]=$data->num_poliza;
+			$lista_w["tpoliza"]=$data->tpoliza;
+			$lista_w["tpago"]=$data->tpago;
+			$lista_w["nsem"]=$data->nsem;
+			$lista_w["desde"]=$data->desde;
+			$lista_w["hasta"]=$data->hasta;
+
+
+		}
+
+		$this->load->view('layout/header');
+		$this->load->view('layout/nav');
+		$this->load->view('polizas/addventas',$lista_w);
+		$this->load->view('layout/footer');
+
+		
 	}
 	
 }

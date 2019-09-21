@@ -79,21 +79,39 @@ class Polizas_model extends CI_Model{
 
 	function listventas()
 	{
-		$this->db->select('identificacion, nsem, desde, hasta, referencia_pago, monto, cuotas_canceladas, t_ventas.fecha_registro, nombres, apellidos, telefono, correo, tplan, cobertura, tpoliza, tpago');
-		$this->db->join('t_tomadores','t_tomadores.id_tomador = t_ventas.id_tomador');
-		$this->db->join('t_plan','t_plan.id_tplan = t_ventas.id_plan');
-		$this->db->join('t_polizas','t_polizas.id_poliza = t_ventas.id_poliza');
-		$this->db->join('t_tpoliza','t_tpoliza.id_tpoliza = t_ventas.id_tpoliza');
-		$this->db->join('t_tpago','t_tpago.id_tpago = t_ventas.tipo_pago');
-		$this->db->join('t_semanas','t_semanas.id_semana = t_ventas.id_semana');
+		$this->db->select('id_venta, identificacion, nsem, desde, hasta, referencia_pago, monto, cuotas_canceladas, t_ventas.fecha_registro, nombres, apellidos, telefono, correo, tplan, cobertura, tpoliza, tpago');
+		$this->db->join('t_tomadores','t_tomadores.id_tomador = t_ventas.id_tomador','left');
+		$this->db->join('t_plan','t_plan.id_tplan = t_ventas.id_plan','left');
+		$this->db->join('t_polizas','t_polizas.id_poliza = t_ventas.id_poliza','left');
+		$this->db->join('t_tpoliza','t_tpoliza.id_tpoliza = t_ventas.id_tpoliza','left');
+		$this->db->join('t_tpago','t_tpago.id_tpago = t_ventas.tipo_pago','left');
+		$this->db->join('t_semanas','t_semanas.id_semana = t_ventas.id_semana','left');
 		$listusuarios = $this->db->get('public.t_ventas');
-
-		//echo $this->db->last_query();
 
 
 		if($listusuarios->num_rows()>0)
 		{
 			 return $listusuarios->result();
+		}
+
+	}
+
+	function buscarventa($id)
+	{
+		$this->db->join('t_tomadores','t_tomadores.id_tomador = t_ventas.id_tomador','left');
+		$this->db->join('t_plan','t_plan.id_tplan = t_ventas.id_plan','left');
+		$this->db->join('t_polizas','t_polizas.id_poliza = t_ventas.id_poliza','left');
+		$this->db->join('t_tpoliza','t_tpoliza.id_tpoliza = t_ventas.id_tpoliza','left');
+		$this->db->join('t_tpago','t_tpago.id_tpago = t_ventas.tipo_pago','left');
+		$this->db->join('t_semanas','t_semanas.id_semana = t_ventas.id_semana','left');
+		$this->db->join('t_vendedores','t_vendedores.id_vendedor = t_ventas.id_vendedor','left');
+		$this->db->where('id_venta',$id);
+		$listusuarios = $this->db->get('public.t_ventas');
+
+
+		if($listusuarios->num_rows()>0)
+		{
+			 return $listusuarios->row();
 		}
 
 	}

@@ -20,6 +20,7 @@
       <th>cobertura</th>
       <th>Tipo de pago</th>
       <th>Semana</th>
+      <th><i class="fa fa-cogs"></i> Opciones</th>
     </tr>
     </thead>
     <tbody>
@@ -30,7 +31,8 @@
       <td><?php echo ucwords($key['tpoliza']);?></td>
       <td><?php echo ucwords($key['tplan']);?></td>
       <td><?php echo ucwords($key['cobertura']);?></td>
-      <td><?php echo ucwords('['.$key['nsem'].'] '.$key['desde'].' | '.$key['hasta']);?></td>
+      <td><a href="#" title="<?php echo $key['desde'].' | '.$key['hasta'] ?>"><?php echo ucwords($key['nsem']);?></a></td>
+      <td><a href="<?php echo base_url().'index.php/polizas/ver_ventas?id='.$key['id_venta']?>" class="btn btn-default" type="button"><i class="fa fa-eye"></i></a></td>
     </tr>
     <?php }} ?>
     </tfoot>
@@ -38,10 +40,6 @@
 
   </form>
 <!-- #Agregar Usuario ############################################################################-->
-
-
-
-
 
 <?=form_open_multipart(base_url().'index.php/polizas/guardar_venta')?>
   <div class="modal fade" id="myModal" role="dialog">
