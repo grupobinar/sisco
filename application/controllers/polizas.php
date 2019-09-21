@@ -332,6 +332,10 @@ class Polizas extends CI_Controller {
 		$this->load->view('polizas/ventas',$datos);
 		$this->load->view('layout/footer');
 	}
+
+	public function formula(){
+		$result = $this->polizas_model->calculoComisionBase();
+	}
 	
 }
 

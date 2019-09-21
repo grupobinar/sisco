@@ -307,4 +307,41 @@ class Polizas_model extends CI_Model{
 			return $retorno;
 
 	}
+
+	public function calculoComisionBase(){
+		//Obtener la poliza, cobertura y plan para poder manipular la suma asegurada
+		$this->db->where('polizas_plan_cobertura.id_poliza',1);
+		$this->db->where('polizas_plan_cobertura.id_plan_poliza',1);
+		$this->db->where('polizas_plan_cobertura.id_cobertura_poliza',69);
+		$poliza['poliza'] = $this->db->get('public.polizas_plan_cobertura')->result_array()[0];
+
+		//Añadir la cantidad de ventas por cada poliza de dicho tipo.
+		$poliza['poliza']['cantidad_poliza_vendidas'] = 6;
+
+		//Primas Anuales y Mensual
+		$poliza['poliza']['prima_anual'] = round(($poliza['poliza']['suma_poliza'] * $poliza['poliza']['factor_poliza'])/1000, 2);
+		$poliza['poliza']['prima_mensual'] = round($poliza['poliza']['prima_anual']/12, 2);
+
+		$planes_comision = $this->db->get('public.t_plan_comision')->result_array();
+		
+		
+		switch (true) {
+			case $poliza['poliza']['cantidad_poliza_vendidas'] > 0 && $poliza['poliza']['cantidad_poliza_vendidas'] < $planes_comision[1]['ventas_min']:
+				$porcentaje = (80/100);
+				$poliza['poliza']['comision_base'] = round(($poliza['poliza']['prima_mensual'] * $porcentaje)*$poliza['poliza']['cantidad_poliza_vendidas'], 2);
+			break;
+
+			case $poliza['poliza']['cantidad_poliza_vendidas'] < $planes_comision[2]['ventas_min']:
+				$porcentaje = (100/100);
+				$poliza['poliza']['comision_base'] = round(($poliza['poliza']['prima_mensual'] * $porcentaje)*$poliza['poliza']['cantidad_poliza_vendidas'], 2);
+			break;
+
+			case $poliza['poliza']['cantidad_poliza_vendidas'] >= $planes_comision[2]['ventas_min']:
+				$porcentaje = (110/100);
+				$poliza['poliza']['comision_base'] = round(($poliza['poliza']['prima_mensual'] * $porcentaje)*$poliza['poliza']['cantidad_poliza_vendidas'], 2);
+			break;
+		}
+
+		echo '<pre>' . var_export($poliza, true) . '</pre>'; die();
+	}
 }
