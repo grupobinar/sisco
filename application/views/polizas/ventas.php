@@ -1,4 +1,5 @@
-<?php //echo "<pre>"; print_r($_ci_vars); echo "</pre>";?>
+<?php //echo "<pre>"; print_r($_ci_vars['parentesco']); echo "</pre>";?>
+
 
 <!-- #lista de usuarios ############################################################################-->
 <div class="col-lg-12"> 
@@ -26,7 +27,7 @@
     <tbody>
     <?php if ($_ci_vars[ventas]<>"") { foreach ($_ci_vars[ventas] as $key) { ?>
     <tr>
-      <td><?php echo ucwords($key['cedula']);?></td>
+      <td><?php echo ucwords($key['identificacion']);?></td>
       <td><?php echo ucwords($key['apellidos'].' '.$key['nombres']);?></td>
       <td><?php echo ucwords($key['tpoliza']);?></td>
       <td><?php echo ucwords($key['tplan']);?></td>
@@ -216,6 +217,17 @@ $(document).ready(function(){
     $("#guardar").click(function() {
       if ($("#cobertura").val() == "") { alert("Todos los campos son obligatorios"); return false; }
       if ($("#suma").val() == "") { alert("Todos los campos son obligatorios"); return false; }
+
+      Swal.fire({
+          title: data_json[0],
+          text:  'Click en el boton para cerrar',
+          type:  data_json[1],
+          confirmButtonText: 'Cerrar'
+        }).then((result) => {
+          if (data_json[1] === 'success') {
+            location.reload();
+          }
+        });
     });
 
     $("#plan").change(function() {
@@ -253,6 +265,8 @@ $(document).ready(function(){
       });
     });
 
+    var parentesco = <?php echo json_encode($_ci_vars['parentesco']);?>;
+
      var adicional = '<div><div class="col-lg-3"><table><tr><td style="width: 50px">';
           adicional += '<select class="form-control" id="ad_nac" name="ad_nac[]"><option value="V">V</option><option value="E">E</option><option value="J">J</option><option value="G">G</option></select>';
           adicional += '</td><td>';
@@ -260,8 +274,13 @@ $(document).ready(function(){
           adicional += '</td></tr></table></div>';
           adicional += '<div class="col-lg-3"><input type="text" name="ad_name[]" id="ad_name" class="form-control"></div>';
           adicional += '<div class="col-lg-1"><input type="text" name="adicional_edad[]" id="adicional_edad" class="form-control"></div>';
-          adicional += '<div class="col-lg-3"><input type="text" name="adicional_parent[]" id="adicional_parent" class="form-control"></div>';
-          adicional += '<div class="col-lg-2">';
+          adicional += '<div class="col-lg-3"><select id="adicional_parent" name="adicional_parent[]" class="form-control">';
+          $.each(parentesco, function (index, value) {
+              //console.log(value['parentesco']);
+              adicional +='<option value="'+value['id_parentesco']+'">'+value['parentesco']+'</option>';
+          });
+
+          adicional += '</select></div><div class="col-lg-2">';
           adicional += '<input type="button" name="del_ad" id="del_ad" class="btn btn-default" value="x"></div>';
           adicional += '<div class="col-lg-12"><br></div></div>';
 
@@ -289,6 +308,8 @@ $(document).ready(function(){
         alert("aqui");
         //$(this).parents('<div>').css('background-color','red');
     });*/
+
+
 });
 </script>
 
