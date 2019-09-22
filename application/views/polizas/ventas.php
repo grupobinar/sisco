@@ -50,7 +50,7 @@
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title"><i class="fa fa-user"></i> Agregar Poliza</h4>
+          <h4 class="modal-title"><i class="fa fa-user"></i> Agregar Venta</h4>
         </div>
         <div class="modal-body">
           <div class="container-fluid">
@@ -215,11 +215,14 @@ $(document).ready(function(){
         $(".esconder").css("display","none");
         $("._rpago").addClass("col-lg-12");
         $(".nm").prop('disabled', true);
+        $(".checkbox").css("display","block");
 
       }else if($("#tventa").val()==3){
         $(".ac_datos").css("display","none");
+        $(".checkbox").css("display","none");
         $(".nm").prop('disabled', false);
       }else{
+        $(".checkbox").css("display","block");
         $(".ac_datos").css("display","block");
         $(".esconder").css("display","block");
         $("._rpago").removeClass("col-lg-12");
@@ -229,10 +232,17 @@ $(document).ready(function(){
 
    
 
-    $("#guardar").click(function() {
-      if ($("#cobertura").val() == "") { alert("Todos los campos son obligatorios"); return false; }
-      if ($("#suma").val() == "") { alert("Todos los campos son obligatorios"); return false; }
-    });
+    /*$("#guardar").click(function() {
+      if ($("#cedula").val() == "") { alert("Todos los campos son obligatorios"); return false; }
+      if ($("#nombres").val() == "") { alert("Todos los campos son obligatorios"); return false; }
+      if ($("#apellidos").val() == "") { alert("Todos los campos son obligatorios"); return false; }
+      if ($("#telefono").val() == "") { alert("Todos los campos son obligatorios"); return false; }
+      if ($("#correo").val() == "") { alert("Todos los campos son obligatorios"); return false; }
+      if ($("#rpago").val() == "") { alert("Todos los campos son obligatorios"); return false; }
+      if ($("#ccancelada").val() == "") { alert("Todos los campos son obligatorios"); return false; }
+      if ($("#monto").val() == "") { alert("Todos los campos son obligatorios"); return false; }
+      if ($("#solicitud").val() == "") { alert("Todos los campos son obligatorios"); return false; }
+    });*/
 
     $("#plan").change(function() {
       $("#cobertura").html("");

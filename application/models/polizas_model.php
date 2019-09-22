@@ -272,6 +272,8 @@ class Polizas_model extends CI_Model{
 
 	function guardar_venta($nac,$cedula,$rpago,$monto,$ccancelada,$nombres,$apellidos,$tplan,$cobertura,$tpoliza,$tpago,$fecha,$usuario,$tventa,$nsolicitud,$correo,$telefono,$cod_vendedor,$adicionales,$ad_nac,$ad_cedula,$ad_name,$ad_edad,$ad_parent){ 
 
+	if ($tventa==1) {
+
 		$q = $this->db->query("SELECT id_tomador FROM t_tomadores WHERE identificacion='".$nac."-".$cedula."'");
 		  $count = $q->num_rows(); 
 
@@ -298,11 +300,13 @@ class Polizas_model extends CI_Model{
 
 
 		}
+	}
 
 			$this->db->where('estatus','0');
 			$sem = $this->db->get('public.t_semanas');
 
-			$data = array(
+	if ($tventa==1) {
+				$data = array(
 				'tventa'=>$tventa,
 				'solicitud'=>$nsolicitud,
 				'referencia_pago'=>$rpago,
@@ -321,10 +325,70 @@ class Polizas_model extends CI_Model{
 				'ult_mod'=>$fecha,
 			);
 
-			$this->db->insert('public.t_ventas',$data);
+	}
+	elseif ($tventa==2) {
+		$data = array(
+				'tventa'=>$tventa,
+				'solicitud'=>$nsolicitud,
+				'referencia_pago'=>$rpago,
+				'monto'=>$monto,
+				'cuotas_canceladas'=>$ccancelada,
+				'fecha_registro'=>$fecha,
+				'id_tomador'=>$id_tomador,
+				'tipo_pago'=>$tpago,
+				'id_vendedor'=>$cod_vendedor,
+				'id_usuario'=>$usuario,
+				'id_semana'=>$sem->row()->id_semana,
+				'fecha_registro'=>$fecha,
+				'ult_mod'=>$fecha,
+			);
+
+	}elseif ($tventa==3) {
+
+		$q = $this->db->query("SELECT id_tomador FROM t_tomadores WHERE identificacion='".$nac."-".$cedula."'");
+		  $count = $q->num_rows(); 
+
+		 $id_tomador = $q->row()->id_tomador;
+
+		 $data = array(
+				'nombres'=>$nombres,
+				'apellidos'=>$apellidos,
+				'correo'=>$correo,
+				'telefono'=>$telefono,
+				'usuario'=>$usuario,
+				'ult_mod'=>$fecha,
+			);
+
+		 $this->db->where('id_tomador', $id_tomador);
+		 $this->db->update('t_tomadores', $data);
 
 
-			$id_venta =  $this->db->insert_id();
+		$data = array(
+				'tventa'=>$tventa,
+				'solicitud'=>$nsolicitud,
+				'fecha_registro'=>$fecha,
+				'id_tomador'=>$id_tomador,
+				'tipo_pago'=>$tpago,
+				'id_vendedor'=>$cod_vendedor,
+				'id_usuario'=>$usuario,
+				'id_semana'=>$sem->row()->id_semana,
+				'fecha_registro'=>$fecha,
+				'ult_mod'=>$fecha,
+			);
+
+	}
+
+	
+	$this->db->insert('public.t_ventas',$data);
+
+		 echo $this->db->last_query();
+	
+	$id_venta =  $this->db->insert_id();
+
+
+	
+		
+
 
 			$i=0;
 			if ($adicionales=='on') {
