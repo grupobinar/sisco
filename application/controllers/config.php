@@ -15,7 +15,7 @@ class Config extends CI_Controller {
 
 	public function tpoliza()
 	{ //lleva a la vista del tipo de poliza
-
+		echo 'hola'; die();
 		$data = $this->config_model->listtpoliza();
 
 		$i=0;
@@ -33,7 +33,6 @@ class Config extends CI_Controller {
 		}
 
 		$datos['tpolizas']=$lista;
-
 
 		$this->load->view('layout/header');
 		$this->load->view('layout/nav');

@@ -327,40 +327,111 @@ class Polizas_model extends CI_Model{
 
 	}
 
-	public function calculoComisionBase(){
-		//Obtener la poliza, cobertura y plan para poder manipular la suma asegurada
-		$this->db->where('polizas_plan_cobertura.id_poliza',1);
-		$this->db->where('polizas_plan_cobertura.id_plan_poliza',1);
-		$this->db->where('polizas_plan_cobertura.id_cobertura_poliza',69);
-		$poliza['poliza'] = $this->db->get('public.polizas_plan_cobertura')->result_array()[0];
+	public function getVendedoresVentasPolizas(){
+		$this->db->where('id_semana','1');
+		$list_ventas_vendedores = $this->db->get('public.vendedores_ventas_detalles');
 
-		//Añadir la cantidad de ventas por cada poliza de dicho tipo.
-		$poliza['poliza']['cantidad_poliza_vendidas'] = 6;
+		return $list_ventas_vendedores->result_array();
+	}
 
-		//Primas Anuales y Mensual
-		$poliza['poliza']['prima_anual'] = round(($poliza['poliza']['suma_poliza'] * $poliza['poliza']['factor_poliza'])/1000, 2);
-		$poliza['poliza']['prima_mensual'] = round($poliza['poliza']['prima_anual']/12, 2);
+	public function calculoComisionBase($ventas){
 
-		$planes_comision = $this->db->get('public.t_plan_comision')->result_array();
-		
-		
-		switch (true) {
-			case $poliza['poliza']['cantidad_poliza_vendidas'] > 0 && $poliza['poliza']['cantidad_poliza_vendidas'] < $planes_comision[1]['ventas_min']:
-				$porcentaje = (80/100);
-				$poliza['poliza']['comision_base'] = round(($poliza['poliza']['prima_mensual'] * $porcentaje)*$poliza['poliza']['cantidad_poliza_vendidas'], 2);
-			break;
+		//Añadir la cantidad de ventas por cada poliza de dicho tipo. Y las personas adicionales. Defino tambien el tipo de ventas.
+		$adicionales_ventas = $this->adicionalesVentasTotal($ventas);
+		$cantidad_polizas_vendidas = count($ventas) + $adicionales_ventas;
 
-			case $poliza['poliza']['cantidad_poliza_vendidas'] < $planes_comision[2]['ventas_min']:
-				$porcentaje = (100/100);
-				$poliza['poliza']['comision_base'] = round(($poliza['poliza']['prima_mensual'] * $porcentaje)*$poliza['poliza']['cantidad_poliza_vendidas'], 2);
-			break;
+		for ($i=0; $i < count($ventas); $i++) { 
 
-			case $poliza['poliza']['cantidad_poliza_vendidas'] >= $planes_comision[2]['ventas_min']:
-				$porcentaje = (110/100);
-				$poliza['poliza']['comision_base'] = round(($poliza['poliza']['prima_mensual'] * $porcentaje)*$poliza['poliza']['cantidad_poliza_vendidas'], 2);
-			break;
+			//Obtener la poliza, cobertura y plan para poder manipular la suma asegurada
+			$this->db->where('polizas_plan_coberturas.id_poliza', $ventas[$i]['id_poliza']);
+			$this->db->where('polizas_plan_coberturas.id_plan_poliza', $ventas[$i]['id_plan']);
+			$this->db->where('polizas_plan_coberturas.id_cobertura_poliza',$ventas[$i]['id_cobertura']);
+			$poliza['poliza'] = $this->db->get('public.polizas_plan_coberturas')->result_array()[0];
+			
+			$this->db->where('t_adicionales.id_venta',$ventas[$i]['id_venta']);
+			$adicionales_venta = $this->db->get('public.t_adicionales')->result_array();
+
+			$poliza['poliza']['poliza_adicional_familiar'] = count($adicionales_venta);
+			$poliza['poliza']['tipo_venta'] = $ventas[$i]['tipo_venta'];
+
+			if ($poliza['poliza']['poliza_adicional_familiar'] > 0) {
+				$cantidad_polizas_vendidas = $cantidad_polizas_vendidas + $poliza['poliza']['poliza_adicional_familiar'];
+			}
+
+			$poliza['poliza']['coutas_pagadas_poliza'] = $ventas[$i]['cuotas_canceladas'];
+
+			//Primas Anuales y Mensual
+			$poliza['poliza']['prima_anual'] = round(($poliza['poliza']['suma_poliza'] * $poliza['poliza']['factor_poliza'])/1000, 2);
+			$poliza['poliza']['prima_mensual'] = round($poliza['poliza']['prima_anual']/12, 2);
+
+			$planes_comision = $this->db->get('public.t_plan_comision')->result_array();
+
+			switch (true) {
+				case $cantidad_polizas_vendidas > 0 && $cantidad_polizas_vendidas < $planes_comision[1]['ventas_min']:
+					$porcentaje = (80/100);
+					$poliza['poliza']['comision_base'] = round(($poliza['poliza']['prima_mensual'] * $porcentaje), 2);
+					$calculos = $this->preprocesarComision($poliza);
+					$poliza['poliza']['comision_preprocesada'] = $calculos['poliza']['comision_preprocesada'];
+					$ventas[$i]['comision_preprocesada'] = $poliza['poliza']['comision_preprocesada'];
+				break;
+
+				case $cantidad_polizas_vendidas < $planes_comision[2]['ventas_min']:
+					$porcentaje = (100/100);
+					$poliza['poliza']['comision_base'] = round(($poliza['poliza']['prima_mensual'] * $porcentaje), 2);
+					$calculos = $this->preprocesarComision($poliza);
+					$poliza['poliza']['comision_preprocesada'] = $calculos['poliza']['comision_preprocesada'];
+					$ventas[$i]['comision_preprocesada'] = $poliza['poliza']['comision_preprocesada'];
+				break;
+
+				case $cantidad_polizas_vendidas >= $planes_comision[2]['ventas_min']:
+					$porcentaje = (110/100);
+					$poliza['poliza']['comision_base'] = round(($poliza['poliza']['prima_mensual'] * $porcentaje), 2);
+					$calculos = $this->preprocesarComision($poliza);
+					$poliza['poliza']['comision_preprocesada'] = $calculos['poliza']['comision_preprocesada'];
+					$ventas[$i]['comision_preprocesada'] = $poliza['poliza']['comision_preprocesada'];
+				break;
+			}
 		}
 
-		echo '<pre>' . var_export($poliza, true) . '</pre>'; die();
+		$comision_total = 0;
+
+		for ($i=0; $i < count($ventas); $i++) { 
+			$comision_total += $ventas[$i]['comision_preprocesada'];
+		}
+
+		$comision_total = round($comision_total, 2);
+		return $comision_total;
+	}
+
+	public function adicionalesVentasTotal($ventas){
+		$total_ventas_adicionales = 0;
+
+		for ($i=0; $i < count($ventas); $i++) { 
+			$this->db->where('t_adicionales.id_venta',$ventas[$i]['id_venta']);
+			$adicionales_venta = $this->db->get('public.t_adicionales')->result_array();
+
+			$total_ventas_adicionales = $total_ventas_adicionales + count($adicionales_venta);
+		}
+
+		return $total_ventas_adicionales;
+	}
+
+	public function preprocesarComision($poliza){
+		if ($poliza['poliza']['coutas_pagadas_poliza'] >= 3) {
+
+			$porcentaje_cuotas = $poliza['poliza']['comision_base'] * (10/100);
+			$poliza['poliza']['comision_preprocesada'] = round($poliza['poliza']['comision_base'] + $porcentaje_cuotas, 2); 
+
+		}else{
+			$poliza['poliza']['comision_preprocesada'] = round($poliza['poliza']['comision_base'], 2);
+		}
+
+		$poliza['poliza']['comision_preprocesada'] = $poliza['poliza']['comision_preprocesada'] + (3500 * $poliza['poliza']['poliza_adicional_familiar']);
+			
+		if($poliza['poliza']['tipo_venta'] == 2){
+			$poliza['poliza']['comision_preprocesada'] = $poliza['poliza']['comision_preprocesada'][$i] + 1000;
+		}
+
+		return $poliza;
 	}
 }
