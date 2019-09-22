@@ -21,6 +21,23 @@ class Polizas_model extends CI_Model{
 		}
     }
 
+    function buscartomador($n,$c) {
+		
+		$cedula = $n.'-'.$c;
+
+		$this->db->select('nombres, apellidos, correo, telefono');
+		$this->db->where('identificacion',$cedula);
+		$listusuarios = $this->db->get('public.t_tomadores');
+
+		
+		if($listusuarios->num_rows()>0)
+		{
+			return $listusuarios->row_array();
+		} else{
+			return false;
+		}
+    }
+
 	function editar($tpoliza,$plan,$cobertura,$suma,$id_poliza,$fecha,$usuario){
 
 

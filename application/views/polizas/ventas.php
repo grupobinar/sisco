@@ -39,10 +39,10 @@
     </tfoot>
   </table>
 
-  </form>
 <!-- #Agregar Usuario ############################################################################-->
 
-<?=form_open_multipart(base_url().'index.php/polizas/guardar_venta')?>
+
+<form action="http://localhost/sisco/index.php/polizas/guardar_venta" method="post" accept-charset="utf-8" enctype="multipart/form-data">
   <div class="modal fade" id="myModal" role="dialog">
     <div class="modal-dialog modal-lg">
     
@@ -66,7 +66,8 @@
               </div>
               <div class="col-lg-3"><input type="text" name="nsolicitud" id="nsolicitud" class="form-control numero"></div>
 
-              <div class="col-lg-12"><b class="text-light-blue">Datos del tomador</b></div>
+              <div class="col-lg-12"><b class="text-blue">Datos del tomador</b></div>
+              <div class="_respuesta col-lg-12"></div>
               <div class="col-lg-12"><b>Cedula</b></div>
               <div class="col-lg-3">
                 <table>
@@ -92,26 +93,28 @@
               <div class="col-lg-3"><b>Correo</b></div>
               <div class="col-lg-3"><b>Telefono</b></div>
 
-              <div class="col-lg-3"><input type="text" name="apellidos" id="apellidos" class="form-control letras"></div>
-              <div class="col-lg-3"><input type="text" name="nombres" id="nombres" class="form-control letras"></div>
-              <div class="col-lg-3"><input type="text" name="correo" id="correo" class="form-control"></div>
-              <div class="col-lg-3"><input type="text" name="telefono" id="telefono" class="form-control numero"></div>
+              <div class="col-lg-3"><input type="text" name="apellidos" id="apellidos" class="form-control letras nm"></div>
+              <div class="col-lg-3"><input type="text" name="nombres" id="nombres" class="form-control letras nm"></div>
+              <div class="col-lg-3"><input type="text" name="correo" id="correo" class="form-control nm"></div>
+              <div class="col-lg-3"><input type="text" name="telefono" id="telefono" class="form-control numero nm"></div>
 
-              <div class="col-lg-12"><b class="text-light-blue">Datos de la poliza</b></div>
+              <div class="col-lg-12"><b class="text-blue">Datos de la poliza</b></div>
 
-              <div class="col-lg-3 esconder"><b>Tipo de Poliza</b></div>
-              <div class="col-lg-3 esconder"><b>Plan</b></div>
-              <div class="col-lg-3 esconder"><b>Cobertura</b></div>
-              <div class="col-lg-3 _rpago"><b>Ref de pago</b></div>
+              <div class="col-lg-3 esconder ac_datos"><b>Tipo de Poliza</b></div>
+              <div class="col-lg-3 esconder ac_datos"><b>Plan</b></div>
+              <div class="col-lg-3 esconder ac_datos"><b>Cobertura</b></div>
+              <div class="col-lg-3 ac_datos"><b>Ref de pago</b></div>
 
-              <div class="col-lg-3 esconder">
+              <div class="_rpago"></div>
+
+              <div class="col-lg-3 esconder ac_datos">
                 <select class="form-control" name="tpoliza" id="tpoliza">
                   <?php foreach ($_ci_vars[tpoliza] as $key) {
                     echo "<option value='".$key[id_tpoliza]."'>".$key[tpoliza]."</option>";
                   } ?>
                 </select>
               </div>
-              <div class="col-lg-3 esconder">
+              <div class="col-lg-3 esconder ac_datos">
                 <select class="form-control" name="plan" id="plan">
                   <option value="">--</option>
                   <?php foreach ($_ci_vars[plan] as $key) {
@@ -119,26 +122,28 @@
                   } ?>
                 </select>
               </div>
-              <div class="col-lg-3 esconder">
+              <div class="col-lg-3 esconder ac_datos">
                 <select class="form-control" name="cobertura" id="cobertura"></select>
               </div>
-              <div class="col-lg-3 _rpago"><input type="text" name="rpago" id="rpago" class="form-control"></div>
+              <div class="col-lg-3 ac_datos"><input type="text" name="rpago" id="rpago" class="form-control"></div>
 
-              <div class="col-lg-3"><b>Monto</b></div>
-              <div class="col-lg-3"><b>Cuotas Canceladas</b></div>
-              <div class="col-lg-3"><b>Tipo de pago</b></div>
-              <div class="col-lg-3"><b>Cod. Vendedor</b></div>
+              <div class="_rpago"></div>
 
-              <div class="col-lg-3"><input type="text" name="monto" id="monto" class="form-control decimales"></div>
-              <div class="col-lg-3"><input type="text" name="ccancelada" id="ccancelada" class="form-control numero"></div>
-              <div class="col-lg-3">
+              <div class="col-lg-3 ac_datos"><b>Monto</b></div>
+              <div class="col-lg-3 ac_datos"><b>Cuotas Canceladas</b></div>
+              <div class="col-lg-3 ac_datos"><b>Tipo de pago</b></div>
+              <div class="col-lg-3 "><b>Cod. Vendedor</b></div>
+
+              <div class="col-lg-3 ac_datos"><input type="text" name="monto" id="monto" class="form-control decimales"></div>
+              <div class="col-lg-3 ac_datos"><input type="text" name="ccancelada" id="ccancelada" class="form-control numero"></div>
+              <div class="col-lg-3 ac_datos">
                 <select class="form-control" name="tpago" id="tpago">
                   <?php foreach ($_ci_vars[tpago] as $key) {
                     echo "<option value='".$key[id_tpago]."'>".$key[tpago]."</option>";
                   } ?>
                 </select>
               </div>
-              <div class="col-lg-3">
+              <div class="col-lg-3 ">
                  <select class="selectpicker form-control" data-show-subtext="true" data-live-search="true" id="cod_vendedor" name="cod_vendedor">
                   <?php foreach ($_ci_vars[vendedores] as $key) {
                     echo "<option value='".$key[id_vendedor]."' data-subtext='".$key[cod_vendedor]."'>".$key[apellidos].' '.$key[nombres]."</option>";
@@ -178,7 +183,7 @@
 </div>
 
 
-
+</form>
 
 <!-- #Editar Usuario ############################################################################-->
 <?=form_open_multipart(base_url().'index.php/polizas/editar')?>
@@ -199,16 +204,26 @@ $(document).ready(function(){
         this.value = this.value.replace(/[^0-9\.]/g,'');
     });
 
-    $("#tventa").click(function(){
+    $("#tventa").change(function(){
+      $("._respuesta").html("");
+      $("#telefono").val("");
+      $("#apellidos").val("");
+      $("#nombres").val("");
+      $("#correo").val("");
       if ($("#tventa").val()==2) {
+        $(".ac_datos").css("display","block");
         $(".esconder").css("display","none");
-        $("._rpago").removeClass("col-lg-6");
         $("._rpago").addClass("col-lg-12");
+        $(".nm").prop('disabled', true);
 
+      }else if($("#tventa").val()==3){
+        $(".ac_datos").css("display","none");
+        $(".nm").prop('disabled', false);
       }else{
+        $(".ac_datos").css("display","block");
         $(".esconder").css("display","block");
         $("._rpago").removeClass("col-lg-12");
-        $("._rpago").addClass("col-lg-6");
+        $(".nm").prop('disabled', false);
       }
     });
 
@@ -217,17 +232,6 @@ $(document).ready(function(){
     $("#guardar").click(function() {
       if ($("#cobertura").val() == "") { alert("Todos los campos son obligatorios"); return false; }
       if ($("#suma").val() == "") { alert("Todos los campos son obligatorios"); return false; }
-
-      Swal.fire({
-          title: data_json[0],
-          text:  'Click en el boton para cerrar',
-          type:  data_json[1],
-          confirmButtonText: 'Cerrar'
-        }).then((result) => {
-          if (data_json[1] === 'success') {
-            location.reload();
-          }
-        });
     });
 
     $("#plan").change(function() {
@@ -292,6 +296,39 @@ $(document).ready(function(){
           }else{
             $(".head_adicionales").css('display','none');
             $(".add_adicionales").html("");
+      }
+    });
+
+    $("#cedula").blur(function(){
+      if ($("#tventa").val()!=1) {
+
+      $.post("<?php echo base_url() ?>/index.php/polizas/buscarTomador", { c:$(this).val(), n:$('#nac').val() }, function(data){
+
+        if (data=='false') {
+
+          $("._respuesta").html("<p class='text-red'>Esta persona no posee una poliza adquirida</p>");
+          $("#telefono").val("");
+          $("#apellidos").val("");
+          $("#nombres").val("");
+          $("#correo").val("");
+
+        }else{
+
+        $("._respuesta").html("");
+
+        data = data.replace('{', '');
+        data = data.replace('}', '');
+        data = data.replace(/['"]+/g, '');
+        data = data.split(',');
+
+        var d = new Array(); 
+
+        $.each(data, function (index, value) {
+          d = value.split(":");
+          $("#"+d[0]).val(d[1]);
+        });
+        }
+      });
       }
     });
 

@@ -275,6 +275,14 @@ class Polizas extends CI_Controller {
 		$this->load->view('layout/footer');
 
 	}
+
+	public function buscarTomador(){
+
+		$data = $this->polizas_model->buscartomador($_POST['n'],$_POST['c']);
+
+       echo json_encode($data);
+
+	}
 	
 	public function formula(){
 		$result = $this->polizas_model->calculoComisionBase();
