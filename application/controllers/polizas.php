@@ -335,7 +335,6 @@ class Polizas extends CI_Controller {
 		$this->load->view('layout/footer');
 	}
 
-<<<<<<< HEAD
 	public function ver_ventas(){
 		$data = $this->polizas_model->buscarventa($_GET['id']);
 
@@ -371,10 +370,8 @@ class Polizas extends CI_Controller {
 		$this->load->view('layout/footer');
 
 		
-=======
 	public function formula(){
 		$result = $this->polizas_model->calculoComisionBase();
->>>>>>> origin/thomas
 	}
 	
 }
