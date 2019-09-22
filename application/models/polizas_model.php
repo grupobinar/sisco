@@ -327,8 +327,8 @@ class Polizas_model extends CI_Model{
 
 	}
 
-	public function getVendedoresVentasPolizas(){
-		$this->db->where('id_semana','1');
+	public function getVendedoresVentasPolizas($semana){
+		$this->db->where('id_semana',$semana);
 		$list_ventas_vendedores = $this->db->get('public.vendedores_ventas_detalles');
 
 		return $list_ventas_vendedores->result_array();
@@ -433,5 +433,11 @@ class Polizas_model extends CI_Model{
 		}
 
 		return $poliza;
+	}
+
+	public function getVendedoresData($cod_vendedores){
+		$this->db->where_in('t_vendedores.cod_vendedor', $cod_vendedores);
+		$adicionales_venta = $this->db->get('public.t_vendedores')->result_array();
+		return $adicionales_venta; die();
 	}
 }

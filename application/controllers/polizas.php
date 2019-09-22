@@ -370,8 +370,8 @@ class Polizas extends CI_Controller {
 		$this->load->view('layout/footer');
 	}
 
-	public function liquidacionVendedores(){
-		$ventas = $this->polizas_model->getVendedoresVentasPolizas();
+	public function liquidacionVendedores($semana){
+		$ventas = $this->polizas_model->getVendedoresVentasPolizas($semana);
 
 		$vendedores_orden = array();
 
@@ -395,14 +395,51 @@ class Polizas extends CI_Controller {
 				$size_tpoliza = sizeof($vendedores_orden[$keys_vendedor[$x]][$keys_poliza[$i]]);
 
 				for ($j=0; $j < $size_tpoliza; $j++) { 
-					//echo '<pre>' . var_export($vendedores_orden[$keys_vendedor[$x]][$keys_poliza[$i]][$keys_tpoliza[$i]], true) . '</pre>'; die();
 					$result = $this->polizas_model->calculoComisionBase($vendedores_orden[$keys_vendedor[$x]][$keys_poliza[$i]][$keys_tpoliza[$i]]);
 					$vendedores_orden[$keys_vendedor[$x]][$keys_poliza[$i]][$keys_tpoliza[$i]]['comision_total'] = $result;
+					$vendedores_orden[$keys_vendedor[$x]][$keys_poliza[$i]][$keys_tpoliza[$i]]['ventas_totales'] = count($vendedores_orden[$keys_vendedor[$x]][$keys_poliza[$i]][$keys_tpoliza[$i]]) - 1;
 				}
 			}
 		} 
 		
-		echo '<pre>' . var_export($vendedores_orden, true) . '</pre>'; die();
+		return $vendedores_orden;
+	}
+
+	public function liquidacion(){
+		$vendedores_ventas_semana = $this->liquidacionVendedores(1);
+		$vendedores_cod = array_keys($vendedores_ventas_semana);
+		
+		$keys_vendedor = array_keys($vendedores_ventas_semana); 
+		$size_vendedor = sizeof($vendedores_ventas_semana); 
+
+		for($x = 0; $x < $size_vendedor; $x++ ) {
+			$keys_poliza = array_keys($vendedores_ventas_semana[$keys_vendedor[$x]]); 
+			$size_poliza = sizeof($vendedores_ventas_semana[$keys_vendedor[$x]]);
+
+			for ($i=0; $i < $size_poliza; $i++) { 
+				$keys_tpoliza = array_keys($vendedores_ventas_semana[$keys_vendedor[$x]][$keys_poliza[$i]]); 
+				$size_tpoliza = sizeof($vendedores_ventas_semana[$keys_vendedor[$x]][$keys_poliza[$i]]);
+
+				for ($j=0; $j < $size_tpoliza; $j++) {
+					$vendedores_ventas_semana[$keys_vendedor[$x]]['ventas_totales'] +=  $vendedores_ventas_semana[$keys_vendedor[$x]][$keys_poliza[$i]][$keys_tpoliza[$j]]['ventas_totales'];
+					$vendedores_ventas_semana[$keys_vendedor[$x]]['comision_total'] +=  $vendedores_ventas_semana[$keys_vendedor[$x]][$keys_poliza[$i]][$keys_tpoliza[$j]]['comision_total'];
+					//echo '<pre>' . var_export($vendedores_ventas_semana[$keys_vendedor[$x]], true) . '</pre>'; die();
+				}
+			}
+		} 
+
+		$vendedores_data = $this->polizas_model->getVendedoresData($vendedores_cod);
+
+		for ($i=0; $i < count($vendedores_cod); $i++) { 
+			$vendedores_data[$i]['ventas_totales'] = $vendedores_ventas_semana[$vendedores_cod[$i]]['ventas_totales'];
+			$vendedores_data[$i]['comision_total'] = $vendedores_ventas_semana[$vendedores_cod[$i]]['comision_total'];
+		}
+
+		//echo '<pre>' . var_export($vendedores_data, true) . '</pre>'; die();
+		$this->load->view('layout/header');
+		$this->load->view('layout/nav');
+		$this->load->view('polizas/liquidacion',$vendedores_data);
+		$this->load->view('layout/footer');
 	}
 	
 }
