@@ -251,10 +251,8 @@ class Polizas extends CI_Controller {
 
 		$data = $this->polizas_model->buscartomador($_POST['n'],$_POST['c']);
 
-		$this->load->view('layout/header');
-		$this->load->view('layout/nav');
-		$this->load->view('polizas/addventas',$lista_w);
-		$this->load->view('layout/footer');
+       echo json_encode($data);
+
 	}
 
 	public function liquidacionVendedores($semana){

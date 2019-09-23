@@ -314,7 +314,7 @@ $(document).ready(function(){
 
       $.post("<?php echo base_url() ?>/index.php/polizas/buscartomador", { c:$(this).val(), n:$('#nac').val() }, function(data){
 
-         alert(data);
+        // alert(data);
 
         if (data=='false') {
 
