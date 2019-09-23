@@ -27,6 +27,9 @@ class Polizas_model extends CI_Model{
 
 		$this->db->select('nombres, apellidos, correo, telefono');
 		$this->db->where('identificacion',$cedula);
+
+		echo $this->db->last_query();
+		
 		$listusuarios = $this->db->get('public.t_tomadores');
 
 		
@@ -81,7 +84,7 @@ class Polizas_model extends CI_Model{
 	{
 		$this->db->join('t_tpoliza','t_tpoliza.id_tpoliza = t_polizas.id_tpoliza');
 		$this->db->join('t_plan','t_plan.id_tplan = t_polizas.id_plan');
-		$this->db->where('estatus','0');
+		$this->db->where('t_polizas.estatus','0');
 		$listusuarios = $this->db->get('public.t_polizas');
 
 		//echo $this->db->last_query();	
@@ -153,7 +156,7 @@ class Polizas_model extends CI_Model{
 
 	function listtpoliza()
 	{
-		$this->db->order_by('id_tpoliza','desc');
+		$this->db->where('estatus','0');
 		$listusuarios = $this->db->get('public.t_tpoliza');
 
 		if($listusuarios->num_rows()>0)

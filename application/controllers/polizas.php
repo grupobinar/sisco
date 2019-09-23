@@ -34,39 +34,10 @@ class Polizas extends CI_Controller {
 
 		$datos['polizas']=$lista;
 
-		$data = $this->polizas_model->listtpoliza();
+		$datos['tpoliza'] = $this->polizas_model->listtpoliza();
 
-		$i=0;
 
-		if ($data<>"") {
-		foreach($data as $sheet) {	
-
-			$i++;		
-			
-			$lista_p[$i]["id_tpoliza"]=$sheet->id_tpoliza;
-			$lista_p[$i]["tpoliza"]=$sheet->tpoliza;
-			
-			}
-		}
-
-		$datos['tpoliza']=$lista_p;
-
-		$data = $this->polizas_model->listplan();
-
-		$i=0;
-
-		if ($data<>"") {
-		foreach($data as $sheet) {	
-
-			$i++;		
-			
-			$lista_q[$i]["id_tplan"]=$sheet->id_tplan;
-			$lista_q[$i]["tplan"]=$sheet->tplan;
-			
-			}
-		}
-
-		$datos['planes']=$lista_q;
+		$datos['planes'] = $this->polizas_model->listplan();
 
 
 		$this->load->view('layout/header');
@@ -189,7 +160,7 @@ class Polizas extends CI_Controller {
 		echo "<script> alert('".$guser."') </script>";
 
 		
-		redirect('/config/polizas', 'refresh');
+		redirect('/polizas', 'refresh');
 	}
 
 
@@ -276,7 +247,7 @@ class Polizas extends CI_Controller {
 
 	}
 
-	public function buscarTomador(){
+	public function buscartomador(){
 
 		$data = $this->polizas_model->buscartomador($_POST['n'],$_POST['c']);
 

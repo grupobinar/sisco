@@ -15,7 +15,7 @@ class Config extends CI_Controller {
 
 	public function tpoliza()
 	{ //lleva a la vista del tipo de poliza
-		echo 'hola'; die();
+		//echo 'hola'; die();
 		$data = $this->config_model->listtpoliza();
 
 		$i=0;
@@ -43,6 +43,7 @@ class Config extends CI_Controller {
 	public function guardar_tpoliza(){
 
 		$tpoliza=$_POST['tpoliza'];
+		$factor=$_POST['factor'];
 		
 
 		$fecha=date("d/m/Y");
@@ -50,6 +51,7 @@ class Config extends CI_Controller {
 		
 		$guser = $this->config_model->guardar_tpoliza(
 			$tpoliza,
+			$factor,
 			$fecha,
 			$usuario
 		);
@@ -58,6 +60,29 @@ class Config extends CI_Controller {
 
 		
 		redirect('/config/tpoliza', 'refresh');
+
+	}
+
+	public function guardar_edad(){
+
+		$edad=$_POST['edad'];
+		$factor=$_POST['factor'];
+		
+
+		$fecha=date("d/m/Y");
+		$usuario=$this->session->userdata('id_usuario');	
+		
+		$guser = $this->config_model->guardar_edad(
+			$edad,
+			$factor,
+			$fecha,
+			$usuario
+		);
+
+		echo "<script> alert('".$guser."') </script>";
+
+		
+		redirect('/config/edad', 'refresh');
 
 	}
 
@@ -113,12 +138,12 @@ class Config extends CI_Controller {
 	}
 
 
-	public function eliminarTpago()
+	public function eliminarRegistros()
 	{ // eliminar tipo de cobro
 
-		$guser = $this->config_model->desactivarTpago($_POST['id']);
+		$guser = $this->config_model->eliminarRegistros($_POST['id'],$_POST['tb'],$_POST['id_name']);
 
-		echo "Tipo de Cobro Eliminado";
+		echo "Registro Eliminado";
 		//echo $guser;
 	}	
 
@@ -369,6 +394,23 @@ class Config extends CI_Controller {
 		$this->load->view('layout/header');
 		$this->load->view('layout/nav');
 		$this->load->view('config/tconcepto',$datos);
+		$this->load->view('layout/footer');
+	}
+
+	// Tipo de Concepto -----------------------------------------------------------------------------------
+
+	public function edad()
+	{ //lleva a la vista de tipo de conceptp
+
+		$data = $this->config_model->listEdadFactor();
+
+		//print_r($data);
+		//break;
+
+
+		$this->load->view('layout/header');
+		$this->load->view('layout/nav');
+		$this->load->view('config/edad',$data);
 		$this->load->view('layout/footer');
 	}
 	

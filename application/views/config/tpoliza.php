@@ -9,10 +9,14 @@
 
    <div class="box-body">
      <div class="row">
-       <div class="col-xs-12"><b>Tipo de Poliza</b></div>
+       <div class="col-xs-6"><b>Tipo de Poliza</b></div>
+       <div class="col-xs-6"><b>Factor</b></div>
        
-       <div class="col-xs-12">
+       <div class="col-xs-6">
          <input class="form-control" placeholder="Tipo de poliza" name="tpoliza" id="tpoliza" type="text">
+       </div>
+       <div class="col-xs-6">
+         <input class="form-control" placeholder="Factor" name="factor" id="factor" type="text">
        </div>
        
        <div class="col-lg-12"> <br> </div>
@@ -37,23 +41,92 @@
       <th>N°</th>
       <th>Tipo de poliza</th>
       <th>Factor</th>
+      <th>Opciones</th>
     </tr>
     </thead>
     <tbody>
     <?php if ($_ci_vars<>"") { foreach ($_ci_vars['tpolizas'] as $key) { ?>
-      <tr>
+      <tr id="fila_<?php echo $key['id_tpoliza']?>">
         <td><?php echo $key['id_tpoliza']?></td>
         <td><?php echo $key['tpoliza']?></td>
         <td><?php echo $key['factor']?></td>
+        <td>
+        <center>
+
+          <a class="btn btn-sm btn-default desactivar" id="<?php echo $key['id_tpoliza']?>" data-toggle="modal" data-target="#Desactivar" href="#" title="Eliminar"><i class="fa fa-close"></i></a>
+
+        </center>
+      </td>
       </tr>
     <?php }} ?>
     </tfoot>
   </table>
 </div>
 </div>
+
+<div class="modal fade" id="Desactivar" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title"><i class="fa fa-spinner"></i> Eliminar tipo de cobro</h4>
+        </div>
+        <div class="modal-body">
+          <div class="container-fluid">
+            <div class="row" id="row_desactivar">
+              <div class="col-lg-12">Una vez eliminado no podra utilizarlo ni recuperarlo.</div>
+              <div class="col-lg-12">¿Desea continuar?</div>
+              <input type="hidden" name="id_desactivar" id="id_desactivar">
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <input type="button" name="btn_desactivar" id="btn_desactivar" class="btn btn-primary" value="Desactivar Poliza">
+          <input type="button" class="btn btn-default"  data-dismiss="modal" value="Cancelar" id="_desctivar" name="_desctivar">
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+</div>
  
  <script type="text/javascript">
   $(document).ready(function(){
+
+     $(".desactivar").click(function() {
+
+      var id=$(this).attr("id");
+
+        $("#id_desactivar").val(id);
+
+    });
+
+
+
+    $("#btn_desactivar").click(function() {
+
+      var ide = $("#id_desactivar").val();
+
+      alert("aqui");
+
+      $.post("<?php echo base_url() ?>/index.php/config/eliminarRegistros", { id:$("#id_desactivar").val(), tb:'t_tpoliza', id_name: 'id_tpoliza' }, function(data){
+
+        $("#row_desactivar").html("<div><p class='text-light-blue'>"+data+"</p></div>");
+
+        $("#fila_"+ide).hide();
+
+        $("#btn_desactivar").css("display", "none").delay(1000);
+
+
+        $("#_desctivar").val("Cerrar");
+
+
+      });
+
+    });
 
   });
 </script>

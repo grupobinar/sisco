@@ -1,17 +1,23 @@
+
+<?php // print_r($_ci_vars['conceptos']); ?>
 <div class="col-lg-12"> <br> </div>
 <div class="col-lg-5"> 
   <div class="box box-primary">
    <div class="box-header with-border">
-     <h3 class="box-title">Agregar Tipo de Cobro</h3>
+     <h3 class="box-title">Agregar Factor Edad</h3>
    </div>
-   <?=form_open_multipart(base_url().'index.php/config/guardar_tpago')?>
+   <?=form_open_multipart(base_url().'index.php/config/guardar_edad')?>
 
    <div class="box-body">
      <div class="row">
-       <div class="col-xs-12"><b>Tipo de Cobro</b></div>
+       <div class="col-xs-6"><b>Edad</b></div>
+       <div class="col-xs-6"><b>Factor</b></div>
        
-       <div class="col-xs-12">
-         <input class="form-control" placeholder="Tipo de cobro" name="tpago" id="tpago" type="text">
+       <div class="col-xs-6">
+         <input class="form-control" placeholder="Edad" name="edad" id="edad" type="text">
+       </div>
+        <div class="col-xs-6">
+         <input class="form-control" placeholder="Factor" name="factor" id="factor" type="text">
        </div>
        
        <div class="col-lg-12"> <br> </div>
@@ -34,19 +40,21 @@
     <thead>
      <tr>
       <th>N°</th>
-      <th>Tipo de Cobro</th>
+      <th>Edad</th>
+      <th>Factor</th>
       <th><center><i class="fa fa-cog"></i> Opciones</center></th>
     </tr>
     </thead>
     <tbody>
-    <?php if ($_ci_vars<>"") { foreach ($_ci_vars['tpagos'] as $key) { ?>
-      <tr id="fila_<?php echo $key['id_tpago']?>">
-        <td><?php echo $key['id_tpago']?></td>
-        <td><?php echo ucwords($key['tpago'])?></td>
+    <?php if ($_ci_vars<>"") { foreach ($_ci_vars as $key) { ?>
+      <tr id="fila_<?php echo $key['id_fedad']?>">
+        <td><?php echo $key['id_fedad']?></td>
+        <td><?php echo $key['edad']?> Años</td>
+        <td><?php echo $key['factor']?></td>
         <td>
         <center>
 
-          <a class="btn btn-sm btn-default desactivar" id="<?php echo $key['id_tpago']?>" data-toggle="modal" data-target="#Desactivar" href="<?php echo base_url();?>index.php/usuarios/desactivar" title="Eliminar"><i class="fa fa-close"></i></a>
+          <a class="btn btn-sm btn-default desactivar" id="<?php echo $key['id_concepto']?>" data-toggle="modal" data-target="#Desactivar" href="<?php echo base_url();?>index.php/usuarios/desactivar" title="Eliminar"><i class="fa fa-close"></i></a>
 
         </center>
       </td>
@@ -105,7 +113,8 @@
 
       var ide = $("#id_desactivar").val();
 
-$.post("<?php echo base_url() ?>/index.php/config/eliminarRegistros", { id:$("#id_desactivar").val(), tb:'t_tpago', id_name: 'id_tpago' }, function(data){
+      $.post("<?php echo base_url() ?>/index.php/config/eliminarTpago", { id:$("#id_desactivar").val() }, function(data){
+
         $("#row_desactivar").html("<div><p class='text-light-blue'>"+data+"</p></div>");
 
         $("#fila_"+ide).hide();

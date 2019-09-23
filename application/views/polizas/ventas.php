@@ -312,7 +312,9 @@ $(document).ready(function(){
     $("#cedula").blur(function(){
       if ($("#tventa").val()!=1) {
 
-      $.post("<?php echo base_url() ?>/index.php/polizas/buscarTomador", { c:$(this).val(), n:$('#nac').val() }, function(data){
+      $.post("<?php echo base_url() ?>/index.php/polizas/buscartomador", { c:$(this).val(), n:$('#nac').val() }, function(data){
+
+         alert(data);
 
         if (data=='false') {
 
