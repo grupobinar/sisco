@@ -15,23 +15,29 @@
  <table id="example1" class="table table-bordered table-striped" style="padding: 10px;">
     <thead>
      <tr>
+      <th>Cedula</th>
       <th>Tomador</th>
+      <th>Tipo de Venta</th>
       <th>Tipo Poliza</th>
       <th>Plan</th>
       <th>cobertura</th>
-      <th>Tipo de pago</th>
       <th>Semana</th>
       <th><i class="fa fa-cogs"></i> Opciones</th>
     </tr>
     </thead>
     <tbody>
-    <?php if ($_ci_vars[ventas]<>"") { foreach ($_ci_vars[ventas] as $key) { ?>
+    <?php if ($_ci_vars[ventas]<>"") { foreach ($_ci_vars[ventas] as $key) { 
+      if($key['tventa']==1) $tventa = "Venta de poliza";
+      elseif($key['tventa']==2) $tventa = "Adicionales";
+      elseif($key['tventa']==3) $tventa = "Actualización de Datos";
+    ?>
     <tr>
       <td><?php echo ucwords($key['identificacion']);?></td>
       <td><?php echo ucwords($key['apellidos'].' '.$key['nombres']);?></td>
-      <td><?php echo ucwords($key['tpoliza']);?></td>
-      <td><?php echo ucwords($key['tplan']);?></td>
-      <td><?php echo ucwords($key['cobertura']);?></td>
+      <td><?php echo ucwords($tventa);?></td>
+      <td><?php if(isset($key['tpoliza'])) echo ucwords($key['tpoliza']); else echo "N/A";?></td>
+      <td><?php if(isset($key['tplan'])) echo ucwords($key['tplan']); else echo "N/A";?></td>
+      <td><?php if(isset($key['cobertura'])) echo ucwords($key['cobertura']); else echo "N/A";?></td>
       <td><a href="#" title="<?php echo $key['desde'].' | '.$key['hasta'] ?>"><?php echo ucwords($key['nsem']);?></a></td>
       <td><a href="<?php echo base_url().'index.php/polizas/ver_ventas?id='.$key['id_venta']?>" class="btn btn-default" type="button"><i class="fa fa-eye"></i></a></td>
     </tr>
@@ -230,19 +236,19 @@ $(document).ready(function(){
       }
     });
 
-   
-
-    /*$("#guardar").click(function() {
-      if ($("#cedula").val() == "") { alert("Todos los campos son obligatorios"); return false; }
-      if ($("#nombres").val() == "") { alert("Todos los campos son obligatorios"); return false; }
-      if ($("#apellidos").val() == "") { alert("Todos los campos son obligatorios"); return false; }
-      if ($("#telefono").val() == "") { alert("Todos los campos son obligatorios"); return false; }
-      if ($("#correo").val() == "") { alert("Todos los campos son obligatorios"); return false; }
-      if ($("#rpago").val() == "") { alert("Todos los campos son obligatorios"); return false; }
-      if ($("#ccancelada").val() == "") { alert("Todos los campos son obligatorios"); return false; }
-      if ($("#monto").val() == "") { alert("Todos los campos son obligatorios"); return false; }
-      if ($("#solicitud").val() == "") { alert("Todos los campos son obligatorios"); return false; }
-    });*/
+    $("#guardar").click(function() {
+      if($("#tventa").val()!=3) {
+        if ($("#rpago").val() == "") { alert("Todos los campos son obligatorios"); return false; }
+        if ($("#ccancelada").val() == "") { alert("Todos los campos son obligatorios"); return false; }
+        if ($("#monto").val() == "") { alert("Todos los campos son obligatorios"); return false; }
+      }
+        if ($("#cedula").val() == "") { alert("Todos los campos son obligatorios"); return false; }
+        if ($("#nombres").val() == "") { alert("Todos los campos son obligatorios"); return false; }
+        if ($("#apellidos").val() == "") { alert("Todos los campos son obligatorios"); return false; }
+        if ($("#telefono").val() == "") { alert("Todos los campos son obligatorios"); return false; }
+        if ($("#correo").val() == "") { alert("Todos los campos son obligatorios"); return false; }
+        if ($("#nsolicitud").val() == "") { alert("Todos los campos son obligatorios"); return false; }  
+    });
 
     $("#plan").change(function() {
       $("#cobertura").html("");
@@ -313,8 +319,6 @@ $(document).ready(function(){
       if ($("#tventa").val()!=1) {
 
       $.post("<?php echo base_url() ?>/index.php/polizas/buscartomador", { c:$(this).val(), n:$('#nac').val() }, function(data){
-
-        // alert(data);
 
         if (data=='false') {
 

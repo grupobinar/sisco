@@ -1,4 +1,11 @@
-<?php ?>
+<?php 
+/*echo "<pre>";
+print_r($_ci_vars);
+echo "</pre>";*/
+	  if($_ci_vars['poliza']['tventa']==1) $tventa = "Venta de poliza";
+      elseif($_ci_vars['poliza']['tventa']==2) $tventa = "Adicionales";
+      elseif($_ci_vars['poliza']['tventa']==3) $tventa = "Actualización de Datos";
+?>
 <table class="table" style="background-color: white; margin-bottom: 10px;">
 	<tr>
 		<th colspan="4">Datos del tomador</th>
@@ -30,7 +37,7 @@
 
 	<tr style="font-size: 13px;">
 		<td><?php echo $_ci_vars['poliza']['solicitud'];?></td>
-		<td><?php echo strtolower($_ci_vars['poliza']['correo']);?></td>
+		<td><?php echo ucwords($tventa);?></td>
 		<td><?php echo ucwords($_ci_vars['poliza']['lastname_vendedor'].' '.$_ci_vars['poliza']['name_vendedor']);?></td>
 		<td><?php echo $_ci_vars['poliza']['nsem'].' ['.$_ci_vars['poliza']['desde'].' / '.$_ci_vars['poliza']['hasta'].']';?></td>
 	</tr>
@@ -43,9 +50,9 @@
 	</tr>
 
 	<tr style="font-size: 13px;">
-		<td><?php echo ucwords($_ci_vars['poliza']['tplan']);?></td>
-		<td><?php echo ucwords($_ci_vars['poliza']['tpoliza']);?></td>
-		<td><?php echo ucwords($_ci_vars['poliza']['num_poliza'].' | '.$_ci_vars['poliza']['cobertura']);?></td>
+		<td><?php if(isset($_ci_vars['poliza']['tplan'])) echo ucwords($_ci_vars['poliza']['tplan']); else echo "N/A"?></td>
+		<td><?php if(isset($_ci_vars['poliza']['tpoliza'])) echo ucwords($_ci_vars['poliza']['tpoliza']); else echo "N/A"?></td>
+		<td><?php if(isset($_ci_vars['poliza']['num_poliza'])) echo ucwords($_ci_vars['poliza']['num_poliza'].' '.$_ci_vars['poliza']['cobertura']); else echo "N/A"?></td>
 		<td><?php echo number_format($_ci_vars['poliza']['suma'], 2, ',', '.');?></td>
 	</tr>
 
@@ -56,12 +63,22 @@
 		<th>Cuotas canceladas:</th>
 	</tr>
 
+	<?php if(isset($_ci_vars['poliza']['tpago'])){ ?>
+
 	<tr style="font-size: 13px;">
 		<td><?php echo ucwords($_ci_vars['poliza']['tpago']);?></td>
 		<td><?php echo $_ci_vars['poliza']['referencia_pago'];?></td>
 		<td><?php echo number_format($_ci_vars['poliza']['monto'], 2, ',', '.');?></td>
 		<td><?php echo $_ci_vars['poliza']['cuotas_canceladas'];?></td>
 	</tr>
+
+	<?php } else { ?>
+
+	<tr style="font-size: 13px;">
+		<td colspan="4" style="text-align: center;"><b class="text-red">No posee datos de pago</b></td>
+	</tr>
+
+	<?php } ?>
 
 </table>
 
@@ -78,6 +95,8 @@
 	</tr>
 
 	<?php 
+
+	if(isset($_ci_vars['adicionales'])){
 		$i=1;
 		foreach ($_ci_vars['adicionales'] as $key) {
 	?>
@@ -90,6 +109,11 @@
 		<td><?php echo $key['parentesco'];?></td>
 	</tr>
 
-	<?php $i++; }  ?>
+	<?php $i++; }}else { ?>
+
+		<tr style="font-size: 13px;">
+			<td colspan="5" style="text-align: center;"><b class="text-red">No posee personas adicionales para esta venta</b></td>
+		</tr>
+	<?php } ?>
 
 </table>

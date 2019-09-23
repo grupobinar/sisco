@@ -104,7 +104,10 @@
               <div class="row">
 
               <div class="col-lg-12"><b>Cedula</b></div>
-              <div class="col-lg-6"><input type="text" name="cedula_e" id="cedula_e" class="form-control" readonly=""></div>
+              <div class="col-lg-12"><b>Cod. vendedor</b></div>
+              <div class="col-lg-6"><input type="text" name="cedula_e" id="cedula_e" class="form-control" readonly="">
+              </div>
+              <div class="col-lg-6"><input type="text" name="cod_vendedor_e" id="cod_vendedor_e" class="form-control numero"></div>
               <div class="col-lg-12"></div>
 
               <div class="col-lg-6"><b>Apellidos</b></div>
@@ -147,6 +150,7 @@ $(document).ready(function(){
       if ($("#apellidos").val() == "") { alert("Todos los campos son obligatorios"); return false; }
       if ($("#cedula").val() == "") { alert("Todos los campos son obligatorios"); return false; }
       if ($("#correo").val() == "") { alert("Todos los campos son obligatorios"); return false; }
+      if ($("#cod_vendedor").val() == "") { alert("Todos los campos son obligatorios"); return false; }
     });
 
     $(".editUsuario").click(function() {
@@ -164,6 +168,7 @@ $(document).ready(function(){
         $("#correo_e").val(result[3]);
         $("#telefono_e").val(result[4]);
         $("#id_p").val(result[5]);
+        $("#cod_vendedor_e").val(result[6]);
 
         result="";
 

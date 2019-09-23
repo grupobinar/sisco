@@ -274,6 +274,7 @@ class Config extends CI_Controller {
 			$lista2[$i]["min"]=$sheet->min;
 			$lista2[$i]["max"]=$sheet->max;
 			$lista2[$i]["planc"]=$sheet->planc;
+			$lista2[$i]["base"]=$sheet->id_basec;
 			
 			}
 		}
@@ -296,6 +297,7 @@ class Config extends CI_Controller {
 		$min=$_POST['min'];
 		$max=$_POST['max'];
 		$planc=$_POST['planc'];
+		$id_basec=$_POST['id_basec'];
 		
 
 		$fecha=date("d/m/Y");
@@ -309,7 +311,9 @@ class Config extends CI_Controller {
 			$max,
 			$fecha,
 			$usuario,
-			$planc
+			$planc,
+			$id_basec
+
 		);
 
 		echo "<script> alert('".$guser."') </script>";

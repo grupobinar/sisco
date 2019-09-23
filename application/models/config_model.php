@@ -56,7 +56,7 @@ class Config_model extends CI_Model{
 
 	}
 
-	function guardar_comision($concepto,$calculo,$cuota,$min,$max,$fecha,$usuario,$planc){
+	function guardar_comision($concepto,$calculo,$cuota,$min,$max,$fecha,$usuario,$planc,$id_basec){
 
 		  	$data = array(
 			'id_tcomision'=>$concepto,
@@ -68,6 +68,7 @@ class Config_model extends CI_Model{
 			'ult_mod'=>$fecha,
 			'id_usuario'=>$usuario,
 			'id_plan'=>$planc,
+			'id_basec'=>$id_basec,
 			);
 
 
@@ -179,6 +180,7 @@ class Config_model extends CI_Model{
 
 	function listEdadFactor()
 	{
+		$this->db->where('estatus','0');
 		$listusuarios = $this->db->get('public.t_factor_edad');
 		
 		if($listusuarios->num_rows()>0)

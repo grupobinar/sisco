@@ -16,13 +16,13 @@
          <input class="form-control" placeholder="Tipo de poliza" name="tpoliza" id="tpoliza" type="text">
        </div>
        <div class="col-xs-6">
-         <input class="form-control" placeholder="Factor" name="factor" id="factor" type="text">
+         <input class="form-control decimales" placeholder="Factor" name="factor" id="factor" type="text">
        </div>
        
        <div class="col-lg-12"> <br> </div>
        
        <div class="col-lg-12">      
-         <button type="submit" class="btn btn-primary">Agregar</button>
+         <button type="submit" class="btn btn-primary" id="guardar">Agregar</button>
       </div>   
      </div>
    </div>
@@ -83,7 +83,7 @@
           </div>
         </div>
         <div class="modal-footer">
-          <input type="button" name="btn_desactivar" id="btn_desactivar" class="btn btn-primary" value="Desactivar Poliza">
+          <input type="button" name="btn_desactivar" id="btn_desactivar" class="btn btn-primary" value="Eliminar">
           <input type="button" class="btn btn-default"  data-dismiss="modal" value="Cancelar" id="_desctivar" name="_desctivar">
         </div>
       </div>
@@ -102,6 +102,14 @@
 
         $("#id_desactivar").val(id);
 
+    });
+
+     $("#guardar").click(function() {
+      if ($("input").val() == "") { alert("Todos los campos son obligatorios"); return false; }
+    });
+
+   $('.decimales').on('input', function () { 
+        this.value = this.value.replace(/[^0-9\.]/g,'');
     });
 
 

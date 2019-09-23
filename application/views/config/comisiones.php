@@ -17,6 +17,7 @@
       <th>Plan</th>
       <th>Concepto</th>
       <th>Tipo Comisión</th>
+      <th>Base de Calculo</th>
       <th>Tasa comisión</th>
       <th>Desde</th>
       <th>Hasta</th>
@@ -29,6 +30,7 @@
       <td><?php echo ucwords($key['planc']);?></td>
       <td><?php echo ucwords($key['concepto']);?></td>
       <td><?php echo ucwords($key['calculo']);?></td>
+      <td><?php if ($key['base']==1) echo "Sobre la suma asegurada"; elseif($key['base']==2) echo "sobre la comisión"; ?></td>
       <td><?php echo number_format($key['cuota'], 2, ',', '.');?></td>
       <td><?php echo $key['min'];?></td>
       <td><?php echo $key['max'];?></td>
@@ -90,10 +92,18 @@
                 </select>
               </div>
 
-              <div class="col-lg-6"><b>Desde</b></div>
-              <div class="col-lg-6"><b>Hasta</b></div>
-              <div class="col-lg-6"><input type="text" name="min" id="min" class="form-control numero"></div>
-              <div class="col-lg-6"><input type="text" name="max" id="max" class="form-control numero"></div>
+              <div class="col-lg-6"><b>Base de calculo</b></div>
+              <div class="col-lg-3"><b>Desde</b></div>
+              <div class="col-lg-3"><b>Hasta</b></div>
+
+              <div class="col-lg-6">
+                <select class="form-control" name="id_basec" id="id_basec">
+                  <option value="1"> Sobre la suma asegurada</option>
+                  <option value="2"> Sobre la comisión</option>
+                </select>
+              </div>
+              <div class="col-lg-3"><input type="text" name="min" id="min" class="form-control numero"></div>
+              <div class="col-lg-3"><input type="text" name="max" id="max" class="form-control numero"></div>
         </div>
         <div class="modal-footer">
           <input type="submit" name="guardar" id="guardar" class="btn btn-primary" value="Guardar Comisión">
@@ -146,11 +156,19 @@
                   } ?>
                 </select>
               </div>
-              <div class="col-lg-6"><b>Min.</b></div>
-              <div class="col-lg-6"><b>Max.</b></div>
+              <div class="col-lg-6"><b>Base de calculo</b></div>
+              <div class="col-lg-3"><b>Desde</b></div>
+              <div class="col-lg-3"><b>Hasta</b></div>
+
+              <div class="col-lg-6">
+                <select class="form-control" name="id_basec_e" id="id_basec_e">
+                  <option value="1"> Sobre la suma asegurada</option>
+                  <option value="2"> Sobre la comisión</option>
+                </select>
+              </div>
               
-              <div class="col-lg-6"><input type="text" name="min_e" id="min_e" class="form-control numero"></div>
-              <div class="col-lg-6"><input type="text" name="max_e" id="max_e" class="form-control numero"></div>
+              <div class="col-lg-3"><input type="text" name="min_e" id="min_e" class="form-control numero"></div>
+              <div class="col-lg-3"><input type="text" name="max_e" id="max_e" class="form-control numero"></div>
         </div>
         <div class="modal-footer">
           <input type="submit" name="guardar" id="guardar" class="btn btn-primary" value="Guardar Comisión">

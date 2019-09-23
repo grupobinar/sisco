@@ -17,13 +17,13 @@
          <input class="form-control" placeholder="Edad" name="edad" id="edad" type="text">
        </div>
         <div class="col-xs-6">
-         <input class="form-control" placeholder="Factor" name="factor" id="factor" type="text">
+         <input class="form-control decimales" placeholder="Factor" name="factor" id="factor" type="text">
        </div>
        
        <div class="col-lg-12"> <br> </div>
        
        <div class="col-lg-12">      
-         <button type="submit" class="btn btn-primary">Agregar</button>
+         <button type="submit" class="btn btn-primary" id="guardar">Agregar</button>
       </div>   
      </div>
    </div>
@@ -54,7 +54,7 @@
         <td>
         <center>
 
-          <a class="btn btn-sm btn-default desactivar" id="<?php echo $key['id_concepto']?>" data-toggle="modal" data-target="#Desactivar" href="<?php echo base_url();?>index.php/usuarios/desactivar" title="Eliminar"><i class="fa fa-close"></i></a>
+          <a class="btn btn-sm btn-default desactivar" id="<?php echo $key['id_fedad']?>" data-toggle="modal" data-target="#Desactivar" href="<?php echo base_url();?>index.php/usuarios/desactivar" title="Eliminar"><i class="fa fa-close"></i></a>
 
         </center>
       </td>
@@ -84,7 +84,7 @@
           </div>
         </div>
         <div class="modal-footer">
-          <input type="button" name="btn_desactivar" id="btn_desactivar" class="btn btn-primary" value="Desactivar Poliza">
+          <input type="button" name="btn_desactivar" id="btn_desactivar" class="btn btn-primary" value="Eliminar">
           <input type="button" class="btn btn-default"  data-dismiss="modal" value="Cancelar" id="_desctivar" name="_desctivar">
         </div>
       </div>
@@ -107,13 +107,20 @@
 
     });
 
+   $("#guardar").click(function() {
+      if ($("input").val() == "") { alert("Todos los campos son obligatorios"); return false; }
+    });
+
+   $('.decimales').on('input', function () { 
+        this.value = this.value.replace(/[^0-9\.]/g,'');
+    });
 
 
     $("#btn_desactivar").click(function() {
 
       var ide = $("#id_desactivar").val();
 
-      $.post("<?php echo base_url() ?>/index.php/config/eliminarTpago", { id:$("#id_desactivar").val() }, function(data){
+      $.post("<?php echo base_url() ?>/index.php/config/eliminarRegistros", { id:$("#id_desactivar").val(), tb: 't_factor_edad', id_name:'id_fedad' }, function(data){
 
         $("#row_desactivar").html("<div><p class='text-light-blue'>"+data+"</p></div>");
 

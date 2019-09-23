@@ -24,6 +24,7 @@ class Polizas extends CI_Controller {
 			
 			$lista[$i]["id_poliza"]=$sheet->id_poliza;
 			$lista[$i]["plan"]=$sheet->tplan;
+			$lista[$i]["tventa"]=$sheet->tventa;
 			$lista[$i]["cobertura"]=$sheet->cobertura;
 			$lista[$i]["suma"]=$sheet->suma;
 			$lista[$i]["num_poliza"]=$sheet->num_poliza;
@@ -49,7 +50,6 @@ class Polizas extends CI_Controller {
 
 	public function guardar_venta(){
 
-		//break;
 
 		$nac=$_POST['nac'];
 		$cedula=$_POST['cedula'];

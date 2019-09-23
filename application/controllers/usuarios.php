@@ -167,7 +167,7 @@ class Usuarios extends CI_Controller {
 		$apellidos=$_POST['apellidos_e'];
 		$correo=$_POST['correo_e'];
 		$telefono=$_POST['telefono_e'];
-		$telefono=$_POST['cod_vendedor_e'];
+		$cod_vendedor=$_POST['cod_vendedor_e'];
 		$fecha=date("d/m/Y");
 		$usuario = $this->session->userdata('id_usuario');	
 		
@@ -177,6 +177,7 @@ class Usuarios extends CI_Controller {
 			$apellidos,
 			$correo,
 			$telefono,
+			$cod_vendedor,
 			$fecha,
 			$usuario
 		);
@@ -200,7 +201,7 @@ class Usuarios extends CI_Controller {
 
 		$guser = $this->usuarios_model->buscarVendedor($_POST['id']);
 
-		echo $guser->identificacion.':'.$guser->apellidos.':'.$guser->nombres.':'.$guser->correo.':'.$guser->telefono.':'.$guser->id_vendedor;
+		echo $guser->identificacion.':'.$guser->apellidos.':'.$guser->nombres.':'.$guser->correo.':'.$guser->telefono.':'.$guser->id_vendedor.':'.$guser->cod_vendedor;
 	}
 
 
