@@ -1,3 +1,4 @@
+<?php ?>
 <table class="table" style="background-color: white; margin-bottom: 10px;">
 	<tr>
 		<th colspan="4">Datos del tomador</th>
@@ -9,10 +10,10 @@
 		<th>Correo:</th>
 	</tr>
 	<tr style="font-size: 13px;">
-		<td><?php echo $_ci_vars['cedula'];?></td>
-		<td><?php echo $_ci_vars['nombres'];?></td>
-		<td><?php echo $_ci_vars['telefono'];?></td>
-		<td><?php echo $_ci_vars['correo'];?></td>
+		<td><?php echo $_ci_vars['poliza']['identificacion'];?></td>
+		<td><?php echo ucwords($_ci_vars['poliza']['apellidos'].' '.$_ci_vars['poliza']['nombres']);?></td>
+		<td><?php echo $_ci_vars['poliza']['telefono'];?></td>
+		<td><?php echo strtolower($_ci_vars['poliza']['correo']);?></td>
 	</tr>
 </table>
 
@@ -28,10 +29,10 @@
 	</tr>
 
 	<tr style="font-size: 13px;">
-		<td><?php echo $_ci_vars['solicitud'];?></td>
-		<td><?php echo $_ci_vars['correo'];?></td>
-		<td><?php echo $_ci_vars['correo'];?></td>
-		<td><?php echo $_ci_vars['nsem'].' ['.$_ci_vars['desde'].' / '.$_ci_vars['hasta'].']';?></td>
+		<td><?php echo $_ci_vars['poliza']['solicitud'];?></td>
+		<td><?php echo strtolower($_ci_vars['poliza']['correo']);?></td>
+		<td><?php echo ucwords($_ci_vars['poliza']['lastname_vendedor'].' '.$_ci_vars['poliza']['name_vendedor']);?></td>
+		<td><?php echo $_ci_vars['poliza']['nsem'].' ['.$_ci_vars['poliza']['desde'].' / '.$_ci_vars['poliza']['hasta'].']';?></td>
 	</tr>
 
 	<tr style="font-size: 13px;">
@@ -42,10 +43,10 @@
 	</tr>
 
 	<tr style="font-size: 13px;">
-		<td><?php echo $_ci_vars['plan'];?></td>
-		<td><?php echo $_ci_vars['tpoliza'];?></td>
-		<td><?php echo $_ci_vars['num_poliza'].'-'.$_ci_vars['cobertura'];?></td>
-		<td><?php echo $_ci_vars['suma'];?></td>
+		<td><?php echo ucwords($_ci_vars['poliza']['tplan']);?></td>
+		<td><?php echo ucwords($_ci_vars['poliza']['tpoliza']);?></td>
+		<td><?php echo ucwords($_ci_vars['poliza']['num_poliza'].' | '.$_ci_vars['poliza']['cobertura']);?></td>
+		<td><?php echo number_format($_ci_vars['poliza']['suma'], 2, ',', '.');?></td>
 	</tr>
 
 	<tr style="font-size: 13px;">
@@ -56,10 +57,10 @@
 	</tr>
 
 	<tr style="font-size: 13px;">
-		<td><?php echo $_ci_vars['tpago'];?></td>
-		<td><?php echo $_ci_vars['referencia_pago'];?></td>
-		<td><?php echo $_ci_vars['monto'];?></td>
-		<td><?php echo $_ci_vars['cuotas_canceladas'];?></td>
+		<td><?php echo ucwords($_ci_vars['poliza']['tpago']);?></td>
+		<td><?php echo $_ci_vars['poliza']['referencia_pago'];?></td>
+		<td><?php echo number_format($_ci_vars['poliza']['monto'], 2, ',', '.');?></td>
+		<td><?php echo $_ci_vars['poliza']['cuotas_canceladas'];?></td>
 	</tr>
 
 </table>
@@ -69,10 +70,26 @@
 		<th colspan="4">Personas Adicionales</th>
 	</tr>
 	<tr style="font-size: 13px;">
+		<th>#</th>
 		<th>Cedula:</th>
 		<th>Apellidos y Nombres</th>
 		<th>Edad:</th>
 		<th>Parentesco:</th>
 	</tr>
+
+	<?php 
+		$i=1;
+		foreach ($_ci_vars['adicionales'] as $key) {
+	?>
+
+	<tr style="font-size: 13px;">
+		<td><?php echo $i;?></td>
+		<td><?php echo $key['identificacion'];?></td>
+		<td><?php echo $key['nombres'];?></td>
+		<td><?php echo $key['edad'];?></td>
+		<td><?php echo $key['parentesco'];?></td>
+	</tr>
+
+	<?php $i++; }  ?>
 
 </table>

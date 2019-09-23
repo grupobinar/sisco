@@ -17,7 +17,24 @@ class Polizas_model extends CI_Model{
 		
 		if($listusuarios->num_rows()>0)
 		{
-			return $listusuarios->result();
+			return $listusuarios->result_array();
+		}
+    }
+
+    function buscartomador($n,$c) {
+		
+		$cedula = $n.'-'.$c;
+
+		$this->db->select('nombres, apellidos, correo, telefono');
+		$this->db->where('identificacion',$cedula);
+		$listusuarios = $this->db->get('public.t_tomadores');
+
+		
+		if($listusuarios->num_rows()>0)
+		{
+			return $listusuarios->row_array();
+		} else{
+			return false;
 		}
     }
 
@@ -77,6 +94,22 @@ class Polizas_model extends CI_Model{
 
 	}
 
+	function listadicionales($id)
+	{
+		$this->db->where('id_venta',$id);
+		$this->db->join('t_parentesco','t_parentesco.id_parentesco = t_adicionales.id_parentesco');
+		$listusuarios = $this->db->get('public.t_adicionales');
+
+		//echo $this->db->last_query();	
+
+
+		if($listusuarios->num_rows()>0)
+		{
+			return $listusuarios->result_array();
+		}
+
+	}
+
 	function listventas()
 	{
 		$this->db->select('id_venta, identificacion, nsem, desde, hasta, referencia_pago, monto, cuotas_canceladas, t_ventas.fecha_registro, nombres, apellidos, telefono, correo, tplan, cobertura, tpoliza, tpago');
@@ -91,13 +124,14 @@ class Polizas_model extends CI_Model{
 
 		if($listusuarios->num_rows()>0)
 		{
-			 return $listusuarios->result();
+			 return $listusuarios->result_array();
 		}
 
 	}
 
 	function buscarventa($id)
 	{
+		$this->db->select('id_venta, tipo_pago, referencia_pago, monto, cuotas_canceladas, solicitud, t_tomadores.identificacion, t_tomadores.nombres, t_tomadores.apellidos, t_tomadores.telefono, t_tomadores.correo, usuario, tplan, cobertura, suma, num_poliza, tpoliza, factor, tpago, desde, hasta, observaciones, nsem, t_vendedores.nombres as name_vendedor, t_vendedores.apellidos as lastname_vendedor, cod_vendedor');
 		$this->db->join('t_tomadores','t_tomadores.id_tomador = t_ventas.id_tomador','left');
 		$this->db->join('t_plan','t_plan.id_tplan = t_ventas.id_plan','left');
 		$this->db->join('t_polizas','t_polizas.id_poliza = t_ventas.id_poliza','left');
@@ -106,12 +140,13 @@ class Polizas_model extends CI_Model{
 		$this->db->join('t_semanas','t_semanas.id_semana = t_ventas.id_semana','left');
 		$this->db->join('t_vendedores','t_vendedores.id_vendedor = t_ventas.id_vendedor','left');
 		$this->db->where('id_venta',$id);
+
 		$listusuarios = $this->db->get('public.t_ventas');
 
 
 		if($listusuarios->num_rows()>0)
 		{
-			 return $listusuarios->row();
+			 return $listusuarios->row_array();
 		}
 
 	}
@@ -121,11 +156,9 @@ class Polizas_model extends CI_Model{
 		$this->db->order_by('id_tpoliza','desc');
 		$listusuarios = $this->db->get('public.t_tpoliza');
 
-
-		
 		if($listusuarios->num_rows()>0)
 		{
-			return $listusuarios->result();
+			return $listusuarios->result_array();
 		}
 
 	}
@@ -182,11 +215,22 @@ class Polizas_model extends CI_Model{
 		
 		if($listusuarios->num_rows()>0)
 		{
-			return $listusuarios->result();
+			return $listusuarios->result_array();
 		}
 
 	}
 
+	function listparent()
+	{
+		$listusuarios = $this->db->get('public.t_parentesco');
+
+
+		if($listusuarios->num_rows()>0)
+		{
+			return $listusuarios->result_array();
+		}
+
+	}
 
 	function buscarPoliza($id)
 	{
@@ -228,6 +272,8 @@ class Polizas_model extends CI_Model{
 
 	function guardar_venta($nac,$cedula,$rpago,$monto,$ccancelada,$nombres,$apellidos,$tplan,$cobertura,$tpoliza,$tpago,$fecha,$usuario,$tventa,$nsolicitud,$correo,$telefono,$cod_vendedor,$adicionales,$ad_nac,$ad_cedula,$ad_name,$ad_edad,$ad_parent){ 
 
+	if ($tventa==1) {
+
 		$q = $this->db->query("SELECT id_tomador FROM t_tomadores WHERE identificacion='".$nac."-".$cedula."'");
 		  $count = $q->num_rows(); 
 
@@ -252,11 +298,16 @@ class Polizas_model extends CI_Model{
 			$this->db->insert('public.t_tomadores',$data);
 			$id_tomador =  $this->db->insert_id(); 
 
-			//break;
 
+		}
+	}
 
-			$data = array(
-				'tventa'=>$tventas,
+			$this->db->where('estatus','0');
+			$sem = $this->db->get('public.t_semanas');
+
+	if ($tventa==1) {
+				$data = array(
+				'tventa'=>$tventa,
 				'solicitud'=>$nsolicitud,
 				'referencia_pago'=>$rpago,
 				'monto'=>$monto,
@@ -269,13 +320,75 @@ class Polizas_model extends CI_Model{
 				'tipo_pago'=>$tpago,
 				'id_vendedor'=>$cod_vendedor,
 				'id_usuario'=>$usuario,
+				'id_semana'=>$sem->row()->id_semana,
 				'fecha_registro'=>$fecha,
 				'ult_mod'=>$fecha,
 			);
 
-			$this->db->insert('public.t_ventas',$data);
-			
-			$id_venta =  $this->db->insert_id();
+	}
+	elseif ($tventa==2) {
+		$data = array(
+				'tventa'=>$tventa,
+				'solicitud'=>$nsolicitud,
+				'referencia_pago'=>$rpago,
+				'monto'=>$monto,
+				'cuotas_canceladas'=>$ccancelada,
+				'fecha_registro'=>$fecha,
+				'id_tomador'=>$id_tomador,
+				'tipo_pago'=>$tpago,
+				'id_vendedor'=>$cod_vendedor,
+				'id_usuario'=>$usuario,
+				'id_semana'=>$sem->row()->id_semana,
+				'fecha_registro'=>$fecha,
+				'ult_mod'=>$fecha,
+			);
+
+	}elseif ($tventa==3) {
+
+		$q = $this->db->query("SELECT id_tomador FROM t_tomadores WHERE identificacion='".$nac."-".$cedula."'");
+		  $count = $q->num_rows(); 
+
+		 $id_tomador = $q->row()->id_tomador;
+
+		 $data = array(
+				'nombres'=>$nombres,
+				'apellidos'=>$apellidos,
+				'correo'=>$correo,
+				'telefono'=>$telefono,
+				'usuario'=>$usuario,
+				'ult_mod'=>$fecha,
+			);
+
+		 $this->db->where('id_tomador', $id_tomador);
+		 $this->db->update('t_tomadores', $data);
+
+
+		$data = array(
+				'tventa'=>$tventa,
+				'solicitud'=>$nsolicitud,
+				'fecha_registro'=>$fecha,
+				'id_tomador'=>$id_tomador,
+				'tipo_pago'=>$tpago,
+				'id_vendedor'=>$cod_vendedor,
+				'id_usuario'=>$usuario,
+				'id_semana'=>$sem->row()->id_semana,
+				'fecha_registro'=>$fecha,
+				'ult_mod'=>$fecha,
+			);
+
+	}
+
+	
+	$this->db->insert('public.t_ventas',$data);
+
+		 echo $this->db->last_query();
+	
+	$id_venta =  $this->db->insert_id();
+
+
+	
+		
+
 
 			$i=0;
 			if ($adicionales=='on') {
@@ -289,39 +402,20 @@ class Polizas_model extends CI_Model{
 				'tomador'=>$identificacion,
 				'id_venta'=>$id_venta,
 				'id_parentesco'=>$ad_parent[$i],
-				'id_usuario'=>$usuario,
+				'usuario'=>$usuario,
 				'fecha_registro'=>$fecha,
 				'ult_mod'=>$fecha,
 			);
 
 			$this->db->insert('public.t_adicionales',$data);
+			$i++;
+
 
 				}
+
 			}
 
-
-
 			$retorno="Poliza Vendida";
-
-
-		} else {
-
-			$data = array(
-				'referencia_pago'=>$rpago,
-				'monto'=>$monto,
-				'cuotas_canceladas'=>$ccancelada,
-				'fecha_registro'=>$fecha,
-				'tplan'=>$tplan,
-				'cobertura'=>$cobertura,
-				'tpoliza'=>$tpoliza,
-				'id_tomador'=>$id_tomador,
-				'tpago'=>$tpago,
-			);
-
-			$this->db->insert('public.t_ventas',$data);
-
-			$retorno="Poliza Vendida";
-		}
 
 			return $retorno;
 

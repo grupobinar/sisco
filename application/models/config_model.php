@@ -146,7 +146,6 @@ class Config_model extends CI_Model{
 	
 	function listtpoliza()
 	{
-		$this->db->where('estatus','0');
 		$listusuarios = $this->db->get('public.t_tpoliza');
 		
 		if($listusuarios->num_rows()>0)
