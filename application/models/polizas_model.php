@@ -437,7 +437,13 @@ class Polizas_model extends CI_Model{
 
 	public function getVendedoresData($cod_vendedores){
 		$this->db->where_in('t_vendedores.cod_vendedor', $cod_vendedores);
-		$adicionales_venta = $this->db->get('public.t_vendedores')->result_array();
-		return $adicionales_venta; die();
+		$vendedores_data = $this->db->get('public.t_vendedores')->result_array();
+		return $vendedores_data;
+	}
+
+	public function getSemanaDetalle($semana){
+		$this->db->where_in('t_semanas.id_semana', $semana);
+		$semana_detalle = $this->db->get('public.t_semanas')->result_array();
+		return $semana_detalle;
 	}
 }

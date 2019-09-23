@@ -406,7 +406,9 @@ class Polizas extends CI_Controller {
 	}
 
 	public function liquidacion(){
-		$vendedores_ventas_semana = $this->liquidacionVendedores(1);
+		$semana = 1;
+		//$semana_detalles = $this->getSemanaDetalle($semana);
+		$vendedores_ventas_semana = $this->liquidacionVendedores($semana);
 		$vendedores_cod = array_keys($vendedores_ventas_semana);
 		
 		$keys_vendedor = array_keys($vendedores_ventas_semana); 
