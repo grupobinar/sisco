@@ -257,6 +257,7 @@ class Polizas extends CI_Controller {
 
 	public function liquidacionVendedores($semana){
 		$ventas = $this->polizas_model->getVendedoresVentasPolizas($semana);
+
 		$vendedores_orden = array();
 
 		/*foreach ($ventas as $key => $item) {
@@ -270,22 +271,28 @@ class Polizas extends CI_Controller {
 		$keys_vendedor = array_keys($vendedores_orden); 
 		$size_vendedor = sizeof($vendedores_orden); 
 
+		//echo '<pre>' . var_export($vendedores_orden, true) . '</pre>'; die();
+
 		for($x = 0; $x < $size_vendedor; $x++ ) {
+			//echo '<pre>' . var_export($keys_vendedor, true) . '</pre>'; die();
+
 			$keys_poliza = array_keys($vendedores_orden[$keys_vendedor[$x]]); 
 			$size_poliza = sizeof($vendedores_orden[$keys_vendedor[$x]]);
+			//echo '<pre>' . var_export($keys_poliza, true) . '</pre>'; die();
 
 			for ($i=0; $i < $size_poliza; $i++) { 
 				$keys_tpoliza = array_keys($vendedores_orden[$keys_vendedor[$x]][$keys_poliza[$i]]); 
 				$size_tpoliza = sizeof($vendedores_orden[$keys_vendedor[$x]][$keys_poliza[$i]]);
 
-				for ($j=0; $j < $size_tpoliza; $j++) { 
-					$result = $this->polizas_model->calculoComisionBase($vendedores_orden[$keys_vendedor[$x]][$keys_poliza[$i]][$keys_tpoliza[$i]]);
-					$vendedores_orden[$keys_vendedor[$x]][$keys_poliza[$i]][$keys_tpoliza[$i]]['comision_total'] = $result;
-					$vendedores_orden[$keys_vendedor[$x]][$keys_poliza[$i]][$keys_tpoliza[$i]]['ventas_totales'] = count($vendedores_orden[$keys_vendedor[$x]][$keys_poliza[$i]][$keys_tpoliza[$i]]) - 1;
+				for ($j=0; $j < $size_tpoliza; $j++) {	
+					$result = $this->polizas_model->calculoComisionBase($vendedores_orden[$keys_vendedor[$x]][$keys_poliza[$i]][$keys_tpoliza[$j]]);
+					$vendedores_orden[$keys_vendedor[$x]][$keys_poliza[$i]][$keys_tpoliza[$j]]['comision_total'] = $result;
+					$vendedores_orden[$keys_vendedor[$x]][$keys_poliza[$i]][$keys_tpoliza[$j]]['ventas_totales'] = count($vendedores_orden[$keys_vendedor[$x]][$keys_poliza[$i]][$keys_tpoliza[$j]]);
 				}
 			}
 		} 
 		
+		//echo '<pre>' . var_export($vendedores_orden, true) . '</pre>'; die();
 		return $vendedores_orden;
 	}
 
@@ -293,6 +300,7 @@ class Polizas extends CI_Controller {
 		$semana = 2;
 		//$semana_detalles = $this->getSemanaDetalle($semana);
 		$vendedores_ventas_semana = $this->liquidacionVendedores($semana);
+		//echo '<pre>' . var_export($vendedores_ventas_semana, true) . '</pre>'; die();
 
 		$vendedores_cod = array_keys($vendedores_ventas_semana);
 		
@@ -322,7 +330,6 @@ class Polizas extends CI_Controller {
 			$vendedores_data[$i]['comision_total'] = $vendedores_ventas_semana[$vendedores_cod[$i]]['comision_total'];
 		}
 
-		//echo '<pre>' . var_export($vendedores_data, true) . '</pre>'; die();
 		$this->load->view('layout/header');
 		$this->load->view('layout/nav');
 		$this->load->view('polizas/liquidacion',$vendedores_data);
