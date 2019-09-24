@@ -257,7 +257,6 @@ class Polizas extends CI_Controller {
 
 	public function liquidacionVendedores($semana){
 		$ventas = $this->polizas_model->getVendedoresVentasPolizas($semana);
-
 		$vendedores_orden = array();
 
 		/*foreach ($ventas as $key => $item) {
@@ -291,9 +290,10 @@ class Polizas extends CI_Controller {
 	}
 
 	public function liquidacion(){
-		$semana = 1;
+		$semana = 2;
 		//$semana_detalles = $this->getSemanaDetalle($semana);
 		$vendedores_ventas_semana = $this->liquidacionVendedores($semana);
+
 		$vendedores_cod = array_keys($vendedores_ventas_semana);
 		
 		$keys_vendedor = array_keys($vendedores_ventas_semana); 
