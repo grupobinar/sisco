@@ -22,12 +22,13 @@ CREATE OR REPLACE VIEW public.vendedores_ventas_detalles
  SELECT a.id_vendedor,
     a.cod_vendedor,
     b.id_venta,
-    CASE WHEN b.id_poliza IS NULL THEN RPAD(tventa::text, 5, '0') ELSE b.id_poliza::text END AS id_poliza as id_cobertura,
+    CASE WHEN b.id_poliza IS NULL THEN RPAD(tventa::text, 5, '0') ELSE b.id_poliza::text END as id_cobertura,
     b.id_plan,
     CASE WHEN b.id_tpoliza IS NULL THEN RPAD(tventa::text, 5, '0') ELSE b.id_tpoliza::text END AS id_poliza,
     b.cuotas_canceladas,
     b.id_semana,
-    b.tventa AS tipo_venta
+    b.tventa AS tipo_venta,
+    f.concepto as concepto_venta
    FROM t_vendedores a
      JOIN t_ventas b ON a.id_vendedor = b.id_vendedor
      LEFT JOIN t_polizas c ON b.id_poliza = c.id_poliza
