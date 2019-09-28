@@ -1,6 +1,3 @@
-ALTER TABLE public.t_plan_comision 
-    ADD COLUMN ventas_min integer;
-
 UPDATE public.t_plan_comision SET
 ventas_min = '1'::integer WHERE
 id_planc = '1';
@@ -22,3 +19,6 @@ INSERT INTO public.menu_rol (
 id_rol, id_menu) VALUES (
 '2'::integer, '15'::integer)
 returning id_mrol;
+
+ALTER TABLE public.t_ventas
+    ADD COLUMN estatus_venta character varying(1) NOT NULL DEFAULT 'A';
