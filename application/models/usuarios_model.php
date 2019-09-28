@@ -145,14 +145,15 @@ class Usuarios_model extends CI_Model{
 	}
 
 
-	function editar_vendedor($id_vendedor,$nombres,$apellidos,$correo,$telefono,$fecha,$usuario,$estatus){
+	function editar_vendedor($id_vendedor,$nombres,$apellidos,$correo,$telefono,$cod_vendedor,$fecha,$usuario,$estatus){
 
 
 		  	$data = array(
 			'apellidos'=>$apellidos,
 			'nombres'=>$nombres,	
 			'correo'=>$correo,	
-			'telefono'=>$telefono,	
+			'telefono'=>$telefono,
+			'cod_vendedor'=>$cod_vendedor,	
 			'ult_mod'=>$fecha,
 			'id_usuario'=>$usuario,
 			);

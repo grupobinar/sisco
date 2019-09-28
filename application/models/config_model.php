@@ -6,15 +6,16 @@ class Config_model extends CI_Model{
         $this->load->database();
     }    
 
-    function desactivarTpago($id_tpago){
+    function eliminarRegistros($id,$tb,$name_id){
 
 
 		  	$data = array(
 				'estatus'=>'1'
 			);
 
-			$this->db->where('id_tpago', $id_tpago);
-			$this->db->update('t_tpago', $data);
+			$this->db->where($name_id, $id);
+			$this->db->update($tb, $data);
+			//echo $this->db->last_query();
 
 	}
 
@@ -36,7 +37,26 @@ class Config_model extends CI_Model{
 
 	}
 
-	function guardar_comision($concepto,$calculo,$cuota,$min,$max,$fecha,$usuario,$planc){
+	function guardar_edad($edad,$factor,$fecha,$usuario){
+
+		  	$data = array(
+				'edad'=>$edad,
+				'factor'=>$factor,
+				'fecha_registro'=>$fecha,
+				'ult_mod'=>$fecha,
+				'id_usuario'=>$usuario,
+			);
+
+
+			$this->db->insert('public.t_factor_edad',$data);
+
+			$retorno="Guardado con exito";
+
+			return $retorno;
+
+	}
+
+	function guardar_comision($concepto,$calculo,$cuota,$min,$max,$fecha,$usuario,$planc,$id_basec){
 
 		  	$data = array(
 			'id_tcomision'=>$concepto,
@@ -48,6 +68,7 @@ class Config_model extends CI_Model{
 			'ult_mod'=>$fecha,
 			'id_usuario'=>$usuario,
 			'id_plan'=>$planc,
+			'id_basec'=>$id_basec,
 			);
 
 
@@ -62,10 +83,11 @@ class Config_model extends CI_Model{
 
 	}
 
-	function guardar_tpoliza($tpoliza,$fecha,$usuario){
+	function guardar_tpoliza($tpoliza,$factor,$fecha,$usuario){
 
 		  	$data = array(
 			'tpoliza'=>$tpoliza,
+			'factor'=>$factor,
 			'fecha_registro'=>$fecha,
 			'ult_mod'=>$fecha,
 			'id_usuario'=>$usuario,
@@ -146,11 +168,24 @@ class Config_model extends CI_Model{
 	
 	function listtpoliza()
 	{
+		$this->db->where('estatus','0');
 		$listusuarios = $this->db->get('public.t_tpoliza');
 		
 		if($listusuarios->num_rows()>0)
 		{
 			return $listusuarios->result();
+		}
+
+	}
+
+	function listEdadFactor()
+	{
+		$this->db->where('estatus','0');
+		$listusuarios = $this->db->get('public.t_factor_edad');
+		
+		if($listusuarios->num_rows()>0)
+		{
+			return $listusuarios->result_array();
 		}
 
 	}

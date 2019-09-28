@@ -17,7 +17,7 @@
        <div class="col-lg-12"> <br> </div>
        
        <div class="col-lg-12">      
-         <button type="submit" class="btn btn-primary">Agregar</button>
+         <button type="submit" class="btn btn-primary" id="guardar">Agregar</button>
       </div>   
      </div>
    </div>
@@ -48,6 +48,14 @@
  
  <script type="text/javascript">
   $(document).ready(function(){
+
+    $("#guardar").click(function() {
+      if ($("input").val() == "") { alert("Todos los campos son obligatorios"); return false; }
+    });
+
+   $('.decimales').on('input', function () { 
+        this.value = this.value.replace(/[^0-9\.]/g,'');
+    });
 
   });
 </script>

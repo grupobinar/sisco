@@ -17,7 +17,7 @@
        <div class="col-lg-12"> <br> </div>
        
        <div class="col-lg-12">      
-         <button type="submit" class="btn btn-primary">Agregar</button>
+         <button type="submit" class="btn btn-primary" id="guardar">Agregar</button>
       </div>   
      </div>
    </div>
@@ -99,14 +99,21 @@
 
     });
 
+     $("#guardar").click(function() {
+      if ($("input").val() == "") { alert("Todos los campos son obligatorios"); return false; }
+    });
+
+   $('.decimales').on('input', function () { 
+        this.value = this.value.replace(/[^0-9\.]/g,'');
+    });
+
 
 
     $("#btn_desactivar").click(function() {
 
       var ide = $("#id_desactivar").val();
 
-      $.post("<?php echo base_url() ?>/index.php/config/eliminarTpago", { id:$("#id_desactivar").val() }, function(data){
-
+$.post("<?php echo base_url() ?>/index.php/config/eliminarRegistros", { id:$("#id_desactivar").val(), tb:'t_tpago', id_name: 'id_tpago' }, function(data){
         $("#row_desactivar").html("<div><p class='text-light-blue'>"+data+"</p></div>");
 
         $("#fila_"+ide).hide();

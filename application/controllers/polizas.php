@@ -24,6 +24,7 @@ class Polizas extends CI_Controller {
 			
 			$lista[$i]["id_poliza"]=$sheet->id_poliza;
 			$lista[$i]["plan"]=$sheet->tplan;
+			$lista[$i]["tventa"]=$sheet->tventa;
 			$lista[$i]["cobertura"]=$sheet->cobertura;
 			$lista[$i]["suma"]=$sheet->suma;
 			$lista[$i]["num_poliza"]=$sheet->num_poliza;
@@ -34,39 +35,10 @@ class Polizas extends CI_Controller {
 
 		$datos['polizas']=$lista;
 
-		$data = $this->polizas_model->listtpoliza();
+		$datos['tpoliza'] = $this->polizas_model->listtpoliza();
 
-		$i=0;
 
-		if ($data<>"") {
-		foreach($data as $sheet) {	
-
-			$i++;		
-			
-			$lista_p[$i]["id_tpoliza"]=$sheet->id_tpoliza;
-			$lista_p[$i]["tpoliza"]=$sheet->tpoliza;
-			
-			}
-		}
-
-		$datos['tpoliza']=$lista_p;
-
-		$data = $this->polizas_model->listplan();
-
-		$i=0;
-
-		if ($data<>"") {
-		foreach($data as $sheet) {	
-
-			$i++;		
-			
-			$lista_q[$i]["id_tplan"]=$sheet->id_tplan;
-			$lista_q[$i]["tplan"]=$sheet->tplan;
-			
-			}
-		}
-
-		$datos['planes']=$lista_q;
+		$datos['planes'] = $this->polizas_model->listplan();
 
 
 		$this->load->view('layout/header');
@@ -78,7 +50,6 @@ class Polizas extends CI_Controller {
 
 	public function guardar_venta(){
 
-		//break;
 
 		$nac=$_POST['nac'];
 		$cedula=$_POST['cedula'];
@@ -189,7 +160,7 @@ class Polizas extends CI_Controller {
 		echo "<script> alert('".$guser."') </script>";
 
 		
-		redirect('/config/polizas', 'refresh');
+		redirect('/polizas', 'refresh');
 	}
 
 
@@ -276,55 +247,108 @@ class Polizas extends CI_Controller {
 
 	}
 
-	public function buscarTomador(){
+	public function buscartomador(){
 
 		$data = $this->polizas_model->buscartomador($_POST['n'],$_POST['c']);
 
-		$this->load->view('layout/header');
-		$this->load->view('layout/nav');
-		$this->load->view('polizas/addventas',$lista_w);
-		$this->load->view('layout/footer');
+       echo json_encode($data);
+
 	}
-
-	public function liquidacionVendedores($semana){
+	
+	//FIXME: Arreglar el tema de la semana
+	public function liquidacionVendedores($semana = 2, $cod_vendedor = '', $ajax = false){
 		$ventas = $this->polizas_model->getVendedoresVentasPolizas($semana);
-
+		$cod_vendedor = 1111;
 		$vendedores_orden = array();
 
 		/*foreach ($ventas as $key => $item) {
 			$vendedores_orden[$item['cod_vendedor']][$item['id_poliza']][$item['id_cobertura']][$item['id_plan']][$key] = $item;
 		}*/
 
-		foreach ($ventas as $key => $item) {
-			$vendedores_orden[$item['cod_vendedor']][$item['id_poliza']][$item['id_cobertura']][$key] = $item;
-		}
-		
-		$keys_vendedor = array_keys($vendedores_orden); 
-		$size_vendedor = sizeof($vendedores_orden); 
+		if ($cod_vendedor != '') {
+			foreach ($ventas as $key => $item) {
+				$vendedores_orden[$item['cod_vendedor']][$item['concepto_venta']][$key] = $item;
+			}
 
-		for($x = 0; $x < $size_vendedor; $x++ ) {
-			$keys_poliza = array_keys($vendedores_orden[$keys_vendedor[$x]]); 
-			$size_poliza = sizeof($vendedores_orden[$keys_vendedor[$x]]);
+			$keys_vendedor = array_keys($vendedores_orden); 
+			$size_vendedor = sizeof($vendedores_orden);
 
-			for ($i=0; $i < $size_poliza; $i++) { 
-				$keys_tpoliza = array_keys($vendedores_orden[$keys_vendedor[$x]][$keys_poliza[$i]]); 
-				$size_tpoliza = sizeof($vendedores_orden[$keys_vendedor[$x]][$keys_poliza[$i]]);
+			for($x = 0; $x < $size_vendedor; $x++ ) {
+				$keys_tipo_venta = array_keys($vendedores_orden[$keys_vendedor[$x]]); 
+				$size_tipo_venta = sizeof($vendedores_orden[$keys_vendedor[$x]]);
+	
+				for ($i=0; $i < $size_tipo_venta; $i++) { 
+					$keys_tpoliza = array_keys($vendedores_orden[$keys_vendedor[$x]][$keys_tipo_venta[$i]]); 
+					$size_tpoliza = sizeof($vendedores_orden[$keys_vendedor[$x]][$size_tipo_venta[$i]]);
+					//echo '<pre>' . var_export($vendedores_orden[$keys_vendedor[$x]][$keys_tipo_venta[$i]], true) . '</pre>'; die();
 
-				for ($j=0; $j < $size_tpoliza; $j++) { 
-					$result = $this->polizas_model->calculoComisionBase($vendedores_orden[$keys_vendedor[$x]][$keys_poliza[$i]][$keys_tpoliza[$i]]);
-					$vendedores_orden[$keys_vendedor[$x]][$keys_poliza[$i]][$keys_tpoliza[$i]]['comision_total'] = $result;
-					$vendedores_orden[$keys_vendedor[$x]][$keys_poliza[$i]][$keys_tpoliza[$i]]['ventas_totales'] = count($vendedores_orden[$keys_vendedor[$x]][$keys_poliza[$i]][$keys_tpoliza[$i]]) - 1;
+					for ($j=0; $j < count($vendedores_orden[$keys_vendedor[$x]][$size_tipo_venta[$i]]); $j++) { 
+						$result = $this->polizas_model->calculoComisionBase($vendedores_orden[$keys_vendedor[$x]][$keys_tipo_venta[$i]][$j]);
+						echo '<pre>' . var_export(array_values($vendedores_orden[$keys_vendedor[$x]][$keys_tipo_venta[$i]]), true) . '</pre>'; die();
+					}
+
+					if ($keys_tpoliza[$j] == 30000) {
+						$vendedores_orden[$keys_vendedor[$x]][$keys_poliza[$i]][$keys_tpoliza[$j]]['comision_total'] = $result + (3500 * count($vendedores_orden[$keys_vendedor[$x]][$keys_poliza[$i]][$keys_tpoliza[$j]]));
+					} else {
+						$vendedores_orden[$keys_vendedor[$x]][$keys_poliza[$i]][$keys_tpoliza[$j]]['comision_total'] = $result;
+					}
+
+					for ($j=0; $j < $size_tpoliza; $j++) {	
+						if ($keys_tpoliza[$j] == 30000) {
+							$vendedores_orden[$keys_vendedor[$x]][$keys_poliza[$i]][$keys_tpoliza[$j]]['comision_total'] = $result + (3500 * count($vendedores_orden[$keys_vendedor[$x]][$keys_poliza[$i]][$keys_tpoliza[$j]]));
+						} else {
+							$vendedores_orden[$keys_vendedor[$x]][$keys_poliza[$i]][$keys_tpoliza[$j]]['comision_total'] = $result;
+						}
+						$vendedores_orden[$keys_vendedor[$x]][$keys_poliza[$i]][$keys_tpoliza[$j]]['ventas_totales'] = count($vendedores_orden[$keys_vendedor[$x]][$keys_poliza[$i]][$keys_tpoliza[$j]]) - 1;
+					}
 				}
 			}
-		} 
+
+			echo '<pre>' . var_export($keys_vendedor, true) . '</pre>'; die();
+		} else {
+			foreach ($ventas as $key => $item) {
+				$vendedores_orden[$item['cod_vendedor']][$item['id_poliza']][$item['id_cobertura']][$key] = $item;
+			}
+
+			$keys_vendedor = array_keys($vendedores_orden); 
+			$size_vendedor = sizeof($vendedores_orden); 
+	
+			echo '<pre>' . var_export($vendedores_orden, true) . '</pre>'; die();
+	
+			for($x = 0; $x < $size_vendedor; $x++ ) {
+				//echo '<pre>' . var_export($keys_vendedor, true) . '</pre>'; die();
+	
+				$keys_poliza = array_keys($vendedores_orden[$keys_vendedor[$x]]); 
+				$size_poliza = sizeof($vendedores_orden[$keys_vendedor[$x]]);
+				//echo '<pre>' . var_export($keys_poliza, true) . '</pre>'; die();
+	
+				for ($i=0; $i < $size_poliza; $i++) { 
+					$keys_tpoliza = array_keys($vendedores_orden[$keys_vendedor[$x]][$keys_poliza[$i]]); 
+					$size_tpoliza = sizeof($vendedores_orden[$keys_vendedor[$x]][$keys_poliza[$i]]);
+	
+					for ($j=0; $j < $size_tpoliza; $j++) {	
+						$result = $this->polizas_model->calculoComisionBase($vendedores_orden[$keys_vendedor[$x]][$keys_poliza[$i]][$keys_tpoliza[$j]]);
+						if ($keys_tpoliza[$j] == 30000) {
+							$vendedores_orden[$keys_vendedor[$x]][$keys_poliza[$i]][$keys_tpoliza[$j]]['comision_total'] = $result + (3500 * count($vendedores_orden[$keys_vendedor[$x]][$keys_poliza[$i]][$keys_tpoliza[$j]]));
+						} else {
+							$vendedores_orden[$keys_vendedor[$x]][$keys_poliza[$i]][$keys_tpoliza[$j]]['comision_total'] = $result;
+						}
+						$vendedores_orden[$keys_vendedor[$x]][$keys_poliza[$i]][$keys_tpoliza[$j]]['ventas_totales'] = count($vendedores_orden[$keys_vendedor[$x]][$keys_poliza[$i]][$keys_tpoliza[$j]]) - 1;
+					}
+				}
+			} 
+		}
 		
+		//echo '<pre>' . var_export($vendedores_orden[21022], true) . '</pre>'; die();
 		return $vendedores_orden;
 	}
 
 	public function liquidacion(){
-		$semana = 1;
+		$semana = 2;
 		//$semana_detalles = $this->getSemanaDetalle($semana);
 		$vendedores_ventas_semana = $this->liquidacionVendedores($semana);
+		//echo '<pre>' . var_export($vendedores_ventas_semana, true) . '</pre>'; die();
+
 		$vendedores_cod = array_keys($vendedores_ventas_semana);
 		
 		$keys_vendedor = array_keys($vendedores_ventas_semana); 
@@ -335,7 +359,7 @@ class Polizas extends CI_Controller {
 			$size_poliza = sizeof($vendedores_ventas_semana[$keys_vendedor[$x]]);
 
 			for ($i=0; $i < $size_poliza; $i++) { 
-				$keys_tpoliza = array_keys($vendedores_ventas_semana[$keys_vendedor[$x]][$keys_poliza[$i]]); 
+				$keys_tpoliza = array_keys($vendedores_ventas_semana[$keys_vendedor[$x]][$keys_poliza[$i]]);
 				$size_tpoliza = sizeof($vendedores_ventas_semana[$keys_vendedor[$x]][$keys_poliza[$i]]);
 
 				for ($j=0; $j < $size_tpoliza; $j++) {
@@ -345,12 +369,13 @@ class Polizas extends CI_Controller {
 				}
 			}
 		} 
-
+		
 		$vendedores_data = $this->polizas_model->getVendedoresData($vendedores_cod);
 
 		for ($i=0; $i < count($vendedores_cod); $i++) { 
-			$vendedores_data[$i]['ventas_totales'] = $vendedores_ventas_semana[$vendedores_cod[$i]]['ventas_totales'];
-			$vendedores_data[$i]['comision_total'] = $vendedores_ventas_semana[$vendedores_cod[$i]]['comision_total'];
+			$vendedor_index = array_search($vendedores_cod[$i], array_column($vendedores_data, 'cod_vendedor'));
+			$vendedores_data[$vendedor_index]['ventas_totales'] = $vendedores_ventas_semana[$vendedores_cod[$i]]['ventas_totales'];
+			$vendedores_data[$vendedor_index]['comision_total'] = $vendedores_ventas_semana[$vendedores_cod[$i]]['comision_total'];
 		}
 
 		//echo '<pre>' . var_export($vendedores_data, true) . '</pre>'; die();

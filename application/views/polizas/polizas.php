@@ -23,7 +23,7 @@
     </thead>
     <tbody>
     <?php if ($_ci_vars[polizas]<>"") { foreach ($_ci_vars[polizas] as $key) { ?>
-    <tr>
+    <tr id="fila_<?php echo $key['id_poliza']?>">
       <td><?php echo strtoupper($key['tpoliza']);?></td>
       <td><?php echo strtoupper($key['plan']);?></td>
       <td><?php echo ucwords($key['cobertura']);?></td>
@@ -230,9 +230,13 @@ $(document).ready(function(){
 
     $("#btn_desactivar").click(function() {
 
+       var ide = $("#id_desactivar").val();
+
       $.post("<?php echo base_url() ?>/index.php/polizas/desactivarPoliza", { id:$("#id_desactivar").val() }, function(data){
 
         $("#row_desactivar").html("<div><p class='text-light-blue'>"+data+"</p></div>");
+
+        $("#fila_"+ide).hide();
 
         $("#btn_desactivar").css("display", "none").delay(1000);
 

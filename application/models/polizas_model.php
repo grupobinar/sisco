@@ -27,6 +27,9 @@ class Polizas_model extends CI_Model{
 
 		$this->db->select('nombres, apellidos, correo, telefono');
 		$this->db->where('identificacion',$cedula);
+
+		echo $this->db->last_query();
+		
 		$listusuarios = $this->db->get('public.t_tomadores');
 
 		
@@ -81,7 +84,7 @@ class Polizas_model extends CI_Model{
 	{
 		$this->db->join('t_tpoliza','t_tpoliza.id_tpoliza = t_polizas.id_tpoliza');
 		$this->db->join('t_plan','t_plan.id_tplan = t_polizas.id_plan');
-		$this->db->where('estatus','0');
+		$this->db->where('t_polizas.estatus','0');
 		$listusuarios = $this->db->get('public.t_polizas');
 
 		//echo $this->db->last_query();	
@@ -112,7 +115,7 @@ class Polizas_model extends CI_Model{
 
 	function listventas()
 	{
-		$this->db->select('id_venta, identificacion, nsem, desde, hasta, referencia_pago, monto, cuotas_canceladas, t_ventas.fecha_registro, nombres, apellidos, telefono, correo, tplan, cobertura, tpoliza, tpago');
+		$this->db->select('id_venta, identificacion, nsem, desde, hasta, referencia_pago, monto, cuotas_canceladas, t_ventas.fecha_registro, nombres, apellidos, telefono, correo, tplan, cobertura, tpoliza, tpago, tventa');
 		$this->db->join('t_tomadores','t_tomadores.id_tomador = t_ventas.id_tomador','left');
 		$this->db->join('t_plan','t_plan.id_tplan = t_ventas.id_plan','left');
 		$this->db->join('t_polizas','t_polizas.id_poliza = t_ventas.id_poliza','left');
@@ -131,7 +134,7 @@ class Polizas_model extends CI_Model{
 
 	function buscarventa($id)
 	{
-		$this->db->select('id_venta, tipo_pago, referencia_pago, monto, cuotas_canceladas, solicitud, t_tomadores.identificacion, t_tomadores.nombres, t_tomadores.apellidos, t_tomadores.telefono, t_tomadores.correo, usuario, tplan, cobertura, suma, num_poliza, tpoliza, factor, tpago, desde, hasta, observaciones, nsem, t_vendedores.nombres as name_vendedor, t_vendedores.apellidos as lastname_vendedor, cod_vendedor');
+		$this->db->select('id_venta, tipo_pago, referencia_pago, monto, cuotas_canceladas, solicitud, t_tomadores.identificacion, t_tomadores.nombres, t_tomadores.apellidos, t_tomadores.telefono, t_tomadores.correo, usuario, tplan, cobertura, suma, num_poliza, tpoliza, factor, tpago, desde, hasta, observaciones, nsem, t_vendedores.nombres as name_vendedor, t_vendedores.apellidos as lastname_vendedor, cod_vendedor, tventa');
 		$this->db->join('t_tomadores','t_tomadores.id_tomador = t_ventas.id_tomador','left');
 		$this->db->join('t_plan','t_plan.id_tplan = t_ventas.id_plan','left');
 		$this->db->join('t_polizas','t_polizas.id_poliza = t_ventas.id_poliza','left');
@@ -153,7 +156,7 @@ class Polizas_model extends CI_Model{
 
 	function listtpoliza()
 	{
-		$this->db->order_by('id_tpoliza','desc');
+		$this->db->where('estatus','0');
 		$listusuarios = $this->db->get('public.t_tpoliza');
 
 		if($listusuarios->num_rows()>0)
@@ -272,12 +275,12 @@ class Polizas_model extends CI_Model{
 
 	function guardar_venta($nac,$cedula,$rpago,$monto,$ccancelada,$nombres,$apellidos,$tplan,$cobertura,$tpoliza,$tpago,$fecha,$usuario,$tventa,$nsolicitud,$correo,$telefono,$cod_vendedor,$adicionales,$ad_nac,$ad_cedula,$ad_name,$ad_edad,$ad_parent){ 
 
-	if ($tventa==1) {
-
-		$q = $this->db->query("SELECT id_tomador FROM t_tomadores WHERE identificacion='".$nac."-".$cedula."'");
+	$q = $this->db->query("SELECT id_tomador FROM t_tomadores WHERE identificacion='".$nac."-".$cedula."'");
 		  $count = $q->num_rows(); 
 
 		 $id_tomador = $q->row()->id_tomador;
+
+	if ($tventa==1) {
 
 		  if($count==0){
 
@@ -379,16 +382,8 @@ class Polizas_model extends CI_Model{
 	}
 
 	
-	$this->db->insert('public.t_ventas',$data);
-
-		 echo $this->db->last_query();
-	
+	$this->db->insert('public.t_ventas',$data);	
 	$id_venta =  $this->db->insert_id();
-
-
-	
-		
-
 
 			$i=0;
 			if ($adicionales=='on') {
@@ -432,6 +427,11 @@ class Polizas_model extends CI_Model{
 
 		//Añadir la cantidad de ventas por cada poliza de dicho tipo. Y las personas adicionales. Defino tambien el tipo de ventas.
 		$adicionales_ventas = $this->adicionalesVentasTotal($ventas);
+
+		/*if($ventas[0]['tipo_venta'] === '1'){
+			var_dump('hol'); die();
+		}*/
+		
 		$cantidad_polizas_vendidas = count($ventas) + $adicionales_ventas;
 
 		for ($i=0; $i < count($ventas); $i++) { 
