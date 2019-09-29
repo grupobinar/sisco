@@ -255,7 +255,7 @@ class Polizas extends CI_Controller {
 
 	}
 	
-	public function liquidacionVendedores($semana = 2, $cod_vendedor = 'ventas', $preliquidacion = 0){
+	public function liquidacionVendedores($semana = 2, $cod_vendedor = 'ventas', $preliquidacion = 0, $estatus_venta = 'A'){
 		if ($_POST['codigo_vendedor']) {
 			$cod_vendedor = intval($_POST['codigo_vendedor']);
 			$semana = intval($_POST['semana']);
@@ -263,12 +263,16 @@ class Polizas extends CI_Controller {
 			if ($_POST['preliquidacion']) {
 				$preliquidacion = $_POST['preliquidacion'];
 			}
+
+			if ($_POST['estatus_venta']) {
+				$estatus_venta = $_POST['estatus_venta'];
+			}
 		}
 		
 		if (!is_string($cod_vendedor)) {
-			$ventas = $this->polizas_model->getVendedoresVentasPolizas($semana, $cod_vendedor);
+			$ventas = $this->polizas_model->getVendedoresVentasPolizas($semana, $cod_vendedor, $estatus_venta);
 		}else{
-			$ventas = $this->polizas_model->getVendedoresVentasPolizas($semana);
+			$ventas = $this->polizas_model->getVendedoresVentasPolizas($semana, 'vendedores', $estatus_venta);
 		}
 
 		$vendedores_orden = array();
@@ -348,10 +352,48 @@ class Polizas extends CI_Controller {
 		}
 	}
 
+	public function preliquidacion(){
+		$semana = 2;
+		//$semana_detalles = $this->getSemanaDetalle($semana);
+		$vendedores_ventas_semana = $this->liquidacionVendedores($semana, 'ventas', 0, 'A');
+		$vendedores_cod = array_keys($vendedores_ventas_semana);
+		
+		$keys_vendedor = array_keys($vendedores_ventas_semana); 
+		$size_vendedor = sizeof($vendedores_ventas_semana); 
+
+		for($x = 0; $x < $size_vendedor; $x++ ) {
+			$keys_poliza = array_keys($vendedores_ventas_semana[$keys_vendedor[$x]]); 
+			$size_poliza = sizeof($vendedores_ventas_semana[$keys_vendedor[$x]]);
+
+			for ($i=0; $i < $size_poliza; $i++) { 
+				$keys_tpoliza = array_keys($vendedores_ventas_semana[$keys_vendedor[$x]][$keys_poliza[$i]]);
+				$size_tpoliza = sizeof($vendedores_ventas_semana[$keys_vendedor[$x]][$keys_poliza[$i]]);
+
+				for ($j=0; $j < $size_tpoliza; $j++) {
+					$vendedores_ventas_semana[$keys_vendedor[$x]]['ventas_totales'] +=  $vendedores_ventas_semana[$keys_vendedor[$x]][$keys_poliza[$i]][$keys_tpoliza[$j]]['ventas_totales'];
+					$vendedores_ventas_semana[$keys_vendedor[$x]]['comision_total'] +=  $vendedores_ventas_semana[$keys_vendedor[$x]][$keys_poliza[$i]][$keys_tpoliza[$j]]['comision_total'];
+				}
+			}
+		} 
+		
+		$vendedores_data = $this->polizas_model->getVendedoresData($vendedores_cod);
+
+		for ($i=0; $i < count($vendedores_cod); $i++) { 
+			$vendedor_index = array_search($vendedores_cod[$i], array_column($vendedores_data, 'cod_vendedor'));
+			$vendedores_data[$vendedor_index]['ventas_totales'] = $vendedores_ventas_semana[$vendedores_cod[$i]]['ventas_totales'];
+			$vendedores_data[$vendedor_index]['comision_total'] = $vendedores_ventas_semana[$vendedores_cod[$i]]['comision_total'];
+		}
+
+		$this->load->view('layout/header');
+		$this->load->view('layout/nav');
+		$this->load->view('polizas/preliquidacion',$vendedores_data);
+		$this->load->view('layout/footer');
+	}
+
 	public function liquidacion(){
 		$semana = 2;
 		//$semana_detalles = $this->getSemanaDetalle($semana);
-		$vendedores_ventas_semana = $this->liquidacionVendedores($semana, 'ventas');
+		$vendedores_ventas_semana = $this->liquidacionVendedores($semana, 'ventas', 0, 'P');
 		$vendedores_cod = array_keys($vendedores_ventas_semana);
 		
 		$keys_vendedor = array_keys($vendedores_ventas_semana); 
@@ -384,10 +426,6 @@ class Polizas extends CI_Controller {
 		$this->load->view('layout/nav');
 		$this->load->view('polizas/liquidacion',$vendedores_data);
 		$this->load->view('layout/footer');
-	}
-
-	public function preliquidacion($ventas, $vendedor){
-		echo '<pre>' . var_export($ventas, true) . '</pre>';
 	}
 
 	public function anularVenta($vendedor_id = 0, $venta_id = 0){
