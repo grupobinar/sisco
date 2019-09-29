@@ -255,10 +255,14 @@ class Polizas extends CI_Controller {
 
 	}
 	
-	public function liquidacionVendedores($semana = 2, $cod_vendedor = 'ventas', $ajax = false){
+	public function liquidacionVendedores($semana = 2, $cod_vendedor = 'ventas', $preliquidacion = 0){
 		if ($_POST['codigo_vendedor']) {
 			$cod_vendedor = intval($_POST['codigo_vendedor']);
 			$semana = intval($_POST['semana']);
+
+			if ($_POST['preliquidacion']) {
+				$preliquidacion = $_POST['preliquidacion'];
+			}
 		}
 		
 		if (!is_string($cod_vendedor)) {
@@ -269,39 +273,48 @@ class Polizas extends CI_Controller {
 
 		$vendedores_orden = array();
 		$vendedor_datos = '';
+
 		if (!is_string($cod_vendedor)) {
-			foreach ($ventas as $key => $item) {
-				$vendedores_orden[$item['cod_vendedor']][$item['concepto_venta']][$key] = $item;
-			}
+			if ($preliquidacion == 1) {
+				foreach ($ventas as $key => $item) {
+					$vendedores_orden[$item['cod_vendedor']][$key] = $item;
+				}	
 
-			$keys_vendedor = array_keys($vendedores_orden); 
-			$size_vendedor = sizeof($vendedores_orden);
-
-			for($x = 0; $x < $size_vendedor; $x++ ) {
-				$keys_tipo_venta = array_keys($vendedores_orden[$keys_vendedor[$x]]); 
-				$size_tipo_venta = sizeof($vendedores_orden[$keys_vendedor[$x]]);
-
-				for ($i=0; $i < $size_tipo_venta; $i++) { 
-					$size_tpoliza = sizeof($vendedores_orden[$keys_vendedor[$x]][$keys_tipo_venta[$i]]);
-
-					for ($j=0; $j < $size_tpoliza; $j++) {
-						$vendedores_orden[$keys_vendedor[$x]][$keys_tipo_venta[$i]] = array_values($vendedores_orden[$keys_vendedor[$x]][$keys_tipo_venta[$i]]); 
-						$datos_venta = $this->polizas_model->calculoComisionBase($vendedores_orden[$keys_vendedor[$x]][$keys_tipo_venta[$i]][$j], 1);
-						$vendedores_orden[$keys_vendedor[$x]][$keys_tipo_venta[$i]][$j]['comision_calculada'] = $datos_venta['comision_total'];
-						$vendedores_orden[$keys_vendedor[$x]][$keys_tipo_venta[$i]][$j]['prima_mensual'] = ($datos_venta['prima_mensual'] == 0) ? 'NO APLICA' : $datos_venta['prima_mensual'];
-						$vendedores_orden[$keys_vendedor[$x]][$keys_tipo_venta[$i]][$j]['suma_asegurada'] = (is_null($datos_venta['suma_asegurada'])) ? 'NO APLICA' : $datos_venta['suma_asegurada'];
-						$vendedor_datos = $datos_venta['vendedor_data'];
-						if ($vendedores_orden[$keys_vendedor[$x]][$keys_tipo_venta[$i]][$j]['id_poliza'] == '30000') {
-							$vendedores_orden[$keys_vendedor[$x]][$keys_tipo_venta[$i]][$j]['comision_calculada'] = $vendedores_orden[$keys_vendedor[$x]][$keys_poliza[$i]][$j]['comision_calculada'] + 3500;
+				$preliquidacion_result = $this->polizas_model->preliquidacion($vendedores_orden[$cod_vendedor]);
+				echo json_encode($preliquidacion_result);
+			}else{
+				foreach ($ventas as $key => $item) {
+					$vendedores_orden[$item['cod_vendedor']][$item['concepto_venta']][$key] = $item;
+				}
+	
+				$keys_vendedor = array_keys($vendedores_orden); 
+				$size_vendedor = sizeof($vendedores_orden);
+	
+				for($x = 0; $x < $size_vendedor; $x++ ) {
+					$keys_tipo_venta = array_keys($vendedores_orden[$keys_vendedor[$x]]); 
+					$size_tipo_venta = sizeof($vendedores_orden[$keys_vendedor[$x]]);
+	
+					for ($i=0; $i < $size_tipo_venta; $i++) { 
+						$size_tpoliza = sizeof($vendedores_orden[$keys_vendedor[$x]][$keys_tipo_venta[$i]]);
+	
+						for ($j=0; $j < $size_tpoliza; $j++) {
+							$vendedores_orden[$keys_vendedor[$x]][$keys_tipo_venta[$i]] = array_values($vendedores_orden[$keys_vendedor[$x]][$keys_tipo_venta[$i]]); 
+							$datos_venta = $this->polizas_model->calculoComisionBase($vendedores_orden[$keys_vendedor[$x]][$keys_tipo_venta[$i]][$j], 1);
+							$vendedores_orden[$keys_vendedor[$x]][$keys_tipo_venta[$i]][$j]['comision_calculada'] = $datos_venta['comision_total'];
+							$vendedores_orden[$keys_vendedor[$x]][$keys_tipo_venta[$i]][$j]['prima_mensual'] = ($datos_venta['prima_mensual'] == 0) ? 'NO APLICA' : $datos_venta['prima_mensual'];
+							$vendedores_orden[$keys_vendedor[$x]][$keys_tipo_venta[$i]][$j]['suma_asegurada'] = (is_null($datos_venta['suma_asegurada'])) ? 'NO APLICA' : $datos_venta['suma_asegurada'];
+							$vendedor_datos = $datos_venta['vendedor_data'];
+							if ($vendedores_orden[$keys_vendedor[$x]][$keys_tipo_venta[$i]][$j]['id_poliza'] == '30000') {
+								$vendedores_orden[$keys_vendedor[$x]][$keys_tipo_venta[$i]][$j]['comision_calculada'] = $vendedores_orden[$keys_vendedor[$x]][$keys_poliza[$i]][$j]['comision_calculada'] + 3500;
+							}
 						}
 					}
 				}
-			}
-
-			$data[0] = $vendedores_orden[$cod_vendedor];
-			$data[1] = $vendedor_datos;
-
-			echo json_encode($data);
+	
+				$data[0] = $vendedores_orden[$cod_vendedor];
+				$data[1] = $vendedor_datos;
+				echo json_encode($data);
+			}			
 		} else {
 			foreach ($ventas as $key => $item) {
 				$vendedores_orden[$item['cod_vendedor']][$item['id_poliza']][$item['id_cobertura']][$key] = $item;

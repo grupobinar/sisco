@@ -608,7 +608,7 @@ class Polizas_model extends CI_Model{
 
 	public function anularVenta($vendedor_id, $venta_id){
 		$data = array(
-			'estatus_venta' => 'P'
+			'estatus_venta' => 'X'
 		);
 		
 		$this->db->where('t_ventas.id_vendedor', $vendedor_id);
@@ -617,6 +617,24 @@ class Polizas_model extends CI_Model{
 
 		return array(
 			'mensaje' => 'Anulada con exito',
+			'tipo' => 'success'
+		);
+	}
+
+	public function preliquidacion($ventas){
+		for ($i=0; $i < count($ventas); $i++) { 
+
+			$data = array(
+				'estatus_venta' => 'P'
+			);
+			
+			$this->db->where('t_ventas.id_vendedor', $ventas[$i]['id_vendedor']);
+			$this->db->where('t_ventas.id_venta', $ventas[$i]['id_venta']);
+			$semana_detalle = $this->db->update('t_ventas', $data);
+		}
+		
+		return array(
+			'mensaje' => 'Venta preliquidada con exito',
 			'tipo' => 'success'
 		);
 	}
