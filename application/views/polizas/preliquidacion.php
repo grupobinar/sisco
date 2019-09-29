@@ -28,7 +28,7 @@
                     <td><?php echo ucwords($key['apellidos'].' '.$key['nombres']);?></td>
                     <td><?php echo ucwords($key['telefono']);?></td>
                     <td><?php echo ucwords($key['ventas_totales']);?></td>
-                    <td>Numero de la semana abierta</td>
+                    <td><?php echo ucwords($key['semana']);?></td>
                     <td><?php echo ucwords($key['comision_total']);?></td>
                     <td>
                         <center>

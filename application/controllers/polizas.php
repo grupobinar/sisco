@@ -76,8 +76,8 @@ class Polizas extends CI_Controller {
 		$ad_parent=$_POST['adicional_parent'];
 
 		
-
-		$fecha=date("d/m/Y");
+		//FIXME: ACOMODAR LAS FECHAS A DIAS MES Y AÑO
+		$fecha=date("Y-m-d");
 		$usuario = $this->session->userdata('id_usuario');	
 		
 		$guser = $this->polizas_model->guardar_venta(
@@ -371,41 +371,9 @@ class Polizas extends CI_Controller {
 	}
 
 	public function preliquidacion(){
-		$semana = 2;
-		//$semana_detalles = $this->getSemanaDetalle($semana);
-		$vendedores_ventas_semana = $this->liquidacionVendedores($semana, 'ventas', 0, 'A');
-		$vendedores_cod = array_keys($vendedores_ventas_semana);
+		$semana = $this->polizas_model->getSemanaDetalle()[0]['id_semana'];
+		$vendedores_data = $this->arrayVentasBuild($semana, 'A');
 		
-		$keys_vendedor = array_keys($vendedores_ventas_semana); 
-		$size_vendedor = sizeof($vendedores_ventas_semana); 
-
-		for($x = 0; $x < $size_vendedor; $x++ ) {
-			$keys_poliza = array_keys($vendedores_ventas_semana[$keys_vendedor[$x]]); 
-			$size_poliza = sizeof($vendedores_ventas_semana[$keys_vendedor[$x]]);
-
-			for ($i=0; $i < $size_poliza; $i++) { 
-				$keys_tpoliza = array_keys($vendedores_ventas_semana[$keys_vendedor[$x]][$keys_poliza[$i]]);
-				$size_tpoliza = sizeof($vendedores_ventas_semana[$keys_vendedor[$x]][$keys_poliza[$i]]);
-
-				for ($j=0; $j < $size_tpoliza; $j++) {
-					$vendedores_ventas_semana[$keys_vendedor[$x]]['ventas_totales'] +=  $vendedores_ventas_semana[$keys_vendedor[$x]][$keys_poliza[$i]][$keys_tpoliza[$j]]['ventas_totales'];
-					$vendedores_ventas_semana[$keys_vendedor[$x]]['comision_total'] +=  $vendedores_ventas_semana[$keys_vendedor[$x]][$keys_poliza[$i]][$keys_tpoliza[$j]]['comision_total'];
-				}
-			}
-		} 
-		
-		if (count($vendedores_cod)) {
-			$vendedores_data = $this->polizas_model->getVendedoresData($vendedores_cod);
-		}else{
-			$vendedores_data = 'No hay ventas por liquidar.';
-		}
-				
-		for ($i=0; $i < count($vendedores_cod); $i++) { 
-			$vendedor_index = array_search($vendedores_cod[$i], array_column($vendedores_data, 'cod_vendedor'));
-			$vendedores_data[$vendedor_index]['ventas_totales'] = $vendedores_ventas_semana[$vendedores_cod[$i]]['ventas_totales'];
-			$vendedores_data[$vendedor_index]['comision_total'] = $vendedores_ventas_semana[$vendedores_cod[$i]]['comision_total'];
-		}
-
 		$this->load->view('layout/header');
 		$this->load->view('layout/nav');
 		$this->load->view('polizas/preliquidacion',$vendedores_data);
@@ -413,40 +381,8 @@ class Polizas extends CI_Controller {
 	}
 
 	public function liquidacion(){
-		$semana = 2;
-		//$semana_detalles = $this->getSemanaDetalle($semana);
-		$vendedores_ventas_semana = $this->liquidacionVendedores($semana, 'ventas', 0, 'P');
-		$vendedores_cod = array_keys($vendedores_ventas_semana);
-		
-		$keys_vendedor = array_keys($vendedores_ventas_semana); 
-		$size_vendedor = sizeof($vendedores_ventas_semana); 
-
-		for($x = 0; $x < $size_vendedor; $x++ ) {
-			$keys_poliza = array_keys($vendedores_ventas_semana[$keys_vendedor[$x]]); 
-			$size_poliza = sizeof($vendedores_ventas_semana[$keys_vendedor[$x]]);
-
-			for ($i=0; $i < $size_poliza; $i++) { 
-				$keys_tpoliza = array_keys($vendedores_ventas_semana[$keys_vendedor[$x]][$keys_poliza[$i]]);
-				$size_tpoliza = sizeof($vendedores_ventas_semana[$keys_vendedor[$x]][$keys_poliza[$i]]);
-
-				for ($j=0; $j < $size_tpoliza; $j++) {
-					$vendedores_ventas_semana[$keys_vendedor[$x]]['ventas_totales'] +=  $vendedores_ventas_semana[$keys_vendedor[$x]][$keys_poliza[$i]][$keys_tpoliza[$j]]['ventas_totales'];
-					$vendedores_ventas_semana[$keys_vendedor[$x]]['comision_total'] +=  $vendedores_ventas_semana[$keys_vendedor[$x]][$keys_poliza[$i]][$keys_tpoliza[$j]]['comision_total'];
-				}
-			}
-		} 
-
-		if (count($vendedores_cod)) {
-			$vendedores_data = $this->polizas_model->getVendedoresData($vendedores_cod);
-		}else{
-			$vendedores_data = 'No hay ventas por liquidar.';
-		}
-
-		for ($i=0; $i < count($vendedores_cod); $i++) { 
-			$vendedor_index = array_search($vendedores_cod[$i], array_column($vendedores_data, 'cod_vendedor'));
-			$vendedores_data[$vendedor_index]['ventas_totales'] = $vendedores_ventas_semana[$vendedores_cod[$i]]['ventas_totales'];
-			$vendedores_data[$vendedor_index]['comision_total'] = $vendedores_ventas_semana[$vendedores_cod[$i]]['comision_total'];
-		}
+		$semana = $this->polizas_model->getSemanaDetalle()[0]['id_semana'];
+		$vendedores_data = $this->arrayVentasBuild($semana, 'P');
 
 		$this->load->view('layout/header');
 		$this->load->view('layout/nav');
@@ -459,8 +395,45 @@ class Polizas extends CI_Controller {
 		$venta_id = $_POST['venta_id'];
 		$result = $this->polizas_model->anularVenta($vendedor_id, $venta_id);
 		echo json_encode($result);
+	}	
+
+	public function arrayVentasBuild($semana, $estatus_venta){
+		$ventas_semana = $this->liquidacionVendedores($semana, 'ventas', 0, $estatus_venta);
+		$vendedores_cod = array_keys($ventas_semana);
+
+		$keys_vendedor = array_keys($ventas_semana); 
+		$size_vendedor = sizeof($ventas_semana); 
+
+		for($x = 0; $x < $size_vendedor; $x++ ) {
+			$keys_poliza = array_keys($ventas_semana[$keys_vendedor[$x]]); 
+			$size_poliza = sizeof($ventas_semana[$keys_vendedor[$x]]);
+
+			for ($i=0; $i < $size_poliza; $i++) { 
+				$keys_tpoliza = array_keys($ventas_semana[$keys_vendedor[$x]][$keys_poliza[$i]]);
+				$size_tpoliza = sizeof($ventas_semana[$keys_vendedor[$x]][$keys_poliza[$i]]);
+
+				for ($j=0; $j < $size_tpoliza; $j++) {
+					$ventas_semana[$keys_vendedor[$x]]['ventas_totales'] +=  $ventas_semana[$keys_vendedor[$x]][$keys_poliza[$i]][$keys_tpoliza[$j]]['ventas_totales'];
+					$ventas_semana[$keys_vendedor[$x]]['comision_total'] +=  $ventas_semana[$keys_vendedor[$x]][$keys_poliza[$i]][$keys_tpoliza[$j]]['comision_total'];
+				}
+			}
+		} 
+		
+		if (count($vendedores_cod)) {
+			$vendedores_data = $this->polizas_model->getVendedoresData($vendedores_cod);
+		}else{
+			$vendedores_data = 'No hay ventas por liquidar.';
+		}
+		//FIXME: AGREGAR LA SEMANA EN DETALLE NO ID
+		for ($i=0; $i < count($vendedores_cod); $i++) { 
+			$vendedor_index = array_search($vendedores_cod[$i], array_column($vendedores_data, 'cod_vendedor'));
+			$vendedores_data[$vendedor_index]['ventas_totales'] = $ventas_semana[$vendedores_cod[$i]]['ventas_totales'];
+			$vendedores_data[$vendedor_index]['comision_total'] = $ventas_semana[$vendedores_cod[$i]]['comision_total'];
+			$vendedores_data[$vendedor_index]['semana'] = $semana;
+		}
+		
+		return $vendedores_data;
 	}
-	
 }
 
 /* End of file welcome.php */

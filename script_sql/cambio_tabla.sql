@@ -1,69 +1,54 @@
-UPDATE public.t_plan_comision SET
-ventas_min = '1'::integer WHERE
-id_planc = '1';
-
-UPDATE public.t_plan_comision SET
-ventas_min = '7'::integer WHERE
-id_planc = '2';
-
-UPDATE public.t_plan_comision SET
-ventas_min = '13'::integer WHERE
-id_planc = '3';
-
 INSERT INTO public.t_menu (
-id_padre, item, icono, ruta, hijos) VALUES (
-'0'::integer, 'Liquidacion'::character varying(50), 'fa fa-circle-o'::character varying(50), 'index.php/polizas/liquidacion'::character varying(200), '0'::integer)
- returning id_menu;
+id_padre, item, icono, orden, ruta, hijos) VALUES (
+'0'::integer, 'Ajustes de Semana'::character varying(50), 'fa fa-circle-o'::character varying(50), '19'::integer, 'index.php/config/semana'::character varying(200), '0'::integer)
+returning id_menu;
+
+UPDATE public.t_menu SET
+id_padre = '2'::integer WHERE
+id_menu = '18';
 
 INSERT INTO public.menu_rol (
 id_rol, id_menu) VALUES (
-'2'::integer, '15'::integer)
+'2'::integer, '18'::integer)
 returning id_mrol;
 
-UPDATE public.t_menu SET
-item = 'Liquidacion de Ventas'::character varying(50), orden = '16'::integer, ruta = '#'::character varying(200) WHERE
-id_menu = '15';
+CREATE OR REPLACE VIEW public.vendedores_ventas_detalles
+ AS
+ SELECT a.id_vendedor,
+    a.cod_vendedor,
+    b.id_venta,
+        CASE
+            WHEN b.id_poliza IS NULL THEN rpad(b.tventa::text, 5, '0'::text)
+            ELSE b.id_poliza::text
+        END AS id_cobertura,
+    b.id_plan,
+        CASE
+            WHEN b.id_tpoliza IS NULL THEN rpad(b.tventa::text, 5, '0'::text)
+            ELSE b.id_tpoliza::text
+        END AS id_poliza,
+    b.cuotas_canceladas,
+    b.id_semana,
+    b.tventa AS tipo_venta,
+    f.concepto AS concepto_venta,
+    (((g.identificacion::text || ' '::text) || g.nombres::text) || ' '::text) || g.apellidos::text AS tomador,
+        CASE
+            WHEN d.tpoliza IS NULL THEN 'NO APLICA'::character varying
+            ELSE d.tpoliza
+        END AS poliza_descripcion,
+        CASE
+            WHEN c.cobertura IS NULL THEN 'NO APLICA'::character varying
+            ELSE c.cobertura
+        END AS cobertura_descripcion,
+    (a.nombres::text || ' '::text) || a.apellidos::text AS vendedor_data,
+    b.estatus_venta,
+	b.id_semana
+   FROM t_vendedores a
+     JOIN t_ventas b ON a.id_vendedor = b.id_vendedor
+     LEFT JOIN t_polizas c ON b.id_poliza = c.id_poliza
+     LEFT JOIN t_tpoliza d ON b.id_tpoliza = d.id_tpoliza
+     LEFT JOIN t_plan e ON b.id_plan = e.id_tplan
+     JOIN t_concepto f ON b.tventa = f.id_concepto
+     JOIN t_tomadores g ON b.id_tomador = g.id_tomador;
 
-UPDATE public.t_menu SET
-hijos = '1'::integer WHERE
-id_menu = '15';
-
-INSERT INTO public.t_menu (
-id_padre, item, icono, orden, ruta, hijos) VALUES (
-'15'::integer, 'Pre-Liquidacion'::character varying(50), 'fa fa-circle-o'::character varying(50), '17'::integer, 'index.php/polizas/preliquidacion'::character varying(200), '0'::integer)
- returning id_menu;
-
-INSERT INTO public.t_menu (
-id_padre, item, icono, orden, ruta, hijos) VALUES (
-'15'::integer, 'Liquidacion'::character varying(50), 'fa fa-circle-o'::character varying(50), '18'::integer, 'index.php/polizas/liquidacion'::character varying(200), '0'::integer)
- returning id_menu;
-
-INSERT INTO public.menu_rol (
-id_rol, id_menu) VALUES (
-'2'::integer, '16'::integer)
- returning id_mrol;
-
-INSERT INTO public.menu_rol (
-id_rol, id_menu) VALUES (
-'2'::integer, '17'::integer)
- returning id_mrol;
-
-ALTER TABLE public.t_ventas
-    ADD COLUMN estatus_venta character varying(1) NOT NULL DEFAULT 'A';
-
-    CREATE TABLE public.t_liquidacion
-(
-    id_liquidacion serial,
-    id_vendedor integer,
-    id_venta integer,
-    id_semana integer
-)
-WITH (
-    OIDS = FALSE
-);
-
-ALTER TABLE public.t_liquidacion
-    OWNER to postgres;
-
-ALTER TABLE public.t_liquidacion
-ADD COLUMN comision_liquidada double precision;
+ALTER TABLE public.vendedores_ventas_detalles
+    OWNER TO postgres;

@@ -601,8 +601,8 @@ class Polizas_model extends CI_Model{
 		return $vendedores_data;
 	}
 
-	public function getSemanaDetalle($semana){
-		$this->db->where_in('t_semanas.id_semana', $semana);
+	public function getSemanaDetalle(){
+		$this->db->where_in('t_semanas.estatus', 0);
 		$semana_detalle = $this->db->get('public.t_semanas')->result_array();
 		return $semana_detalle;
 	}
@@ -641,7 +641,6 @@ class Polizas_model extends CI_Model{
 	}
 
 	public function liquidacion($ventas){
-		//var_dump($ventas); die();
 		for ($i=0; $i < count($ventas); $i++) { 
 			$data = array(
 				'estatus_venta' => 'L'
