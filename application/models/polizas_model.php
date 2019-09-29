@@ -639,4 +639,31 @@ class Polizas_model extends CI_Model{
 			'tipo' => 'success'
 		);
 	}
+
+	public function liquidacion($ventas){
+		//var_dump($ventas); die();
+		for ($i=0; $i < count($ventas); $i++) { 
+			$data = array(
+				'estatus_venta' => 'L'
+			);
+
+			$this->db->where('t_ventas.id_vendedor', $ventas[$i]['id_vendedor']);
+			$this->db->where('t_ventas.id_venta', $ventas[$i]['id_venta']);
+			$semana_detalle = $this->db->update('t_ventas', $data);
+
+			$data = array(
+				'id_vendedor'=> $ventas[$i]['id_vendedor'],
+				'id_venta'=> $ventas[$i]['id_venta'],	
+				'id_semana'=> 2,	
+				'comision_liquidada' => $ventas[$i]['comision_total']
+			);
+	
+			$this->db->insert('public.t_liquidacion',$data);
+		}
+
+		return array(
+			'mensaje' => 'Venta preliquidada con exito',
+			'tipo' => 'success'
+		);
+	}
 }

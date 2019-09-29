@@ -64,3 +64,6 @@ WITH (
 
 ALTER TABLE public.t_liquidacion
     OWNER to postgres;
+
+ALTER TABLE public.t_liquidacion
+ADD COLUMN comision_liquidada double precision;
