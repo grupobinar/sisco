@@ -14,9 +14,8 @@ class Login_model extends CI_Model{
 		$this->db->where('t_usuarios.clave',$clave);
 		$this->db->where('t_usuarios.estatus','0');
 		$persona = $this->db->get('public.t_usuarios');
-//		echo $this->db->last_query();
+//		echo $this->db->last_query(); die();
 //
-		
 		if($persona->num_rows()>0)
 		{
 			return $persona->row();
