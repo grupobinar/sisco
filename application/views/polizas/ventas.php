@@ -1,4 +1,4 @@
-<?php //echo "<pre>"; print_r($_ci_vars['parentesco']); echo "</pre>";?>
+<?php //echo "<pre>"; print_r($_ci_vars); echo "</pre>";?>
 
 
 <!-- #lista de usuarios ############################################################################-->
@@ -22,6 +22,7 @@
       <th>Plan</th>
       <th>cobertura</th>
       <th>Semana</th>
+      <th>Estatus</th>
       <th><i class="fa fa-cogs"></i> Opciones</th>
     </tr>
     </thead>
@@ -30,8 +31,13 @@
       if($key['tventa']==1) $tventa = "Venta de poliza";
       elseif($key['tventa']==2) $tventa = "Adicionales";
       elseif($key['tventa']==3) $tventa = "Actualización de Datos";
+
+      if($key['estatus_venta']=="P") {$estatus_venta="Preliquidada"; $clase="";}
+      elseif($key['estatus_venta']=="X") {$estatus_venta="Anulada"; $clase="text-red";}
+      if($key['estatus_venta']=="A") {$estatus_venta="Activa"; $clase="text-green";}
+      if($key['estatus_venta']=="L") {$estatus_venta="Liquidada"; $clase="";}
     ?>
-    <tr>
+    <tr class="<?php echo $clase?>">
       <td><?php echo ucwords($key['identificacion']);?></td>
       <td><?php echo ucwords($key['apellidos'].' '.$key['nombres']);?></td>
       <td><?php echo ucwords($tventa);?></td>
@@ -39,6 +45,7 @@
       <td><?php if(isset($key['tplan'])) echo ucwords($key['tplan']); else echo "N/A";?></td>
       <td><?php if(isset($key['cobertura'])) echo ucwords($key['cobertura']); else echo "N/A";?></td>
       <td><a href="#" title="<?php echo $key['desde'].' | '.$key['hasta'] ?>"><?php echo ucwords($key['nsem']);?></a></td>
+      <td><?php echo ucwords($estatus_venta);?></td>
       <td><a href="<?php echo base_url().'index.php/polizas/ver_ventas?id='.$key['id_venta']?>" class="btn btn-default" type="button"><i class="fa fa-eye"></i></a></td>
     </tr>
     <?php }} ?>
