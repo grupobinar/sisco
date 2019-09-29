@@ -376,6 +376,13 @@ class Polizas extends CI_Controller {
 	public function preliquidacion($ventas, $vendedor){
 		echo '<pre>' . var_export($ventas, true) . '</pre>';
 	}
+
+	public function anularVenta($vendedor_id = 0, $venta_id = 0){
+		$vendedor_id = $_POST['vendedor_id'];
+		$venta_id = $_POST['venta_id'];
+		$result = $this->polizas_model->anularVenta($vendedor_id, $venta_id);
+		echo json_encode($result);
+	}
 	
 }
 

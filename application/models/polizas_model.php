@@ -605,4 +605,19 @@ class Polizas_model extends CI_Model{
 		$semana_detalle = $this->db->get('public.t_semanas')->result_array();
 		return $semana_detalle;
 	}
+
+	public function anularVenta($vendedor_id, $venta_id){
+		$data = array(
+			'estatus_venta' => 'P'
+		);
+		
+		$this->db->where('t_ventas.id_vendedor', $vendedor_id);
+		$this->db->where('t_ventas.id_venta', $venta_id);
+		$semana_detalle = $this->db->update('t_ventas', $data);
+
+		return array(
+			'mensaje' => 'Anulada con exito',
+			'tipo' => 'success'
+		);
+	}
 }

@@ -1,3 +1,5 @@
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
+
 <div class="col-lg-12"> 
     <div class="col-lg-12"><br></div>
     <div class="col-lg-10"><br></div>
@@ -83,10 +85,37 @@
 </div>
 
 <script>
+
+    function anularVenta(vendedor_id, venta_id){
+        Swal.fire({
+            title: 'Desea anular la venta?',
+            text: "Esta accion es irreversible!",
+            type: 'info',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Si, ANULAR VENTA'
+        }).then((result) => {
+            $.post("<?php echo base_url() ?>/index.php/polizas/anularVenta", { vendedor_id: vendedor_id, venta_id: venta_id }, function(data){
+                mensaje = JSON.parse(data);
+                Swal.fire({
+                    title: mensaje.mensaje,
+                    text:  'Click en el boton para cerrar',
+                    type:  mensaje.tipo,
+                    confirmButtonText: 'Cerrar'
+                }).then((result) => {
+                    if (mensaje.tipo === 'success') {
+                        location.reload();
+                    }
+                });
+            });
+        })
+    }
+
     $(".detalleVendedor").click(function() {
       $.post("<?php echo base_url() ?>/index.php/polizas/liquidacionVendedores", { semana: 2, codigo_vendedor:$(this).attr("id") }, function(data){
         ventas_json = JSON.parse(data)
-
+        console.log(ventas_json);
         document.getElementById('name_vendedor').innerText = 'Detalle De Ventas: ' + ventas_json[1];
 
         var keys = [];
@@ -153,6 +182,9 @@
                 var action_button = document.createElement('a');
                 action_button.setAttribute('class', 'btn btn-primary');
                 action_button.setAttribute('style', 'float: right;');
+                action_button.setAttribute('onclick', "anularVenta("+ventas_json[0][keys[index]][i].id_vendedor+","+ventas_json[0][keys[index]][i].id_venta+");");
+                action_button.id = 'anularventa';
+
 
                 var b_element = document.createElement('b');
                 b_element.innerText = 'Anular Venta';
