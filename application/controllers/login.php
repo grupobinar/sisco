@@ -8,7 +8,7 @@ class Login extends CI_Controller {
 		$this->load->helper('url');
     	$this->load->helper('form');
 		$this->load->model('login_model');
-		$this->load->model('config_model');
+		//$this->load->model('config_model');
     	$this->load->library('session');
 	}
 	public function index()
@@ -43,7 +43,7 @@ class Login extends CI_Controller {
 			}
 		}
 
-		$semana_check = $this->config_model->checkSemana();
+		//$semana_check = $this->config_model->checkSemana();
 
 			$this->session->set_userdata('_MENU_',$menup);
 
