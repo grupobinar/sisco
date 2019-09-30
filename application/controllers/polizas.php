@@ -375,9 +375,8 @@ class Polizas extends CI_Controller {
 	}
 
 	public function preliquidacion(){
-		$semana = $this->polizas_model->getSemanaDetalle()[0]['id_semana'];
+		$semana = intval($this->polizas_model->getSemanaDetalle()[0]['id_semana']);
 		$vendedores_data = $this->arrayVentasBuild($semana, 'A');
-		
 		$this->load->view('layout/header');
 		$this->load->view('layout/nav');
 		$this->load->view('polizas/preliquidacion',$vendedores_data);
@@ -385,7 +384,7 @@ class Polizas extends CI_Controller {
 	}
 
 	public function liquidacion(){
-		$semana = $this->polizas_model->getSemanaDetalle()[0]['id_semana'];
+		$semana = intval($this->polizas_model->getSemanaDetalle()[0]['id_semana']);
 		$vendedores_data = $this->arrayVentasBuild($semana, 'P');
 
 		$this->load->view('layout/header');

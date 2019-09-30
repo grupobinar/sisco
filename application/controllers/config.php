@@ -432,5 +432,11 @@ class Config extends CI_Controller {
 		$this->session->set_flashdata('message', ['Semana creada con exito', 'success']);
 		header('Location: '.$_SERVER['HTTP_REFERER']);
 	}
+
+	public function cerrarSemana(){
+		$semana_id = intval($_POST['semana']);
+		$result = $this->config_model->registrarSemana($semana_id);
+		return $result;
+	}
 	
 }
