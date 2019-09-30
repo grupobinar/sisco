@@ -427,10 +427,7 @@ class Polizas_model extends CI_Model{
 
 		//Añadir la cantidad de ventas por cada poliza de dicho tipo. Y las personas adicionales. Defino tambien el tipo de ventas.
 		$adicionales_ventas = $this->adicionalesVentasTotal($ventas);
-
-		/*if($ventas[0]['tipo_venta'] === '1'){
-			var_dump('hol'); die();
-		}*/
+		//var_dump($ventas[0]['tipo_venta']); die();
 		
 		$cantidad_polizas_vendidas = count($ventas) + $adicionales_ventas;
 
