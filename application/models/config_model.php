@@ -3,7 +3,8 @@
 class Config_model extends CI_Model{
     function __construct(){
         parent::__construct();
-        $this->load->database();
+		$this->load->database();
+		$this->load->library('session');
     }    
 
     function eliminarRegistros($id,$tb,$name_id){
@@ -322,4 +323,48 @@ class Config_model extends CI_Model{
 
 	}
 
+	public function listSemanas(){
+		$this->db->order_by('id_semana', 'asc');
+		$semanas = $this->db->get('public.t_semanas')->result_array();
+		return $semanas;
+	}
+
+	public function registrarSemana(){
+		$date = new DateTime($_POST['fecha_desde']);
+		$week = $date->format("W");
+
+		if (intval($_POST['id_basec']) == 0) {
+			$this->db->where('t_semanas.estatus','0');
+			$semana_activa = $this->db->get('public.t_semanas')->result_array();
+
+			$data = array(
+				'estatus'=>'1'
+			);
+
+			$this->db->where('t_semanas.estatus','0');
+			$this->db->update('public.t_semanas', $data);
+			
+			$data = array(
+				'desde'=> $_POST['fecha_desde'],
+				'hasta'=> $_POST['fecha_hasta'],
+				'estatus'=> intval($_POST['id_basec']),
+				'observaciones'=> $_POST['observacion_semana'],
+				'nsem' => $week
+			);
+	
+	
+			$this->db->insert('public.t_semanas',$data);
+		}else{
+			$data = array(
+				'desde'=> $_POST['fecha_desde'],
+				'hasta'=> $_POST['fecha_hasta'],
+				'estatus'=> intval($_POST['id_basec']),
+				'observaciones'=> $_POST['observacion_semana'],
+				'nsem' => $week
+			);
+	
+	
+			$this->db->insert('public.t_semanas',$data);
+		}
+	}
 }

@@ -333,8 +333,8 @@ class Config extends CI_Controller {
 	
 
 	// Usuarios ----------------------------------------------------------------------------------------
-
-	public function editar(){
+	//FIXME: REVISAR
+	/*public function editar(){
 
 		print_r($_POST);
 		break;
@@ -362,7 +362,7 @@ class Config extends CI_Controller {
 		
 		redirect('/config/', 'refresh');
 
-	}
+	}*/
 
 	public function buscarUsuario(){
 
@@ -416,6 +416,21 @@ class Config extends CI_Controller {
 		$this->load->view('layout/nav');
 		$this->load->view('config/edad',$data);
 		$this->load->view('layout/footer');
+	}
+
+	public function semana(){
+		$data['semanas'] = $this->config_model->listSemanas();
+
+		$this->load->view('layout/header');
+		$this->load->view('layout/nav');
+		$this->load->view('config/semana',$data);
+		$this->load->view('layout/footer');
+	}
+
+	public function registrarSemana(){
+		$registro = $this->config_model->registrarSemana();
+		$this->session->set_flashdata('message', ['Semana creada con exito', 'success']);
+		header('Location: '.$_SERVER['HTTP_REFERER']);
 	}
 	
 }
