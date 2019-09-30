@@ -284,14 +284,6 @@ class Polizas extends CI_Controller {
 		$vendedor_datos = '';
 		//echo $cod_vendedor; die();
 		if (!is_string($cod_vendedor)) {
-			if ($preliquidacion == 1) {
-				foreach ($ventas as $key => $item) {
-					$vendedores_orden[$item['cod_vendedor']][$key] = $item;
-				}	
-
-				$preliquidacion_result = $this->polizas_model->preliquidacion($vendedores_orden[$cod_vendedor]);
-				echo json_encode($preliquidacion_result);
-			} else {
 				foreach ($ventas as $key => $item) {
 					$vendedores_orden[$item['cod_vendedor']][$item['concepto_venta']][$key] = $item;
 				}
@@ -323,7 +315,6 @@ class Polizas extends CI_Controller {
 				$data[0] = $vendedores_orden[$cod_vendedor];
 				$data[1] = $vendedor_datos;
 				echo json_encode($data);
-			}			
 		} else {
 			if ($preliquidacion == 2) {
 				for ($i=0; $i < count($ventas); $i++) { 
@@ -336,6 +327,17 @@ class Polizas extends CI_Controller {
 
 				$liquidacion_result = $this->polizas_model->liquidacion($ventas);
 				echo json_encode($liquidacion_result);
+			} elseif($preliquidacion == 1) {
+				for ($i=0; $i < count($ventas); $i++) { 
+					$result = $this->polizas_model->calculoComisionBase($ventas[$i], 1);
+
+					if (intval($ventas[$i]['id_poliza']) == 30000) {
+						$ventas[$i]['comision_total'] = $result['comision_total'] + 3500;
+					}
+				}
+
+				$preliquidacion_result = $this->polizas_model->preliquidacion($ventas);
+				echo json_encode($preliquidacion_result);
 			}else{
 				foreach ($ventas as $key => $item) {
 					$vendedores_orden[$item['cod_vendedor']][$item['id_poliza']][$item['id_cobertura']][$key] = $item;

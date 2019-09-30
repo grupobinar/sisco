@@ -3,6 +3,9 @@
 <div class="col-lg-12"> 
     <div class="col-lg-12"><br></div>
     <div class="col-lg-10"><br></div>
+    <div class="col-lg-2"><a href="#" class="btn btn-primary btn-xm" onclick="preliquidacion()">
+        <b><i class="fa fa-user"></i> Ejecutar Pre-Liquidacion</b>
+    </a></div>
 </div>
 
 <div class="col-lg-12"><br></div>
@@ -52,11 +55,6 @@
                 </button>
                 
                 <h4 class="modal-title" id="name_vendedor"></h4>
-                <div class="col-lg-2" id="preliquidacion_vendedor">
-                    <a href="#" class="btn btn-primary" style="float: right;">
-                        <b><i class="fa fa-user"></i>Ejecutar Pre - Liquidacion</b>
-                    </a>
-                </div>
         </div>
         
         <div class="modal-body">
@@ -111,7 +109,7 @@
         })
     }
 
-    function preliquidacion(codigo_vendedor){
+    function preliquidacion(){
         Swal.fire({
             title: 'Desea preliquidar a este vendedor?',
             text: "Esta accion es irreversible!",
@@ -122,7 +120,7 @@
             confirmButtonText: 'Si, PRELIQUIDAR'
         }).then((result) => {
             $.post("<?php echo base_url() ?>/index.php/polizas/liquidacionVendedores", { 
-                semana: 2, codigo_vendedor: codigo_vendedor, preliquidacion: 1 }, function(data){      
+                semana: 2, codigo_vendedor: 'vendedores', preliquidacion: 1 }, function(data){      
                 mensaje = JSON.parse(data);
                 Swal.fire({
                     title: mensaje.mensaje,
@@ -216,9 +214,6 @@
                 
                 action_button.appendChild(b_element);
                 td_child8.appendChild(action_button);
-
-                var preliquidacion_button = document.getElementById("preliquidacion_vendedor");
-                preliquidacion_button.setAttribute('onclick', "preliquidacion("+ventas_json[0][keys[index]][i].cod_vendedor+");");
 
                 tr_child.appendChild(td_child1);
                 tr_child.appendChild(td_child2);
