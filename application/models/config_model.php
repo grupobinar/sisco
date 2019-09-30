@@ -329,6 +329,40 @@ class Config_model extends CI_Model{
 		return $semanas;
 	}
 
+	public function checkSemana(){
+		$day = date('w');
+		$week_start = date('m-d-Y', strtotime('-'.$day.' days'));
+		$week_end = date('m-d-Y', strtotime('+'.(6-$day).' days'));
+
+		$week_start_format = DateTime::createFromFormat('m-d-Y', $week_end);
+
+		$this->db->where('t_semanas.nsem',$week_start_format->format("W"));
+		$semanas = $this->db->get('public.t_semanas')->result_array();
+
+		if (!count($semanas)) {
+			$this->db->where('t_semanas.estatus','0');
+			$semana_activa = $this->db->get('public.t_semanas')->result_array();
+
+			$data = array(
+				'estatus'=>'1'
+			);
+
+			$this->db->where('t_semanas.estatus','0');
+			$this->db->update('public.t_semanas', $data);
+
+			$data = array(
+				'desde'=> $week_start,
+				'hasta'=> $week_end,
+				'estatus'=> 0,
+				'observaciones'=> 'Activacion de Semana Automatica',
+				'nsem' => $week_start_format->format("W")
+			);
+	
+	
+			$this->db->insert('public.t_semanas',$data);
+		}
+	}
+
 	public function registrarSemana(){
 		$date = new DateTime($_POST['fecha_desde']);
 		$week = $date->format("W");
