@@ -49,15 +49,16 @@ CREATE OR REPLACE VIEW public.vendedores_ventas_detalles
             ELSE c.cobertura
         END AS cobertura_descripcion,
     (a.nombres::text || ' '::text) || a.apellidos::text AS vendedor_data,
-	b.estatus_venta as estatus_venta
+    b.estatus_venta,
+	h.nsem as numero_semana
    FROM t_vendedores a
-     JOIN t_ventas b ON a.id_vendedor = b.id_vendedor 
+     JOIN t_ventas b ON a.id_vendedor = b.id_vendedor
      LEFT JOIN t_polizas c ON b.id_poliza = c.id_poliza
      LEFT JOIN t_tpoliza d ON b.id_tpoliza = d.id_tpoliza
      LEFT JOIN t_plan e ON b.id_plan = e.id_tplan
      JOIN t_concepto f ON b.tventa = f.id_concepto
-     JOIN t_tomadores g ON b.id_tomador = g.id_tomador;
-
+     JOIN t_tomadores g ON b.id_tomador = g.id_tomador
+	 JOIN t_semanas h ON b.id_semana = h.id_semana;
 ALTER TABLE public.vendedores_ventas_detalles
     OWNER TO postgres;
 

@@ -601,10 +601,22 @@ class Polizas_model extends CI_Model{
 		return $vendedores_data;
 	}
 
-	public function getSemanaDetalle(){
-		$this->db->where_in('t_semanas.estatus', 0);
-		$semana_detalle = $this->db->get('public.t_semanas')->result_array();
-		return $semana_detalle;
+	public function getSemanaDetalle($numero_semana = 0, $buscar_id = 0){
+		if ($buscar_id == 1) {
+			$this->db->order_by('id_semana','desc');
+			$this->db->limit(1);
+			$this->db->where('t_semanas.estatus', 1);
+			$this->db->where('t_semanas.nsem', $numero_semana);
+			$semana_detalle = $this->db->get('public.t_semanas')->result_array();
+			return $semana_detalle;
+		}else{
+			$this->db->order_by('id_semana','desc');
+			$this->db->limit(1);
+			$this->db->where('t_semanas.estatus', 1);
+			$semana_detalle = $this->db->get('public.t_semanas')->result_array();
+			return $semana_detalle;
+		}
+
 	}
 
 	public function anularVenta($vendedor_id, $venta_id){
