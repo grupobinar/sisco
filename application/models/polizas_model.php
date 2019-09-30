@@ -654,6 +654,7 @@ class Polizas_model extends CI_Model{
 
 	public function liquidacion($ventas){
 		for ($i=0; $i < count($ventas); $i++) { 
+
 			$data = array(
 				'estatus_venta' => 'L'
 			);
@@ -673,7 +674,7 @@ class Polizas_model extends CI_Model{
 		}
 
 		return array(
-			'mensaje' => 'Venta preliquidada con exito',
+			'mensaje' => 'Venta liquidada con exito',
 			'tipo' => 'success'
 		);
 	}

@@ -324,9 +324,10 @@ class Polizas extends CI_Controller {
 
 					if (intval($ventas[$i]['id_poliza']) == 30000) {
 						$ventas[$i]['comision_total'] = $result['comision_total'] + 3500;
+					}else{
+						$ventas[$i]['comision_total'] = $result['comision_total'];
 					}
 				}
-
 				$liquidacion_result = $this->polizas_model->liquidacion($ventas);
 				echo json_encode($liquidacion_result);
 			} elseif($preliquidacion == 1) {
@@ -401,6 +402,8 @@ class Polizas extends CI_Controller {
 	}	
 
 	public function arrayVentasBuild($semana, $estatus_venta){
+		$semana_numero = $this->polizas_model->getSemanaDetalle($semana, 0)[0]['nsem'];
+
 		$ventas_semana = $this->liquidacionVendedores($semana, 'ventas', 0, $estatus_venta);
 		$vendedores_cod = array_keys($ventas_semana);
 		$keys_vendedor = array_keys($ventas_semana); 
@@ -417,11 +420,8 @@ class Polizas extends CI_Controller {
 				for ($j=0; $j < $size_tpoliza; $j++) {
 					$ventas_semana[$keys_vendedor[$x]]['ventas_totales'] +=  $ventas_semana[$keys_vendedor[$x]][$keys_poliza[$i]][$keys_tpoliza[$j]]['ventas_totales'];
 					$ventas_semana[$keys_vendedor[$x]]['comision_total'] +=  $ventas_semana[$keys_vendedor[$x]][$keys_poliza[$i]][$keys_tpoliza[$j]]['comision_total'];
-					for ($y=0; $y < count($ventas_semana[$keys_vendedor[$x]][$keys_poliza[$i]][$keys_tpoliza[$j]]); $y++) { 
-						$ventas_semana[$keys_vendedor[$x]]['semana'] +=  $ventas_semana[$keys_vendedor[$x]][$keys_poliza[$i]][$keys_tpoliza[$j]][$y]['numero_semana'];
-					}
+					$ventas_semana[$keys_vendedor[$x]]['semana'] =  $semana_numero;
 				}
-
 			}
 		} 
 		
