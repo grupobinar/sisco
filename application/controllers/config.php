@@ -9,6 +9,7 @@ class Config extends CI_Controller {
     	$this->load->helper('form');
     	$this->load->model('config_model');
     	$this->load->library('session');
+    	$this->load->helper('date');
 	}
 
 	// Tipo de poliza ---------------------------------------------------------------------------------
@@ -417,5 +418,30 @@ class Config extends CI_Controller {
 		$this->load->view('config/edad',$data);
 		$this->load->view('layout/footer');
 	}
+<<<<<<< Updated upstream
+=======
+
+	public function semana(){
+		$data['semanas'] = $this->config_model->listSemanas();
+
+		$this->load->view('layout/header');
+		$this->load->view('layout/nav');
+		$this->load->view('config/semana',$data);
+		$this->load->view('layout/footer');
+	}
+
+/*	public function registrarSemana(){
+		$registro = $this->config_model->registrarSemana();
+		$this->session->set_flashdata('message', ['Semana creada con exito', 'success']);
+		header('Location: '.$_SERVER['HTTP_REFERER']);
+	}*/
+
+	public function cerrarSemana(){
+		$result = $this->config_model->registrarSemana($_POST['semana']);
+
+		echo $result;
+
+	}
+>>>>>>> Stashed changes
 	
 }
