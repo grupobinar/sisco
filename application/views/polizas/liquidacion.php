@@ -31,7 +31,7 @@
                     <td><?php echo ucwords($key['apellidos'].' '.$key['nombres']);?></td>
                     <td><?php echo ucwords($key['telefono']);?></td>
                     <td><?php echo ucwords($key['ventas_totales']);?></td>
-                    <td><?php echo ucwords($key['semana']);?></td>
+                    <td id="semana_id"><?php echo ucwords($key['numero_semana']);?></td>
                     <td><?php echo ucwords($key['comision_total']);?></td>
                     <td>
                         <center>
@@ -82,6 +82,8 @@
 
 <script>
     function liquidacion(){
+        var semana = document.getElementById('semana_id').innerText;
+
         Swal.fire({
             title: 'Desea liquidar a todos los vendedores de la tabla?',
             text: "Esta accion es irreversible!",
@@ -92,7 +94,7 @@
             confirmButtonText: 'Si, LIQUIDAR'
         }).then((result) => {
             $.post("<?php echo base_url() ?>/index.php/polizas/liquidacionVendedores", { 
-                semana: 2, codigo_vendedor:'vendedores', preliquidacion: 2, estatus_venta: 'P' }, function(data){      
+                semana: semana, codigo_vendedor:'vendedores', preliquidacion: 2, estatus_venta: 'P' }, function(data){      
                 mensaje = JSON.parse(data);
                 Swal.fire({
                     title: mensaje.mensaje,
@@ -109,7 +111,9 @@
     }
 
     $(".detalleVendedor").click(function() {
-      $.post("<?php echo base_url() ?>/index.php/polizas/liquidacionVendedores", { semana: 2, codigo_vendedor:$(this).attr("id"), estatus_venta:'P' }, function(data){
+      var semana = document.getElementById('semana_id').innerText;
+      
+      $.post("<?php echo base_url() ?>/index.php/polizas/liquidacionVendedores", { semana: semana, codigo_vendedor:$(this).attr("id"), estatus_venta:'P' }, function(data){
         ventas_json = JSON.parse(data)
         document.getElementById('name_vendedor').innerText = 'Detalle De Ventas: ' + ventas_json[1];
 

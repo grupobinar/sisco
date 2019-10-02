@@ -7,7 +7,8 @@ class Login extends CI_Controller {
 		parent::__construct();
 		$this->load->helper('url');
     	$this->load->helper('form');
-    	$this->load->model('login_model');
+		$this->load->model('login_model');
+		//$this->load->model('config_model');
     	$this->load->library('session');
 	}
 	public function index()
@@ -30,7 +31,7 @@ class Login extends CI_Controller {
 		
 		if ($userlogin<>"NO") {
 
-			$menu_user= $this->login_model->menu($userlogin->id_rol);
+		$menu_user= $this->login_model->menu($userlogin->id_rol);
 
 		$i=0;
 		if ($menu_user<>"") {
@@ -41,7 +42,8 @@ class Login extends CI_Controller {
 				$menup[$i]=$sheet->id_menu.':'.$sheet->id_padre.':'.$sheet->item.':'.$sheet->icono.':'.$sheet->ruta.'::'.$sheet->hijos;			
 			}
 		}
-			//print_r($menup);
+
+		//$semana_check = $this->config_model->checkSemana();
 
 			$this->session->set_userdata('_MENU_',$menup);
 

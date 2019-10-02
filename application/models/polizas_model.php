@@ -115,7 +115,7 @@ class Polizas_model extends CI_Model{
 
 	function listventas()
 	{
-		$this->db->select('id_venta, identificacion, nsem, desde, hasta, referencia_pago, monto, cuotas_canceladas, t_ventas.fecha_registro, nombres, apellidos, telefono, correo, tplan, cobertura, tpoliza, tpago, tventa');
+		$this->db->select('id_venta, identificacion, nsem, desde, hasta, referencia_pago, monto, cuotas_canceladas, t_ventas.fecha_registro, nombres, apellidos, telefono, correo, tplan, cobertura, tpoliza, tpago, tventa, estatus_venta');
 		$this->db->join('t_tomadores','t_tomadores.id_tomador = t_ventas.id_tomador','left');
 		$this->db->join('t_plan','t_plan.id_tplan = t_ventas.id_plan','left');
 		$this->db->join('t_polizas','t_polizas.id_poliza = t_ventas.id_poliza','left');
@@ -601,10 +601,22 @@ class Polizas_model extends CI_Model{
 		return $vendedores_data;
 	}
 
-	public function getSemanaDetalle(){
-		$this->db->where_in('t_semanas.estatus', 0);
-		$semana_detalle = $this->db->get('public.t_semanas')->result_array();
-		return $semana_detalle;
+	public function getSemanaDetalle($numero_semana = 0, $buscar_id = 0){
+		if ($buscar_id == 1) {
+			$this->db->order_by('id_semana','desc');
+			$this->db->limit(1);
+			$this->db->where('t_semanas.estatus', 1);
+			$this->db->where('t_semanas.nsem', $numero_semana);
+			$semana_detalle = $this->db->get('public.t_semanas')->result_array();
+			return $semana_detalle;
+		}else{
+			$this->db->order_by('id_semana','desc');
+			$this->db->limit(1);
+			$this->db->where('t_semanas.estatus', 1);
+			$semana_detalle = $this->db->get('public.t_semanas')->result_array();
+			return $semana_detalle;
+		}
+
 	}
 
 	public function anularVenta($vendedor_id, $venta_id){
@@ -642,6 +654,7 @@ class Polizas_model extends CI_Model{
 
 	public function liquidacion($ventas){
 		for ($i=0; $i < count($ventas); $i++) { 
+
 			$data = array(
 				'estatus_venta' => 'L'
 			);
@@ -661,7 +674,7 @@ class Polizas_model extends CI_Model{
 		}
 
 		return array(
-			'mensaje' => 'Venta preliquidada con exito',
+			'mensaje' => 'Venta liquidada con exito',
 			'tipo' => 'success'
 		);
 	}

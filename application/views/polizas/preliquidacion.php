@@ -3,6 +3,9 @@
 <div class="col-lg-12"> 
     <div class="col-lg-12"><br></div>
     <div class="col-lg-10"><br></div>
+    <div class="col-lg-2"><a href="#" class="btn btn-primary btn-xm" onclick="preliquidacion()">
+        <b><i class="fa fa-user"></i> Ejecutar Pre-Liquidacion</b>
+    </a></div>
 </div>
 
 <div class="col-lg-12"><br></div>
@@ -28,7 +31,7 @@
                     <td><?php echo ucwords($key['apellidos'].' '.$key['nombres']);?></td>
                     <td><?php echo ucwords($key['telefono']);?></td>
                     <td><?php echo ucwords($key['ventas_totales']);?></td>
-                    <td><?php echo ucwords($key['semana']);?></td>
+                    <td id="semana_id"><?php echo ucwords($key['numero_semana']);?></td>
                     <td><?php echo ucwords($key['comision_total']);?></td>
                     <td>
                         <center>
@@ -52,11 +55,6 @@
                 </button>
                 
                 <h4 class="modal-title" id="name_vendedor"></h4>
-                <div class="col-lg-2" id="preliquidacion_vendedor">
-                    <a href="#" class="btn btn-primary" style="float: right;">
-                        <b><i class="fa fa-user"></i>Ejecutar Pre - Liquidacion</b>
-                    </a>
-                </div>
         </div>
         
         <div class="modal-body">
@@ -111,7 +109,9 @@
         })
     }
 
-    function preliquidacion(codigo_vendedor){
+    function preliquidacion(){
+        var semana = document.getElementById('semana_id').innerText;
+
         Swal.fire({
             title: 'Desea preliquidar a este vendedor?',
             text: "Esta accion es irreversible!",
@@ -122,7 +122,7 @@
             confirmButtonText: 'Si, PRELIQUIDAR'
         }).then((result) => {
             $.post("<?php echo base_url() ?>/index.php/polizas/liquidacionVendedores", { 
-                semana: 2, codigo_vendedor: codigo_vendedor, preliquidacion: 1 }, function(data){      
+                semana: semana, codigo_vendedor: 'vendedores', preliquidacion: 1 }, function(data){      
                 mensaje = JSON.parse(data);
                 Swal.fire({
                     title: mensaje.mensaje,
@@ -139,7 +139,9 @@
     }
 
     $(".detalleVendedor").click(function() {
-      $.post("<?php echo base_url() ?>/index.php/polizas/liquidacionVendedores", { semana: 2, codigo_vendedor:$(this).attr("id") }, function(data){
+      var semana = document.getElementById('semana_id').innerText;
+
+      $.post("<?php echo base_url() ?>/index.php/polizas/liquidacionVendedores", { semana: semana, codigo_vendedor:$(this).attr("id") }, function(data){
         ventas_json = JSON.parse(data)
         document.getElementById('name_vendedor').innerText = 'Detalle De Ventas: ' + ventas_json[1];
 
@@ -216,9 +218,6 @@
                 
                 action_button.appendChild(b_element);
                 td_child8.appendChild(action_button);
-
-                var preliquidacion_button = document.getElementById("preliquidacion_vendedor");
-                preliquidacion_button.setAttribute('onclick', "preliquidacion("+ventas_json[0][keys[index]][i].cod_vendedor+");");
 
                 tr_child.appendChild(td_child1);
                 tr_child.appendChild(td_child2);

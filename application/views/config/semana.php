@@ -22,11 +22,11 @@
 <div class="col-lg-12"> 
     <div class="col-lg-12"><br></div>
     <div class="col-lg-10"><br></div>
-    <div class="col-lg-2">
+    <!--div class="col-lg-2">
         <a href="#" class="btn btn-primary btn-xm" data-toggle="modal" data-target="#myModal">
             <b><i class="fa fa-user"></i> Nueva Semana</b>
         </a>
-    </div>
+    </div-->
 </div>
 
 <div class="col-lg-12"><br></div>
@@ -54,9 +54,13 @@
                         <td><?php echo $key['observaciones'];?></td>
                         <td>
                             <div class="btn-group">
+                                <?php if ($key['estatus']==0) { ?>
                                 <center>
-                                    <a class="btn btn-sm btn-default desactivar" id="<?php echo $key['id_comision']?>" data-toggle="modal" data-target="#DesactivarPoliza" href="<?php echo base_url();?>index.php/usuarios/desactivar" title="Cerrar Semana"><i class="fa fa-close"></i></a>
+                                    <a class="btn btn-sm btn-default desactivar" id="<?php echo $key['id_semana']?>" title="Cerrar Semana"><i class="fa fa-close"></i></a>
                                 </center>
+                                <?php } else { ?>
+                                    SIN ACCIONES
+                                <?php } ?>
                             </div>
                         </td>  
                     </tr>
@@ -116,5 +120,31 @@
 </div>
 
 <script type="text/javascript">
-    $(document).ready(function(){});
+    $(".desactivar").click(function() {
+        semana =  $(this).attr("id");
+        Swal.fire({
+            title: 'Desea cerrar esta semana?',
+            text: "Esta accion es irreversible!",
+            type: 'info',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Si, CERRAR SEMANA'
+        }).then((result) => {
+            $.post("<?php echo base_url() ?>/index.php/config/cerrarSemana", { semana: semana}, function(data){      
+                mensaje = JSON.parse(data);
+                Swal.fire({
+                    title: mensaje.mensaje,
+                    text:  'Click en el boton para cerrar',
+                    type:  mensaje.tipo,
+                    confirmButtonText: 'Cerrar'
+                }).then((result) => {
+                    if (mensaje.tipo === 'success') {
+                        location.reload();
+                    }
+                });
+            });
+        })
+    });
+
 </script>
