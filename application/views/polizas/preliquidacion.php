@@ -3,9 +3,6 @@
 <div class="col-lg-12"> 
     <div class="col-lg-12"><br></div>
     <div class="col-lg-10"><br></div>
-    <div class="col-lg-2"><a href="#" class="btn btn-primary btn-xm" onclick="liquidacion()">
-        <b><i class="fa fa-user"></i> Ejecutar Liquidacion</b>
-    </a></div>
 </div>
 
 <div class="col-lg-12"><br></div>
@@ -55,6 +52,11 @@
                 </button>
                 
                 <h4 class="modal-title" id="name_vendedor"></h4>
+                <div class="col-lg-2" id="preliquidacion_vendedor">
+                    <a href="#" class="btn btn-primary" style="float: right;">
+                        <b><i class="fa fa-user"></i>Ejecutar Pre - Liquidacion</b>
+                    </a>
+                </div>
         </div>
         
         <div class="modal-body">
@@ -68,6 +70,7 @@
                     <th>Suma Asegurada</th>
                     <th>Prima Mensual</th>
                     <th>Comision</th>
+                    <th>Acciones</th>
                 </tr>
             </thead>
             <tbody id="tablechild">
@@ -81,18 +84,45 @@
 </div>
 
 <script>
-    function liquidacion(){
+
+    function anularVenta(vendedor_id, venta_id){
         Swal.fire({
-            title: 'Desea liquidar a todos los vendedores de la tabla?',
+            title: 'Desea anular la venta?',
             text: "Esta accion es irreversible!",
             type: 'info',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
-            confirmButtonText: 'Si, LIQUIDAR'
+            confirmButtonText: 'Si, ANULAR VENTA'
+        }).then((result) => {
+            $.post("<?php echo base_url() ?>/index.php/polizas/anularVenta", { vendedor_id: vendedor_id, venta_id: venta_id }, function(data){
+                mensaje = JSON.parse(data);
+                Swal.fire({
+                    title: mensaje.mensaje,
+                    text:  'Click en el boton para cerrar',
+                    type:  mensaje.tipo,
+                    confirmButtonText: 'Cerrar'
+                }).then((result) => {
+                    if (mensaje.tipo === 'success') {
+                        location.reload();
+                    }
+                });
+            });
+        })
+    }
+
+    function preliquidacion(codigo_vendedor){
+        Swal.fire({
+            title: 'Desea preliquidar a este vendedor?',
+            text: "Esta accion es irreversible!",
+            type: 'info',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Si, PRELIQUIDAR'
         }).then((result) => {
             $.post("<?php echo base_url() ?>/index.php/polizas/liquidacionVendedores", { 
-                semana: 2, codigo_vendedor:'vendedores', preliquidacion: 2, estatus_venta: 'P' }, function(data){      
+                semana: 2, codigo_vendedor: codigo_vendedor, preliquidacion: 1 }, function(data){      
                 mensaje = JSON.parse(data);
                 Swal.fire({
                     title: mensaje.mensaje,
@@ -109,7 +139,7 @@
     }
 
     $(".detalleVendedor").click(function() {
-      $.post("<?php echo base_url() ?>/index.php/polizas/liquidacionVendedores", { semana: 2, codigo_vendedor:$(this).attr("id"), estatus_venta:'P' }, function(data){
+      $.post("<?php echo base_url() ?>/index.php/polizas/liquidacionVendedores", { semana: 2, codigo_vendedor:$(this).attr("id") }, function(data){
         ventas_json = JSON.parse(data)
         document.getElementById('name_vendedor').innerText = 'Detalle De Ventas: ' + ventas_json[1];
 
@@ -138,6 +168,7 @@
             var td5 = document.createElement('td');
             var td6 = document.createElement('td');
             var td7 = document.createElement('td');
+            var td8 = document.createElement('td');
 
             td.appendChild(i);
             td.appendChild(texto_clickeable);
@@ -148,6 +179,7 @@
             tr_principal.appendChild(td5);
             tr_principal.appendChild(td6);
             tr_principal.appendChild(td7);
+            tr_principal.appendChild(td8);
             tablechild_body.appendChild(tr_principal);
 
             var ventas_categoria = ventas_json[0][keys[index]];
@@ -170,6 +202,24 @@
                 var td_child7 = document.createElement('td');
                 td_child7.innerText = ventas_json[0][keys[index]][i].comision_calculada;
 
+                var td_child8 = document.createElement('td');
+
+                var action_button = document.createElement('a');
+                action_button.setAttribute('class', 'btn btn-primary');
+                action_button.setAttribute('style', 'float: right;');
+                action_button.setAttribute('onclick', "anularVenta("+ventas_json[0][keys[index]][i].id_vendedor+","+ventas_json[0][keys[index]][i].id_venta+");");
+                action_button.id = 'anularventa';
+
+
+                var b_element = document.createElement('b');
+                b_element.innerText = 'Anular Venta';
+                
+                action_button.appendChild(b_element);
+                td_child8.appendChild(action_button);
+
+                var preliquidacion_button = document.getElementById("preliquidacion_vendedor");
+                preliquidacion_button.setAttribute('onclick', "preliquidacion("+ventas_json[0][keys[index]][i].cod_vendedor+");");
+
                 tr_child.appendChild(td_child1);
                 tr_child.appendChild(td_child2);
                 tr_child.appendChild(td_child3);
@@ -177,6 +227,7 @@
                 tr_child.appendChild(td_child5); 
                 tr_child.appendChild(td_child6); 
                 tr_child.appendChild(td_child7);
+                tr_child.appendChild(td_child8);
                 tablechild_body.appendChild(tr_child);
             }
         }

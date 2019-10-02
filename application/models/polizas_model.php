@@ -416,34 +416,103 @@ class Polizas_model extends CI_Model{
 
 	}
 
-	public function getVendedoresVentasPolizas($semana){
-		$this->db->where('id_semana',$semana);
-		$list_ventas_vendedores = $this->db->get('public.vendedores_ventas_detalles');
+	public function getVendedoresVentasPolizas($semana, $vendedor = 'vendedores', $estatus_venta = 'A'){
+		if (!is_string($vendedor)) {
+			$this->db->where('id_semana', $semana);
+			$this->db->where('cod_vendedor', $vendedor);
+			$this->db->where('estatus_venta', $estatus_venta);
+			$list_ventas_vendedores = $this->db->get('public.vendedores_ventas_detalles');
+		}else{
+			$this->db->where('id_semana',$semana);
+			$this->db->where('estatus_venta', $estatus_venta);
+			$list_ventas_vendedores = $this->db->get('public.vendedores_ventas_detalles');
+		}
 
 		return $list_ventas_vendedores->result_array();
 	}
 
-	public function calculoComisionBase($ventas){
+	public function calculoComisionBase($ventas, $individual){
+		if ($individual == 0) {
+			$adicionales_ventas = $this->adicionalesVentasTotal($ventas);
 
-		//Añadir la cantidad de ventas por cada poliza de dicho tipo. Y las personas adicionales. Defino tambien el tipo de ventas.
-		$adicionales_ventas = $this->adicionalesVentasTotal($ventas);
-		//var_dump($ventas[0]['tipo_venta']); die();
-		
-		$cantidad_polizas_vendidas = count($ventas) + $adicionales_ventas;
+			$cantidad_polizas_vendidas = count($ventas) + $adicionales_ventas;
 
-		for ($i=0; $i < count($ventas); $i++) { 
+			for ($i=0; $i < count($ventas); $i++) { 
 
-			//Obtener la poliza, cobertura y plan para poder manipular la suma asegurada
-			$this->db->where('polizas_plan_coberturas.id_poliza', $ventas[$i]['id_poliza']);
-			$this->db->where('polizas_plan_coberturas.id_plan_poliza', $ventas[$i]['id_plan']);
-			$this->db->where('polizas_plan_coberturas.id_cobertura_poliza',$ventas[$i]['id_cobertura']);
+				//Obtener la poliza, cobertura y plan para poder manipular la suma asegurada
+				$this->db->where('polizas_plan_coberturas.id_poliza', $ventas[$i]['id_poliza']);
+				$this->db->where('polizas_plan_coberturas.id_plan_poliza', $ventas[$i]['id_plan']);
+				$this->db->where('polizas_plan_coberturas.id_cobertura_poliza',$ventas[$i]['id_cobertura']);
+				$poliza['poliza'] = $this->db->get('public.polizas_plan_coberturas')->result_array()[0];
+				
+				$this->db->where('t_adicionales.id_venta',$ventas[$i]['id_venta']);
+				$adicionales_venta = $this->db->get('public.t_adicionales')->result_array();
+
+				$poliza['poliza']['poliza_adicional_familiar'] = count($adicionales_venta);
+				$poliza['poliza']['tipo_venta'] = $ventas[$i]['tipo_venta'];
+
+				if ($poliza['poliza']['poliza_adicional_familiar'] > 0) {
+					$cantidad_polizas_vendidas = $cantidad_polizas_vendidas + $poliza['poliza']['poliza_adicional_familiar'];
+				}
+
+				$poliza['poliza']['coutas_pagadas_poliza'] = $ventas[$i]['cuotas_canceladas'];
+
+				//Primas Anuales y Mensual
+				$poliza['poliza']['prima_anual'] = round(($poliza['poliza']['suma_poliza'] * $poliza['poliza']['factor_poliza'])/1000, 2);
+				$poliza['poliza']['prima_mensual'] = round($poliza['poliza']['prima_anual']/12, 2);
+
+				$planes_comision = $this->db->get('public.t_plan_comision')->result_array();
+
+				switch (true) {
+					case $cantidad_polizas_vendidas > 0 && $cantidad_polizas_vendidas < $planes_comision[1]['ventas_min']:
+						$porcentaje = (80/100);
+						$poliza['poliza']['comision_base'] = round(($poliza['poliza']['prima_mensual'] * $porcentaje), 2);
+						$calculos = $this->preprocesarComision($poliza);
+						$poliza['poliza']['comision_preprocesada'] = $calculos['poliza']['comision_preprocesada'];
+						$ventas[$i]['comision_preprocesada'] = $poliza['poliza']['comision_preprocesada'];
+					break;
+
+					case $cantidad_polizas_vendidas < $planes_comision[2]['ventas_min']:
+						$porcentaje = (100/100);
+						$poliza['poliza']['comision_base'] = round(($poliza['poliza']['prima_mensual'] * $porcentaje), 2);
+						$calculos = $this->preprocesarComision($poliza);
+						$poliza['poliza']['comision_preprocesada'] = $calculos['poliza']['comision_preprocesada'];
+						$ventas[$i]['comision_preprocesada'] = $poliza['poliza']['comision_preprocesada'];
+					break;
+
+					case $cantidad_polizas_vendidas >= $planes_comision[2]['ventas_min']:
+						$porcentaje = (110/100);
+						$poliza['poliza']['comision_base'] = round(($poliza['poliza']['prima_mensual'] * $porcentaje), 2);
+						$calculos = $this->preprocesarComision($poliza);
+						$poliza['poliza']['comision_preprocesada'] = $calculos['poliza']['comision_preprocesada'];
+						$ventas[$i]['comision_preprocesada'] = $poliza['poliza']['comision_preprocesada'];
+					break;
+				}
+			}
+
+			$comision_total = 0;
+
+			for ($i=0; $i < count($ventas); $i++) { 
+				$comision_total += $ventas[$i]['comision_preprocesada'];
+			}
+
+			$comision_total = round($comision_total, 2);
+			return $comision_total;
+
+		}else{
+			$adicionales_ventas = $this->adicionalesVentasTotal($ventas);
+			$cantidad_polizas_vendidas = 1 + $adicionales_ventas;
+
+			$this->db->where('polizas_plan_coberturas.id_poliza', $ventas['id_poliza']);
+			$this->db->where('polizas_plan_coberturas.id_plan_poliza', $ventas['id_plan']);
+			$this->db->where('polizas_plan_coberturas.id_cobertura_poliza',$ventas['id_cobertura']);
 			$poliza['poliza'] = $this->db->get('public.polizas_plan_coberturas')->result_array()[0];
-			
-			$this->db->where('t_adicionales.id_venta',$ventas[$i]['id_venta']);
+
+			$this->db->where('t_adicionales.id_venta',$ventas['id_venta']);
 			$adicionales_venta = $this->db->get('public.t_adicionales')->result_array();
 
 			$poliza['poliza']['poliza_adicional_familiar'] = count($adicionales_venta);
-			$poliza['poliza']['tipo_venta'] = $ventas[$i]['tipo_venta'];
+			$poliza['poliza']['tipo_venta'] = $ventas['tipo_venta'];
 
 			if ($poliza['poliza']['poliza_adicional_familiar'] > 0) {
 				$cantidad_polizas_vendidas = $cantidad_polizas_vendidas + $poliza['poliza']['poliza_adicional_familiar'];
@@ -463,7 +532,7 @@ class Polizas_model extends CI_Model{
 					$poliza['poliza']['comision_base'] = round(($poliza['poliza']['prima_mensual'] * $porcentaje), 2);
 					$calculos = $this->preprocesarComision($poliza);
 					$poliza['poliza']['comision_preprocesada'] = $calculos['poliza']['comision_preprocesada'];
-					$ventas[$i]['comision_preprocesada'] = $poliza['poliza']['comision_preprocesada'];
+					$ventas['comision_preprocesada'] = $poliza['poliza']['comision_preprocesada'];
 				break;
 
 				case $cantidad_polizas_vendidas < $planes_comision[2]['ventas_min']:
@@ -471,7 +540,7 @@ class Polizas_model extends CI_Model{
 					$poliza['poliza']['comision_base'] = round(($poliza['poliza']['prima_mensual'] * $porcentaje), 2);
 					$calculos = $this->preprocesarComision($poliza);
 					$poliza['poliza']['comision_preprocesada'] = $calculos['poliza']['comision_preprocesada'];
-					$ventas[$i]['comision_preprocesada'] = $poliza['poliza']['comision_preprocesada'];
+					$ventas['comision_preprocesada'] = $poliza['poliza']['comision_preprocesada'];
 				break;
 
 				case $cantidad_polizas_vendidas >= $planes_comision[2]['ventas_min']:
@@ -479,19 +548,19 @@ class Polizas_model extends CI_Model{
 					$poliza['poliza']['comision_base'] = round(($poliza['poliza']['prima_mensual'] * $porcentaje), 2);
 					$calculos = $this->preprocesarComision($poliza);
 					$poliza['poliza']['comision_preprocesada'] = $calculos['poliza']['comision_preprocesada'];
-					$ventas[$i]['comision_preprocesada'] = $poliza['poliza']['comision_preprocesada'];
+					$ventas['comision_preprocesada'] = $poliza['poliza']['comision_preprocesada'];
 				break;
 			}
+
+			$comision_total = round($poliza['poliza']['comision_preprocesada'], 2);
+			
+			$datos_retorno['comision_total'] = $comision_total;
+			$datos_retorno['prima_mensual'] = $poliza['poliza']['prima_mensual'];
+			$datos_retorno['suma_asegurada'] = $poliza['poliza']['suma_poliza'];
+			$datos_retorno['vendedor_data'] = $ventas['vendedor_data'];
+
+			return $datos_retorno;
 		}
-
-		$comision_total = 0;
-
-		for ($i=0; $i < count($ventas); $i++) { 
-			$comision_total += $ventas[$i]['comision_preprocesada'];
-		}
-
-		$comision_total = round($comision_total, 2);
-		return $comision_total;
 	}
 
 	public function adicionalesVentasTotal($ventas){
@@ -532,9 +601,68 @@ class Polizas_model extends CI_Model{
 		return $vendedores_data;
 	}
 
-	public function getSemanaDetalle($semana){
-		$this->db->where_in('t_semanas.id_semana', $semana);
+	public function getSemanaDetalle(){
+		$this->db->where_in('t_semanas.estatus', 0);
 		$semana_detalle = $this->db->get('public.t_semanas')->result_array();
 		return $semana_detalle;
+	}
+
+	public function anularVenta($vendedor_id, $venta_id){
+		$data = array(
+			'estatus_venta' => 'X'
+		);
+		
+		$this->db->where('t_ventas.id_vendedor', $vendedor_id);
+		$this->db->where('t_ventas.id_venta', $venta_id);
+		$semana_detalle = $this->db->update('t_ventas', $data);
+
+		return array(
+			'mensaje' => 'Anulada con exito',
+			'tipo' => 'success'
+		);
+	}
+
+	public function preliquidacion($ventas){
+		for ($i=0; $i < count($ventas); $i++) { 
+
+			$data = array(
+				'estatus_venta' => 'P'
+			);
+			
+			$this->db->where('t_ventas.id_vendedor', $ventas[$i]['id_vendedor']);
+			$this->db->where('t_ventas.id_venta', $ventas[$i]['id_venta']);
+			$semana_detalle = $this->db->update('t_ventas', $data);
+		}
+		
+		return array(
+			'mensaje' => 'Venta preliquidada con exito',
+			'tipo' => 'success'
+		);
+	}
+
+	public function liquidacion($ventas){
+		for ($i=0; $i < count($ventas); $i++) { 
+			$data = array(
+				'estatus_venta' => 'L'
+			);
+
+			$this->db->where('t_ventas.id_vendedor', $ventas[$i]['id_vendedor']);
+			$this->db->where('t_ventas.id_venta', $ventas[$i]['id_venta']);
+			$semana_detalle = $this->db->update('t_ventas', $data);
+
+			$data = array(
+				'id_vendedor'=> $ventas[$i]['id_vendedor'],
+				'id_venta'=> $ventas[$i]['id_venta'],	
+				'id_semana'=> 2,	
+				'comision_liquidada' => $ventas[$i]['comision_total']
+			);
+	
+			$this->db->insert('public.t_liquidacion',$data);
+		}
+
+		return array(
+			'mensaje' => 'Venta preliquidada con exito',
+			'tipo' => 'success'
+		);
 	}
 }
