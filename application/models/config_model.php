@@ -3,13 +3,9 @@
 class Config_model extends CI_Model{
     function __construct(){
         parent::__construct();
-<<<<<<< Updated upstream
-        $this->load->database();
-=======
 		$this->load->database();
 		$this->load->library('session');
 		$this->load->helper('date');
->>>>>>> Stashed changes
     }    
 
     function eliminarRegistros($id,$tb,$name_id){
@@ -328,8 +324,7 @@ class Config_model extends CI_Model{
 
 	}
 
-<<<<<<< Updated upstream
-=======
+
 	public function listSemanas(){
 		$this->db->order_by('id_semana', 'asc');
 		$semanas = $this->db->get('public.t_semanas')->result_array();
@@ -434,7 +429,8 @@ class Config_model extends CI_Model{
 
 			$result ="Fue cerrada la semana ".$nsem->row()->nsem." y se acaba de abrir la semana ".$numerosemana;
 
+			return $result; 
+
 
 	}
->>>>>>> Stashed changes
 }

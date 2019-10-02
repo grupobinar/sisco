@@ -35,11 +35,8 @@
                         <td>
                             <div class="btn-group">
                                 <?php if ($key['estatus']==0) { ?>
-                                <a href="<?php echo base_url().'index.php/config/cerrarSemana'; ?>"><i class="fa fa-close"></i></a>
                                 <center>
-                                    <a class="btn btn-sm btn-default desactivar" id="<?php echo $key['id_semana']?>" title="Cerrar Semana"><i class="fa fa-close"></i></a>
-
-                                    
+                                    <a class="btn btn-sm btn-default desactivar" id="<?php echo $key['id_semana']?>" title="Cerrar Semana"><i class="fa fa-close"></i></a>  
                                 </center>
                                 <?php } else { ?>
                                     SIN ACCIONES

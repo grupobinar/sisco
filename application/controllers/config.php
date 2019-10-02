@@ -418,8 +418,7 @@ class Config extends CI_Controller {
 		$this->load->view('config/edad',$data);
 		$this->load->view('layout/footer');
 	}
-<<<<<<< Updated upstream
-=======
+
 
 	public function semana(){
 		$data['semanas'] = $this->config_model->listSemanas();
@@ -442,6 +441,5 @@ class Config extends CI_Controller {
 		echo $result;
 
 	}
->>>>>>> Stashed changes
 	
 }
