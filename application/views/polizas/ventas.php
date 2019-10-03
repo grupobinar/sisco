@@ -55,7 +55,7 @@
 <!-- #Agregar Usuario ############################################################################-->
 
 
-<form action="http://localhost/sisco/index.php/polizas/guardar_venta" method="post" accept-charset="utf-8" enctype="multipart/form-data">
+<form action="<?php echo base_url().'index.php/polizas/guardar_venta'?>" method="post" accept-charset="utf-8" enctype="multipart/form-data">
   <div class="modal fade" id="myModal" role="dialog">
     <div class="modal-dialog modal-lg">
     

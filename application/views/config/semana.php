@@ -4,11 +4,6 @@
 <div class="col-lg-12"> 
     <div class="col-lg-12"><br></div>
     <div class="col-lg-10"><br></div>
-    <!--div class="col-lg-2">
-        <a href="#" class="btn btn-primary btn-xm" data-toggle="modal" data-target="#myModal">
-            <b><i class="fa fa-user"></i> Nueva Semana</b>
-        </a>
-    </div-->
 </div>
 
 <div class="col-lg-12"><br></div>
@@ -18,7 +13,7 @@
         <table id="example1" class="table table-bordered table-striped" style="padding: 10px;">
             <thead>
                 <tr>
-                    <th>N° Semana del Año</th>
+                    <th>Semana del Año</th>
                     <th>Desde</th>
                     <th>Hasta</th>
                     <th>Estatus</th>
@@ -31,15 +26,17 @@
                         <td><?php echo ucwords($key['nsem']);?></td>
                         <td><?php echo ucwords($key['desde']);?></td>
                         <td><?php echo ucwords($key['hasta']);?></td>
-                        <td><?php if ($key['estatus']==0) echo "Abierta"; elseif($key['estatus']==1) echo "Cerrada"; ?></td>
+                        <td><?php if ($key['estatus']==0) echo "Abierta"; elseif($key['estatus']==1) echo "Cerrada"; elseif($key['estatus']==2) echo "Reabierta"; ?></td>
                         <td>
                             <div class="btn-group">
-                                <?php if ($key['estatus']==0) { ?>
+                                <?php if ($key['estatus']!=1) { ?>
                                 <center>
                                     <a class="btn btn-sm btn-default desactivar" id="<?php echo $key['id_semana']?>" title="Cerrar Semana"><i class="fa fa-close"></i></a>  
                                 </center>
-                                <?php } else { ?>
-                                    SIN ACCIONES
+                                <?php } elseif($key['estatus']==1) { ?>
+                                <center>
+                                    <a class="btn btn-sm btn-default reabrir" id="<?php echo $key['id_semana']?>" title="Reabrir semana"><i class="fa fa-folder-open"></i></a>  
+                                </center>
                                 <?php } ?>
                             </div>
                         </td>  
@@ -50,65 +47,37 @@
   
         <!-- #Agregar Usuario ############################################################################-->
 
-        <?=form_open_multipart(base_url().'index.php/config/registrarSemana')?>
-            <div class="modal fade" id="myModal" role="dialog">
-                <div class="modal-dialog">
         
-                <!-- Modal content-->
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            <h4 class="modal-title"><i class="fa fa-bank"></i> Nueva Semana</h4>
-                        </div>
-            
-                        <div class="modal-body">
-                            <div class="container-fluid">
-                                <div class="row">                
-                                    <div class="col-lg-6">
-                                        <b>Desde</b>
-                                        <input name="fecha_desde" type="date" class="form-control">
-                                    </div>
-
-                                    <div class="col-lg-6">
-                                        <b>Hasta</b>
-                                        <input name="fecha_hasta" type="date" class="form-control">
-                                    </div>
-
-                                    <div class="col-lg-6">
-                                        <b>Estatus de la Semana</b>
-                                        <select class="form-control" name="id_basec" id="id_basec">
-                                            <option value="0">Abierta</option>
-                                            <option value="1">Cerrada</option>
-                                        </select>
-                                    </div>
-                                    
-                                    <div class="col-lg-6">
-                                        <b>Observacion</b>
-                                        <input type="text" name="observacion_semana" class="form-control letras">
-                                    </div>   
-                                </div>
-                                
-                                <div class="modal-footer">
-                                    <input type="submit" name="guardar" id="guardar" class="btn btn-primary" value="Guardar Comisión">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-    </div>
-</div>
 
 <script type="text/javascript">
     $(".desactivar").click(function() {
         semana =  $(this).attr("id");
-
+        var confirmacion=confirm("Recuerde que al cerrar la semana no podran ser cargadas ventas en la misma. Desea continuar?");
+        if (confirmacion==true) {
         $.post("<?php echo base_url() ?>/index.php/config/cerrarSemana", { semana: semana }, function(data){
 
-            console.log(data); 
             alert(data);     
+            location.reload(); 
 
         });
+        }else{
+            alert("Operacion Cancelada");
+        }
+    });
+
+    $(".reabrir").click(function() {
+        semana =  $(this).attr("id");
+        var confirmacion=confirm("Recuerde que solo puede tener una semana abierta, al ejecutar esta accion se cerrara la semana que se encuentre abierta. Desea continuar?");
+        if (confirmacion==true) {
+        $.post("<?php echo base_url() ?>/index.php/config/reabrirSemana", { semana: semana }, function(data){
+
+            alert(data);     
+            location.reload(); 
+
+        });
+        }else{
+            alert("Operacion Cancelada");
+        }
     });
 
 </script>

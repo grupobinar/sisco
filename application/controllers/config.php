@@ -441,5 +441,12 @@ class Config extends CI_Controller {
 		echo $result;
 
 	}
+
+	public function reabrirSemana(){
+		$result = $this->config_model->reabrirSemana($_POST['semana']);
+
+		echo $result;
+
+	}
 	
 }

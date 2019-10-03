@@ -433,4 +433,29 @@ class Config_model extends CI_Model{
 
 
 	}
+
+	public function reabrirSemana($semana_id){
+
+		// Reabriendo semana
+
+		$data = array(
+			'estatus'=>'2',
+			'ult_mod'=>date("d/m/Y")
+		);
+
+		$this->db->where('t_semanas.estatus','1');
+		$this->db->where('t_semanas.id_semana', $semana_id);
+		$this->db->update('public.t_semanas', $data);
+
+		$data = array(
+			'estatus'=>'1',
+			'ult_mod'=>date("d/m/Y")
+		);
+
+		$this->db->where('t_semanas.estatus','0');
+		$this->db->update('public.t_semanas', $data);
+
+		return "Semana Reabierta";
+
+	}
 }
