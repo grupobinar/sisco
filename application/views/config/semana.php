@@ -56,6 +56,8 @@
         if (confirmacion==true) {
         $.post("<?php echo base_url() ?>/index.php/config/cerrarSemana", { semana: semana }, function(data){
 
+            console.log(data);
+
             alert(data);     
             location.reload(); 
 

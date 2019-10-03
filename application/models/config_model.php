@@ -367,6 +367,12 @@ class Config_model extends CI_Model{
 
 	public function registrarSemana($semana_id){
 
+		// evaluar si es una semana reabierta
+
+		$this->db->select("estatus");
+		$this->db->where('t_semanas.id_semana', $semana_id);
+	    $estatus_sem = $this->db->get('public.t_semanas');
+
 		// Cerrando semana
 
 		$data = array(
@@ -374,9 +380,29 @@ class Config_model extends CI_Model{
 			'ult_mod'=>date("d/m/Y")
 		);
 
-		$this->db->where('t_semanas.estatus','0');
 		$this->db->where('t_semanas.id_semana', $semana_id);
 		$this->db->update('public.t_semanas', $data);
+
+		
+	    if ($estatus_sem->row()->estatus==2) {
+
+	    // si fue una semana reabierta, se debe cerrar la semana reabierta y abrir la ultima semana que estaba abierta.
+
+	    $this->db->select_max("nsem");
+	    $rsem = $this->db->get('public.t_semanas');
+
+	    $data = array(
+			'estatus'=>'0',
+			'ult_mod'=>date("d/m/Y")
+		);
+
+		$this->db->where('t_semanas.nsem', $rsem->row()->nsem);
+		$this->db->update('public.t_semanas', $data);
+
+		$result ="Se volvera a abrir la semana ".$rsem->row()->nsem;
+
+	    	
+	    }else{
 
 		// calculando cant de semanas que tiene el año
 
@@ -429,12 +455,21 @@ class Config_model extends CI_Model{
 
 			$result ="Fue cerrada la semana ".$nsem->row()->nsem." y se acaba de abrir la semana ".$numerosemana;
 
-			return $result; 
+		}
 
+			return $result; 
 
 	}
 
 	public function reabrirSemana($semana_id){
+
+		$data = array(
+			'estatus'=>'1',
+			'ult_mod'=>date("d/m/Y")
+		);
+
+		$this->db->where('t_semanas.estatus !=','1');
+		$this->db->update('public.t_semanas', $data);
 
 		// Reabriendo semana
 
@@ -445,14 +480,6 @@ class Config_model extends CI_Model{
 
 		$this->db->where('t_semanas.estatus','1');
 		$this->db->where('t_semanas.id_semana', $semana_id);
-		$this->db->update('public.t_semanas', $data);
-
-		$data = array(
-			'estatus'=>'1',
-			'ult_mod'=>date("d/m/Y")
-		);
-
-		$this->db->where('t_semanas.estatus','0');
 		$this->db->update('public.t_semanas', $data);
 
 		return "Semana Reabierta";
