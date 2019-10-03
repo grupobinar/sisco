@@ -9,11 +9,25 @@ class Reportes extends CI_Controller {
 		$this->load->helper('url');
     	$this->load->helper('form');
     	//$this->load->model('polizas_model');
-    	//$this->load->model('config_model');
+		//$this->load->model('config_model');
+		$this->load->model('reportes_model');
         $this->load->library('session');
         $this->load->library('fpdf_master');
     }
-    
+	
+	public function comisiones(){
+		if ($_GET['id_vendedor']) {
+			$data = $this->reportes_model->listVendedores($_GET['id_vendedor']);
+		}else{
+			$data = $this->reportes_model->listVendedores();
+		}
+		
+		$this->load->view('layout/header');
+		$this->load->view('layout/nav');
+		$this->load->view('reportes/comisiones_vendedores', $data);
+		$this->load->view('layout/footer');
+	}
+
     public function estado_general(){
 		//$pdf = new FPDF('L');
 		$this->fpdf->AddPage();
@@ -127,6 +141,10 @@ class Reportes extends CI_Controller {
 	}
 	
 	public function estado_comisiones(){
+		$data = $this->reportes_model->listVendedores($_GET['id_vendedor']);
+		//var_dump($data); die();
+		$vendedor_name = $data[0]['apellidos'].' '.$data[0]['nombres'];
+
 		$this->fpdf->AddPage();
 		$this->fpdf->SetFont('Arial','B',16);
 		$this->fpdf->Cell(275,10,'Estado de cuenta de Comisiones',0,0,'C');
@@ -145,9 +163,9 @@ class Reportes extends CI_Controller {
 
 		$this->fpdf->Ln(8);
 
-		$this->fpdf->Cell(80,8,'Alvaro Angulo', 0, 0, 'C');
-		$this->fpdf->Cell(35,8,'32962',0,0,'C');
-		$this->fpdf->Cell(80,8,'Ericson Velasco',0,0,'C');
+		$this->fpdf->Cell(80,8, $vendedor_name, 0, 0, 'C');
+		$this->fpdf->Cell(35,8, $data[0]['cod_vendedor'],0,0,'C');
+		$this->fpdf->Cell(80,8, $data[0]['nombre_coordinador'],0,0,'C');
 		$this->fpdf->Cell(80,8,'SEM 38 DEL 23/09/19 AL 29/09/19',0,0,'C');
 
 		$this->fpdf->Line(10,36,285,36);

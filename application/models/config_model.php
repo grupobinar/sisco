@@ -372,28 +372,35 @@ class Config_model extends CI_Model{
 
 		$week = $week_start_format->format("W");
 
-		$data = array(
-			'estatus'=>'1'
-		);
+		$this->db->where('t_semanas.nsem',$week->format("W"));
+		$semanas = $this->db->get('public.t_semanas')->result_array();
 
-		$this->db->where('t_semanas.estatus','0');
-		$this->db->where('t_semanas.id_semana', $semana_id);
-		$this->db->update('public.t_semanas', $data);
-			
-		$data = array(
-			'desde'=> $week_start,
-			'hasta'=> $week_end,
-			'estatus'=> 0,
-			'observaciones'=> 'REGISTRO DE NUEVA SEMANA',
-			'nsem' => $week
-		);
+		if (!count($semanas)) {
+			$data = array(
+				'estatus'=>'1'
+			);
 	
+			$this->db->where('t_semanas.estatus','0');
+			$this->db->where('t_semanas.id_semana', $semana_id);
+			$this->db->update('public.t_semanas', $data);
+				
+			$data = array(
+				'desde'=> $week_start,
+				'hasta'=> $week_end,
+				'estatus'=> 0,
+				'observaciones'=> 'REGISTRO DE NUEVA SEMANA',
+				'nsem' => $week
+			);
+		
+		
+			$this->db->insert('public.t_semanas',$data);
 	
-		$this->db->insert('public.t_semanas',$data);
+			return array(
+				'mensaje' => 'Semana cerrada con exito',
+				'tipo' => 'success'
+			);
+		}else{
 
-		return array(
-			'mensaje' => 'Semana cerrada con exito',
-			'tipo' => 'success'
-		);
+		}
 	}
 }

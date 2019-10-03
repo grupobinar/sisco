@@ -13,7 +13,6 @@ class Polizas extends CI_Controller {
 	}
 	public function index()
 	{
-
 		$data = $this->polizas_model->listpoliza();
 
 		$i=0;
