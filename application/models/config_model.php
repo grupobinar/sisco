@@ -329,11 +329,17 @@ class Config_model extends CI_Model{
 		return $semanas;
 	}
 
-	public function registrarSemana(){
-		$date = new DateTime($_POST['fecha_desde']);
-		$week = $date->format("W");
+	public function checkSemana(){
+		$day = date('w');
+		$week_start = date('d/m/Y', strtotime('-'.$day.' days'));
+		$week_end = date('d/m/Y', strtotime('+'.(6-$day).' days'));
 
-		if (intval($_POST['id_basec']) == 0) {
+		$week_start_format = DateTime::createFromFormat('d/m/Y', $week_end);
+
+		$this->db->where('t_semanas.nsem',$week_start_format->format("W"));
+		$semanas = $this->db->get('public.t_semanas')->result_array();
+
+		if (!count($semanas)) {
 			$this->db->where('t_semanas.estatus','0');
 			$semana_activa = $this->db->get('public.t_semanas')->result_array();
 
@@ -343,28 +349,58 @@ class Config_model extends CI_Model{
 
 			$this->db->where('t_semanas.estatus','0');
 			$this->db->update('public.t_semanas', $data);
-			
+
 			$data = array(
-				'desde'=> $_POST['fecha_desde'],
-				'hasta'=> $_POST['fecha_hasta'],
-				'estatus'=> intval($_POST['id_basec']),
-				'observaciones'=> $_POST['observacion_semana'],
-				'nsem' => $week
+				'desde'=> $week_start,
+				'hasta'=> $week_end,
+				'estatus'=> 0,
+				'observaciones'=> 'Activacion de Semana Automatica',
+				'nsem' => $week_start_format->format("W")
 			);
 	
 	
 			$this->db->insert('public.t_semanas',$data);
+		}
+	}
+
+	public function registrarSemana($semana_id){
+		$day = date('w');
+		$week_start = date('d/m/Y', strtotime('-'.$day.' days'));
+		$week_end = date('d/m/Y', strtotime('+'.(6-$day).' days'));
+
+		$week_start_format = DateTime::createFromFormat('d/m/Y', $week_end);
+
+		$week = $week_start_format->format("W");
+
+		$this->db->where('t_semanas.nsem',$week->format("W"));
+		$semanas = $this->db->get('public.t_semanas')->result_array();
+
+		if (!count($semanas)) {
+			$data = array(
+				'estatus'=>'1'
+			);
+	
+			$this->db->where('t_semanas.estatus','0');
+			$this->db->where('t_semanas.id_semana', $semana_id);
+			$this->db->update('public.t_semanas', $data);
+				
+			$data = array(
+				'desde'=> $week_start,
+				'hasta'=> $week_end,
+				'estatus'=> 0,
+				'observaciones'=> 'REGISTRO DE NUEVA SEMANA',
+				'nsem' => $week
+			);
+		
+		
+			$this->db->insert('public.t_semanas',$data);
+	
+			return array(
+				'mensaje' => 'Semana cerrada con exito',
+				'tipo' => 'success'
+			);
 		}else{
-			$data = array(
-				'desde'=> $_POST['fecha_desde'],
-				'hasta'=> $_POST['fecha_hasta'],
-				'estatus'=> intval($_POST['id_basec']),
-				'observaciones'=> $_POST['observacion_semana'],
-				'nsem' => $week
-			);
-	
-	
-			$this->db->insert('public.t_semanas',$data);
+
 		}
 	}
 }
