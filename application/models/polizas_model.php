@@ -418,12 +418,12 @@ class Polizas_model extends CI_Model{
 
 	public function getVendedoresVentasPolizas($semana, $vendedor = 'vendedores', $estatus_venta = 'A'){
 		if (!is_string($vendedor)) {
-			$this->db->where('id_semana', $semana);
+			//$this->db->where('id_semana', $semana);
 			$this->db->where('cod_vendedor', $vendedor);
 			$this->db->where('estatus_venta', $estatus_venta);
 			$list_ventas_vendedores = $this->db->get('public.vendedores_ventas_detalles');
 		}else{
-			$this->db->where('id_semana',$semana);
+			//$this->db->where('id_semana',$semana);
 			$this->db->where('estatus_venta', $estatus_venta);
 			$list_ventas_vendedores = $this->db->get('public.vendedores_ventas_detalles');
 		}
