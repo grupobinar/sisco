@@ -465,6 +465,12 @@ class Polizas_model extends CI_Model{
 
 				switch (true) {
 					case $cantidad_polizas_vendidas > 0 && $cantidad_polizas_vendidas < $planes_comision[1]['ventas_min']:
+						/*
+						$this->db->where('t_comisiones.id_tcomision',intval($ventas[$i]['id_concepto_venta']));
+						$this->db->where('t_comisiones.max >',intval($ventas[$i]['id_concepto_venta']));
+						$t_comision = $this->db->get('public.t_comisiones')->result_array();
+						var_dump($t_comision); die();
+						*/
 						$porcentaje = (80/100);
 						$poliza['poliza']['comision_base'] = round(($poliza['poliza']['prima_mensual'] * $porcentaje), 2);
 						$calculos = $this->preprocesarComision($poliza);
