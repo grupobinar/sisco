@@ -12,9 +12,44 @@ class Reportes extends CI_Controller {
 		//$this->load->model('config_model');
 		$this->load->model('reportes_model');
         $this->load->library('session');
-        $this->load->library('fpdf_master');
+		$this->load->library('fpdf_master');
+		$this->load->library('mail_master');
     }
 	
+	public function sendMail(){
+		try {
+			//Server settings
+			//$this->mail->SMTPDebug = SMTP::DEBUG_SERVER;                      // Enable verbose debug output
+			$this->mail->isSMTP();                                            // Send using SMTP
+			$this->mail->Host       = 'smtp.gmail.com';                    // Set the SMTP server to send through
+			$this->mail->SMTPAuth   = true;                                   // Enable SMTP authentication
+			$this->mail->Username   = 'thomasro10@gmail.com';                     // SMTP username
+			$this->mail->Password   = 'Thomasro_2903';                               // SMTP password
+			//$this->mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;         // Enable TLS encryption; `PHPMailer::ENCRYPTION_SMTPS` also accepted
+			$this->mail->Port       = 587;                                    // TCP port to connect to
+		
+			//Recipients
+			$this->mail->setFrom('from@example.com', 'Mailer');
+			$this->mail->addAddress('thisaparattusmoved@gmail.com', 'Thomas Romero');     // Add a recipient
+			$this->mail->addReplyTo('info@example.com', 'Information');
+		
+			// Attachments
+			//$this->mail->addAttachment('/var/tmp/file.tar.gz');         // Add attachments
+			//$this->mail->addAttachment('/tmp/image.jpg', 'new.jpg');    // Optional name
+		
+			// Content
+			$this->mail->isHTML(true);                                  // Set email format to HTML
+			$this->mail->Subject = 'Here is the subject';
+			$this->mail->Body    = 'This is the HTML message body <b>in bold!</b>';
+			$this->mail->AltBody = 'This is the body in plain text for non-HTML mail clients';
+		
+			$this->mail->send();
+			echo 'Message has been sent';
+		} catch (Exception $e) {
+			echo "Message could not be sent. Mailer Error: {mail->ErrorInfo}";
+		}		
+	}
+
 	public function comisiones(){
 		if ($_GET['id_vendedor']) {
 			$data = $this->reportes_model->listVendedores($_GET['id_vendedor']);
