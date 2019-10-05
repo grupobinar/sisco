@@ -594,6 +594,11 @@ class Polizas_model extends CI_Model{
 			$this->db->limit(1);
 			$this->db->where('t_semanas.estatus', 1);
 			$semana_detalle = $this->db->get('public.t_semanas')->result_array();
+			
+			if (!count($semana_detalle)) {
+				$semana_detalle = 'No hay ventas con semanas cerradas';	
+			}
+
 			return $semana_detalle;
 		}
 

@@ -255,7 +255,7 @@ class Polizas extends CI_Controller {
 	}
 	
 	public function liquidacionVendedores($semana = 2, $cod_vendedor = 'ventas', $preliquidacion = 0, $estatus_venta = 'A'){
-		if ($_POST['codigo_vendedor']) {
+		if (isset($_POST['codigo_vendedor'])) {
 			if (intval($_POST['codigo_vendedor'])) {
 				$cod_vendedor = intval($_POST['codigo_vendedor']);
 			}else{
@@ -376,8 +376,12 @@ class Polizas extends CI_Controller {
 	}
 
 	public function preliquidacion(){
-		$semana = intval($this->polizas_model->getSemanaDetalle()[0]['id_semana']);
-		$vendedores_data = $this->arrayVentasBuild($semana, 'A');
+		$semana = $this->polizas_model->getSemanaDetalle();
+
+		if ($semana != 'No hay ventas con semanas cerradas') {
+			$vendedores_data = $this->arrayVentasBuild($semana[0]['id_semana'], 'A');
+		}
+
 		$this->load->view('layout/header');
 		$this->load->view('layout/nav');
 		$this->load->view('polizas/preliquidacion',$vendedores_data);
@@ -385,8 +389,11 @@ class Polizas extends CI_Controller {
 	}
 
 	public function liquidacion(){
-		$semana = intval($this->polizas_model->getSemanaDetalle()[0]['id_semana']);
-		$vendedores_data = $this->arrayVentasBuild($semana, 'P');
+		$semana = $this->polizas_model->getSemanaDetalle();
+
+		if ($semana != 'No hay ventas con semanas cerradas') {
+			$vendedores_data = $this->arrayVentasBuild($semana[0]['id_semana'], 'P');
+		}
 
 		$this->load->view('layout/header');
 		$this->load->view('layout/nav');
