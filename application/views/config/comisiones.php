@@ -100,7 +100,7 @@
 
               <div class="col-lg-6">
                 <select class="form-control" name="id_basec" id="id_basec">
-                  <option value="3"> No Aplica</option>
+                  <option value="3"> NO APLICA</option>
                   <option value="1"> Sobre la suma asegurada</option>
                   <option value="2"> Sobre la comisión</option>
                 </select>
@@ -167,6 +167,9 @@
 
               <div class="col-lg-6">
                 <select class="form-control" name="id_basec_e" id="id_basec_e">
+                   <option value="3"> NO APLICA</option>
+                  <option value="1"> Sobre la suma asegurada</option>
+                  <option value="2"> Sobre la comisión</option>
                 </select>
               </div>
               
@@ -261,17 +264,23 @@ $(document).ready(function(){
     $("#calculo_e").change(function(){
         if ($("#calculo_e").val()==2) {
           $("#id_basec_e").html('<option value="3"> NO APLICA</option>'); 
-          $("#planc_e").html('<option value=""> NO APLICA</option>'); 
+          $("#planc_e option[value='4']").attr('selected', 'selected');
+          $('#planc_e option:not(:selected)').attr('disabled',true);
+
         }else{
           $("#id_basec_e").html('<option value="1"> Sobre la suma asegurada</option><option value="2"> Sobre la comisión</option>'); 
+          $('#planc_e option:not(:selected)').attr('disabled',false);
         }
     });
     $("#calculo").change(function(){
         if ($("#calculo").val()==2) {
           $("#id_basec").html('<option value="3"> NO APLICA</option>'); 
-          $("#planc").html('<option value=""> NO APLICA</option>'); 
+          $("#planc option[value='4']").attr('selected', 'selected');
+          $('#planc option:not(:selected)').attr('disabled',true);
+
         }else{
           $("#id_basec").html('<option value="1"> Sobre la suma asegurada</option><option value="2"> Sobre la comisión</option>'); 
+          $('#planc option:not(:selected)').attr('disabled',false);
 
         }
     });
