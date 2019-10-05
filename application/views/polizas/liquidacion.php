@@ -32,7 +32,7 @@
                         <td><?php echo ucwords($key['apellidos'].' '.$key['nombres']);?></td>
                         <td><?php echo ucwords($key['telefono']);?></td>
                         <td><?php echo ucwords($key['ventas_totales']);?></td>
-                        <td id="semana_id"><?php echo ucwords($key['numero_semana']);?></td>
+                        <td name="semana_id"><?php echo ucwords($key['numero_semana']);?></td>
                         <td><?php echo number_format($key['comision_total'], 2, ',', '.');?></td>
                         <td>
                             <center>
@@ -67,6 +67,7 @@
                     <th>Tomador</th>
                     <th>Poliza</th>
                     <th>Cobertura</th>
+                    <th>Plan</th>
                     <th>Suma Asegurada</th>
                     <th>Prima Mensual</th>
                     <th>Comision</th>
@@ -84,8 +85,14 @@
 
 <script>
     function liquidacion(){
-        var semana = document.getElementById('semana_id').innerText;
+        var semana_element = document.getElementsByName('semana_id');
+        var semana = [];
 
+        for (let j = 0; j < semana_element.length; j++) {
+            semana[j] = semana_element[j].innerText;
+            
+        }
+        
         Swal.fire({
             title: 'Desea liquidar a todos los vendedores de la tabla?',
             text: "Esta accion es irreversible!",
@@ -113,7 +120,7 @@
     }
 
     $(".detalleVendedor").click(function() {
-      var semana = document.getElementById('semana_id').innerText;
+        var semana = $(this)[0].parentElement.parentElement.parentElement.querySelector('td[name=semana_id]').innerText;
       
       $.post("<?php echo base_url() ?>/index.php/polizas/liquidacionVendedores", { semana: semana, codigo_vendedor:$(this).attr("id"), estatus_venta:'P' }, function(data){
         ventas_json = JSON.parse(data)
@@ -145,6 +152,7 @@
             var td5 = document.createElement('td');
             var td6 = document.createElement('td');
             var td7 = document.createElement('td');
+            var td8 = document.createElement('td');
 
             td.appendChild(i);
             td.appendChild(texto_clickeable);
@@ -155,6 +163,7 @@
             tr_principal.appendChild(td5);
             tr_principal.appendChild(td6);
             tr_principal.appendChild(td7);
+            tr_principal.appendChild(td8);
             tablechild_body.appendChild(tr_principal);
 
             var ventas_categoria = ventas_json[0][keys[index]];
@@ -171,11 +180,14 @@
                 var td_child4 = document.createElement('td');
                 td_child4.innerText = ventas_json[0][keys[index]][i].cobertura_descripcion;
                 var td_child5 = document.createElement('td');
-                td_child5.innerText = ventas_json[0][keys[index]][i].suma_asegurada.toLocaleString('ve-VE');
+                td_child5.innerText = ventas_json[0][keys[index]][i].descripcion_plan;
                 var td_child6 = document.createElement('td');
-                td_child6.innerText = ventas_json[0][keys[index]][i].prima_mensual.toLocaleString('ve-VE');
+                td_child6.innerText = ventas_json[0][keys[index]][i].suma_asegurada.toLocaleString('ve-VE');
                 var td_child7 = document.createElement('td');
-                td_child7.innerText = ventas_json[0][keys[index]][i].comision_calculada.toLocaleString('ve-VE');
+                prima_mensual = parseFloat(Math.round(ventas_json[0][keys[index]][i].prima_mensual * 100) / 100).toFixed(2);
+                td_child7.innerText = prima_mensual.toLocaleString('ve-VE');
+                var td_child8 = document.createElement('td');
+                td_child8.innerText = ventas_json[0][keys[index]][i].comision_calculada.toLocaleString('ve-VE');
 
                 tr_child.appendChild(td_child1);
                 tr_child.appendChild(td_child2);
@@ -184,6 +196,7 @@
                 tr_child.appendChild(td_child5); 
                 tr_child.appendChild(td_child6); 
                 tr_child.appendChild(td_child7);
+                tr_child.appendChild(td_child8);
                 tablechild_body.appendChild(tr_child);
             }
         }

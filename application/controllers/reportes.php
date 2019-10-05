@@ -178,6 +178,7 @@ class Reportes extends CI_Controller {
 	public function estado_comisiones(){
 		$data = $this->reportes_model->listVendedores($_GET['id_vendedor']);
 		$ventas_vendedores = $this->polizas_model->getVendedoresVentasPolizas(0, $data[0]['cod_vendedor'], 'L');
+		highlight_string("<?php\n\$data =\n" . var_export($data, true) . ";\n?>"); die();
 		$vendedor_name = $data[0]['apellidos'].' '.$data[0]['nombres'];
 
 		$this->fpdf->AddPage();

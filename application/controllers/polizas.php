@@ -262,9 +262,17 @@ class Polizas extends CI_Controller {
 				$cod_vendedor = $_POST['codigo_vendedor'];
 			}
 
-			$semana_numero = intval($_POST['semana']);
+			if (is_array($_POST['semana'])) {
+				$semana_array = [];
 
-			$semana = $this->polizas_model->getSemanaDetalle($semana_numero, 1)[0]['id_semana'];
+				for ($i=0; $i < count($_POST['semana']); $i++) { 
+					$semana = $this->polizas_model->getSemanaDetalle($_POST['semana'][$i], 1)[0]['id_semana'];
+					array_push($semana_array, $semana);
+				}
+			}else{
+				$semana_numero = intval($_POST['semana']);
+				$semana = $this->polizas_model->getSemanaDetalle($semana_numero, 1)[0]['id_semana'];
+			}
 
 			if ($_POST['preliquidacion']) {
 				$preliquidacion = $_POST['preliquidacion'];
@@ -303,6 +311,8 @@ class Polizas extends CI_Controller {
 	
 						for ($j=0; $j < $size_tpoliza; $j++) {
 							$vendedores_orden[$keys_vendedor[$x]][$keys_tipo_venta[$i]] = array_values($vendedores_orden[$keys_vendedor[$x]][$keys_tipo_venta[$i]]); 
+							$cobertura_count = array_count_values(array_column($vendedores_orden[$keys_vendedor[$x]][$keys_tipo_venta[$i]], 'id_cobertura'));
+							$vendedores_orden[$keys_vendedor[$x]][$keys_tipo_venta[$i]][$j]['cantidad_cobertura'] = $cobertura_count[$vendedores_orden[$keys_vendedor[$x]][$keys_tipo_venta[$i]][$j]['id_cobertura']];
 							$datos_venta = $this->polizas_model->calculoComisionBase($vendedores_orden[$keys_vendedor[$x]][$keys_tipo_venta[$i]][$j], 1);
 							$vendedores_orden[$keys_vendedor[$x]][$keys_tipo_venta[$i]][$j]['comision_calculada'] = $datos_venta['comision_total'];
 							$vendedores_orden[$keys_vendedor[$x]][$keys_tipo_venta[$i]][$j]['prima_mensual'] = ($datos_venta['prima_mensual'] == 0) ? 'NO APLICA' : $datos_venta['prima_mensual'];
@@ -317,6 +327,7 @@ class Polizas extends CI_Controller {
 	
 				$data[0] = $vendedores_orden[$cod_vendedor];
 				$data[1] = $vendedor_datos;
+
 				echo json_encode($data);
 		} else {
 			if ($preliquidacion == 2) {
@@ -370,8 +381,6 @@ class Polizas extends CI_Controller {
 							}
 
 							$vendedores_orden[$keys_vendedor[$x]][$keys_poliza[$i]][$keys_tpoliza[$j]]['ventas_totales'] = count($vendedores_orden[$keys_vendedor[$x]][$keys_poliza[$i]][$keys_tpoliza[$j]]) - 1;
-							highlight_string("<?php\n\$data =\n" . var_export($result, true) . ";\n?>");
-
 						}
 					}
 				} 
