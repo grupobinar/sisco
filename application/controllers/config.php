@@ -9,6 +9,7 @@ class Config extends CI_Controller {
     	$this->load->helper('form');
     	$this->load->model('config_model');
     	$this->load->library('session');
+    	$this->load->helper('date');
 	}
 
 	// Tipo de poliza ---------------------------------------------------------------------------------
@@ -418,6 +419,7 @@ class Config extends CI_Controller {
 		$this->load->view('layout/footer');
 	}
 
+
 	public function semana(){
 		$data['semanas'] = $this->config_model->listSemanas();
 
@@ -427,16 +429,24 @@ class Config extends CI_Controller {
 		$this->load->view('layout/footer');
 	}
 
-	public function registrarSemana(){
+	/*	public function registrarSemana(){
 		$registro = $this->config_model->registrarSemana();
 		$this->session->set_flashdata('message', ['Semana creada con exito', 'success']);
 		header('Location: '.$_SERVER['HTTP_REFERER']);
-	}
+	}*/
 
 	public function cerrarSemana(){
-		$semana_id = intval($_POST['semana']);
-		$result = $this->config_model->registrarSemana($semana_id);
-		return $result;
+		$result = $this->config_model->registrarSemana($_POST['semana']);
+
+		echo $result;
+
+	}
+
+	public function reabrirSemana(){
+		$result = $this->config_model->reabrirSemana($_POST['semana']);
+
+		echo $result;
+
 	}
 	
 }

@@ -305,7 +305,7 @@ class Polizas_model extends CI_Model{
 		}
 	}
 
-			$this->db->where('estatus','0');
+			$this->db->where('estatus !=','1');
 			$sem = $this->db->get('public.t_semanas');
 
 	if ($tventa==1) {

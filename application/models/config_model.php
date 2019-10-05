@@ -5,6 +5,7 @@ class Config_model extends CI_Model{
         parent::__construct();
 		$this->load->database();
 		$this->load->library('session');
+		$this->load->helper('date');
     }    
 
     function eliminarRegistros($id,$tb,$name_id){
@@ -323,6 +324,7 @@ class Config_model extends CI_Model{
 
 	}
 
+
 	public function listSemanas(){
 		$this->db->order_by('id_semana', 'asc');
 		$semanas = $this->db->get('public.t_semanas')->result_array();
@@ -364,43 +366,123 @@ class Config_model extends CI_Model{
 	}
 
 	public function registrarSemana($semana_id){
-		$day = date('w');
-		$week_start = date('d/m/Y', strtotime('-'.$day.' days'));
-		$week_end = date('d/m/Y', strtotime('+'.(6-$day).' days'));
 
-		$week_start_format = DateTime::createFromFormat('d/m/Y', $week_end);
+		// evaluar si es una semana reabierta
 
-		$week = $week_start_format->format("W");
+		$this->db->select("estatus");
+		$this->db->where('t_semanas.id_semana', $semana_id);
+	    $estatus_sem = $this->db->get('public.t_semanas');
 
-		$this->db->where('t_semanas.nsem',$week->format("W"));
-		$semanas = $this->db->get('public.t_semanas')->result_array();
+		// Cerrando semana
 
-		if (!count($semanas)) {
-			$data = array(
-				'estatus'=>'1'
-			);
-	
-			$this->db->where('t_semanas.estatus','0');
-			$this->db->where('t_semanas.id_semana', $semana_id);
-			$this->db->update('public.t_semanas', $data);
-				
-			$data = array(
-				'desde'=> $week_start,
-				'hasta'=> $week_end,
+		$data = array(
+			'estatus'=>'1',
+			'ult_mod'=>date("d/m/Y")
+		);
+
+		$this->db->where('t_semanas.id_semana', $semana_id);
+		$this->db->update('public.t_semanas', $data);
+
+		
+	    if ($estatus_sem->row()->estatus==2) {
+
+	    // si fue una semana reabierta, se debe cerrar la semana reabierta y abrir la ultima semana que estaba abierta.
+
+	    $this->db->select_max("nsem");
+	    $rsem = $this->db->get('public.t_semanas');
+
+	    $data = array(
+			'estatus'=>'0',
+			'ult_mod'=>date("d/m/Y")
+		);
+
+		$this->db->where('t_semanas.nsem', $rsem->row()->nsem);
+		$this->db->update('public.t_semanas', $data);
+
+		$result ="Se volvera a abrir la semana ".$rsem->row()->nsem;
+
+	    	
+	    }else{
+
+		// calculando cant de semanas que tiene el año
+
+		$semanasyear = new DateTime;
+
+	    $semanasyear->setISODate($year, 53);
+
+	    if($semanasyear->format("W")=="53")
+	        $numsemanas = 53;
+	    else
+	        $numsemanas = 52;
+
+	    // buscando ultima semana en la base de datos para aumentarla en 1, si es la ultima semana del año comienza de nuevo en 1
+
+	    $this->db->select_max("nsem");
+	    $nsem = $this->db->get('public.t_semanas');
+
+	    if ($numsemanas<=$nsem->row()->nsem) $numerosemana=1;
+	    else $numerosemana=$nsem->row()->nsem+1;
+
+
+	    // calculando rango de la nueva semana
+
+	    $ano = date("Y");
+		if ($numerosemana > 0 and $numerosemana < 60) {
+			$numerosemana = $numerosemana;
+			$primerdia = $numerosemana * 7 -8;
+			$ultimodia = $numerosemana * 7 -2;
+			$principioano = "$ano-01-01";
+			$fecha1 = date('Y-m-d', strtotime("$principioano + $primerdia DAY"));
+			$fecha2 = date('Y-m-d', strtotime ("$principioano + $ultimodia DAY"));
+			if ($fecha2 <= date('Y-m-d', strtotime("$ano-12-31"))) {
+				$fecha2 = $fecha2;
+			} else {
+				$fecha2 = date('Y-m-d',strtotime("$ano-12-31"));
+			} 
+		} 
+
+	    	$data = array(
+				'desde'=> $fecha1,
+				'hasta'=> $fecha2,
 				'estatus'=> 0,
 				'observaciones'=> 'REGISTRO DE NUEVA SEMANA',
-				'nsem' => $week
+				'fecha_registro'=> date("d/m/Y"),
+				'ult_mod'=> date("d/m/Y"),
+				'nsem' => $numerosemana
 			);
-		
-		
+
 			$this->db->insert('public.t_semanas',$data);
-	
-			return array(
-				'mensaje' => 'Semana cerrada con exito',
-				'tipo' => 'success'
-			);
-		}else{
+
+			$result ="Fue cerrada la semana ".$nsem->row()->nsem." y se acaba de abrir la semana ".$numerosemana;
 
 		}
+
+			return $result; 
+
+	}
+
+	public function reabrirSemana($semana_id){
+
+		$data = array(
+			'estatus'=>'1',
+			'ult_mod'=>date("d/m/Y")
+		);
+
+		$this->db->where('t_semanas.estatus !=','1');
+		$this->db->update('public.t_semanas', $data);
+
+		// Reabriendo semana
+
+		$data = array(
+			'estatus'=>'2',
+			'ult_mod'=>date("d/m/Y")
+		);
+
+		$this->db->where('t_semanas.estatus','1');
+		$this->db->where('t_semanas.id_semana', $semana_id);
+		$this->db->update('public.t_semanas', $data);
+
+		return "Semana Reabierta";
+
 	}
 }

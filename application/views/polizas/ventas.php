@@ -55,7 +55,7 @@
 <!-- #Agregar Usuario ############################################################################-->
 
 
-<form action="http://localhost/sisco/index.php/polizas/guardar_venta" method="post" accept-charset="utf-8" enctype="multipart/form-data">
+<form action="<?php echo base_url().'index.php/polizas/guardar_venta'?>" method="post" accept-charset="utf-8" enctype="multipart/form-data">
   <div class="modal fade" id="myModal" role="dialog">
     <div class="modal-dialog modal-lg">
     
@@ -108,7 +108,7 @@
 
               <div class="col-lg-3"><input type="text" name="apellidos" id="apellidos" class="form-control letras nm"></div>
               <div class="col-lg-3"><input type="text" name="nombres" id="nombres" class="form-control letras nm"></div>
-              <div class="col-lg-3"><input type="text" name="correo" id="correo" class="form-control nm"></div>
+              <div class="col-lg-3"><input type="text" name="correo" id="correo" class="form-control mail nm"></div>
               <div class="col-lg-3"><input type="text" name="telefono" id="telefono" class="form-control numero nm"></div>
 
               <div class="col-lg-12"><b class="text-blue">Datos de la poliza</b></div>
@@ -215,6 +215,14 @@ $(document).ready(function(){
 
     $('.decimales').on('input', function () { 
         this.value = this.value.replace(/[^0-9\.]/g,'');
+    });
+
+    $('.mail').blur('input', function () { 
+        if($(".mail").val().indexOf('@', 0) == -1 || $(".mail").val().indexOf('.', 0) == -1) {
+            alert('El correo electrónico introducido no es correcto.');
+            $('.mail').val("");
+            return false;
+        }
     });
 
     $("#tventa").change(function(){

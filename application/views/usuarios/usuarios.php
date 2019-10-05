@@ -78,7 +78,7 @@
 
               <div class="col-lg-6"><b>Correo</b></div>
               <div class="col-lg-6"><b>Telefono</b></div>
-              <div class="col-lg-6"><input type="text" name="correo" id="correo" class="form-control"></div>
+              <div class="col-lg-6"><input type="text" name="correo" id="correo" class="form-control mail"></div>
               <div class="col-lg-6"><input type="text" name="telefono" id="telefono" class="form-control numero"></div>
 
               <div class="col-lg-6"><b>Rol</b></div>
@@ -179,6 +179,16 @@ $(document).ready(function(){
     $('.letras').on('input', function () { 
         this.value = this.value.replace(/[^a-zA-Z ]+$/,'');
     });
+
+     $('.mail').blur('input', function () { 
+        if($(".mail").val().indexOf('@', 0) == -1 || $(".mail").val().indexOf('.', 0) == -1) {
+            alert('El correo electrónico introducido no es correcto.');
+            $('.mail').val("");
+            return false;
+        }
+    });
+
+    //  /[\w-\.]{2,}@([\w-]{2,}\.)*([\w-]{2,}\.)[\w-]{2,4}/
 
     $("#guardar").click(function() {
       if ($("#nombres").val() == "") { alert("Todos los campos son obligatorios"); return false; }
