@@ -8,7 +8,7 @@ class Reportes extends CI_Controller {
 		parent::__construct();
 		$this->load->helper('url');
     	$this->load->helper('form');
-    	//$this->load->model('polizas_model');
+    	$this->load->model('polizas_model');
 		//$this->load->model('config_model');
 		$this->load->model('reportes_model');
         $this->load->library('session');
@@ -177,7 +177,7 @@ class Reportes extends CI_Controller {
 	
 	public function estado_comisiones(){
 		$data = $this->reportes_model->listVendedores($_GET['id_vendedor']);
-		//var_dump($data); die();
+		$ventas_vendedores = $this->polizas_model->getVendedoresVentasPolizas(0, $data[0]['cod_vendedor'], 'L');
 		$vendedor_name = $data[0]['apellidos'].' '.$data[0]['nombres'];
 
 		$this->fpdf->AddPage();
@@ -214,7 +214,7 @@ class Reportes extends CI_Controller {
 		$this->fpdf->Ln(15);
 
 		$this->fpdf->SetFont('Arial','B',10);
-		$this->fpdf->Cell(40,8,'Asegurado', 0, 0, 'C', True);
+		$this->fpdf->Cell(45,8,'Asegurado', 0, 0, 'C', True);
 		$this->fpdf->Cell(30,8,'Cedula',0,0,'C', True);
 		$this->fpdf->Cell(40,8,'Tipo Venta',0,0,'C', True);
 		$this->fpdf->Cell(30,8,'Plan',0,0,'C', True);
@@ -223,19 +223,26 @@ class Reportes extends CI_Controller {
 		$this->fpdf->Cell(35,8,'Cuotas',0,0,'C', True);
 		$this->fpdf->Cell(35,8,'Comision',0,0,'C', True);
 
-		$this->fpdf->Ln(8);
-		$this->fpdf->SetFont('Arial','',10);
+		for ($i=0; $i < count($ventas_vendedores); $i++) { 
+			$this->db->where('t_adicionales.id_venta',$ventas_vendedores[$i]['id_venta']);
+			$adicionales_venta = $this->db->get('public.t_adicionales')->result_array();
 
-		$this->fpdf->Cell(40,8,'Asegurado',1,0, 'C');
-		$this->fpdf->Cell(30,8,'Cedula',1,0,'C');
-		$this->fpdf->Cell(40,8,'Tipo Venta',1,0,'C');
-		$this->fpdf->Cell(30,8,'Plan',1,0,'C');
-		$this->fpdf->Cell(30,8,'Adicionales',1,0,'C');
-		$this->fpdf->Cell(35,8,'Suma',1,0,'C');
-		$this->fpdf->Cell(35,8,'Cuotas',1,0,'C');
-		$this->fpdf->Cell(35,8,'Comision',1,0,'C');
+			$this->db->where('t_liquidacion.id_venta',$ventas_vendedores[$i]['id_venta']);
+			$liquidacion_venta = $this->db->get('public.t_liquidacion')->result_array();
 
-		
+			$this->fpdf->Ln(8);
+			$this->fpdf->SetFont('Arial','',10);
+	
+			$this->fpdf->Cell(45,8, $ventas_vendedores[$i]['tomador_nombre'],1,0, 'C');
+			$this->fpdf->Cell(30,8, $ventas_vendedores[$i]['tomador_cedula'],1,0,'C');
+			$this->fpdf->Cell(40,8, $ventas_vendedores[$i]['concepto_venta'],1,0,'C');
+			$this->fpdf->Cell(30,8, $ventas_vendedores[$i]['descripcion_plan'],1,0,'C');
+			$this->fpdf->Cell(30,8, count($adicionales_venta),1,0,'C');
+			$this->fpdf->Cell(35,8, $ventas_vendedores[$i]['suma_asegurada'],1,0,'C');
+			$this->fpdf->Cell(35,8, $ventas_vendedores[$i]['cuotas_canceladas'],1,0,'C');
+			$this->fpdf->Cell(35,8, $liquidacion_venta[0]['comision_liquidada'],1,0,'C');
+		}
+	
 		$this->fpdf->Ln(10);
 
 		$this->fpdf->SetFont('Arial','',14);

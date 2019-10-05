@@ -283,7 +283,7 @@ class Polizas extends CI_Controller {
 
 		$vendedores_orden = array();
 		$vendedor_datos = '';
-		//echo $cod_vendedor; die();
+
 		if (!is_string($cod_vendedor)) {
 				foreach ($ventas as $key => $item) {
 					$vendedores_orden[$item['cod_vendedor']][$item['concepto_venta']][$key] = $item;
@@ -291,7 +291,7 @@ class Polizas extends CI_Controller {
 	
 				$keys_vendedor = array_keys($vendedores_orden); 
 				$size_vendedor = sizeof($vendedores_orden);
-	
+
 				for($x = 0; $x < $size_vendedor; $x++ ) {
 					$keys_tipo_venta = array_keys($vendedores_orden[$keys_vendedor[$x]]); 
 					$size_tipo_venta = sizeof($vendedores_orden[$keys_vendedor[$x]]);
@@ -344,12 +344,12 @@ class Polizas extends CI_Controller {
 				foreach ($ventas as $key => $item) {
 					$vendedores_orden[$item['cod_vendedor']][$item['id_poliza']][$item['id_cobertura']][$key] = $item;
 				}
-	
+
 				$keys_vendedor = array_keys($vendedores_orden); 
 				$size_vendedor = sizeof($vendedores_orden); 
 			
 				for($x = 0; $x < $size_vendedor; $x++ ) {
-		
+
 					$keys_poliza = array_keys($vendedores_orden[$keys_vendedor[$x]]); 
 					$size_poliza = sizeof($vendedores_orden[$keys_vendedor[$x]]);
 		
@@ -359,6 +359,7 @@ class Polizas extends CI_Controller {
 		
 						for ($j=0; $j < $size_tpoliza; $j++) {	
 							$result = $this->polizas_model->calculoComisionBase($vendedores_orden[$keys_vendedor[$x]][$keys_poliza[$i]][$keys_tpoliza[$j]], 0);
+
 							if ($keys_tpoliza[$j] == 30000) {
 								$vendedores_orden[$keys_vendedor[$x]][$keys_poliza[$i]][$keys_tpoliza[$j]]['comision_total'] = $result + (3500 * count($vendedores_orden[$keys_vendedor[$x]][$keys_poliza[$i]][$keys_tpoliza[$j]]));
 							} else {
@@ -402,7 +403,6 @@ class Polizas extends CI_Controller {
 
 	public function arrayVentasBuild($semana, $estatus_venta){
 		$semana_numero = $this->polizas_model->getSemanaDetalle($semana, 0)[0]['nsem'];
-
 		$ventas_semana = $this->liquidacionVendedores($semana, 'ventas', 0, $estatus_venta);
 		$vendedores_cod = array_keys($ventas_semana);
 		$keys_vendedor = array_keys($ventas_semana); 
@@ -429,7 +429,6 @@ class Polizas extends CI_Controller {
 		}else{
 			$vendedores_data = 'No hay ventas por liquidar.';
 		}
-		//FIXME: AGREGAR LA SEMANA EN DETALLE NO ID
 		for ($i=0; $i < count($vendedores_cod); $i++) { 
 			$vendedor_index = array_search($vendedores_cod[$i], array_column($vendedores_data, 'cod_vendedor'));
 			$vendedores_data[$vendedor_index]['ventas_totales'] = $ventas_semana[$vendedores_cod[$i]]['ventas_totales'];
@@ -438,7 +437,6 @@ class Polizas extends CI_Controller {
 			$vendedores_data[$vendedor_index]['numero_semana'] = $ventas_semana[$vendedores_cod[$i]]['semana'];
 		}
 		
-		//var_dump($vendedores_data); die();
 		return $vendedores_data;
 	}
 }

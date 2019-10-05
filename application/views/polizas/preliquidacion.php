@@ -142,6 +142,7 @@
       var semana = document.getElementById('semana_id').innerText;
 
       $.post("<?php echo base_url() ?>/index.php/polizas/liquidacionVendedores", { semana: semana, codigo_vendedor:$(this).attr("id") }, function(data){
+        console.log(data);
         ventas_json = JSON.parse(data)
         document.getElementById('name_vendedor').innerText = 'Detalle De Ventas: ' + ventas_json[1];
 
