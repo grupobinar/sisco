@@ -26,7 +26,7 @@
     <tr id="fila_<?php echo $key['id_poliza']?>">
       <td><?php echo strtoupper($key['tpoliza']);?></td>
       <td><?php echo strtoupper($key['plan']);?></td>
-      <td><?php echo ucwords($key['cobertura']);?></td>
+      <td><?php echo ucwords('['.$key['num_poliza'].'] '.$key['cobertura']);?></td>
       <td><?php echo number_format($key['suma'], 2, ',', '.');?></td>
       <td>
         <div class="btn-group">

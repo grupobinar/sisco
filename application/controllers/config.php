@@ -299,10 +299,21 @@ class Config extends CI_Controller {
 		$max=$_POST['max'];
 		$planc=$_POST['planc'];
 		$id_basec=$_POST['id_basec'];
+
+		$evaluar = $this->config_model->evaluar_comisiones($concepto,$calculo,$planc,$id_basec);
+
+		/*print_r($evaluar);
+		break;*/
 		
 
 		$fecha=date("d/m/Y");
 		$usuario=$this->session->userdata('id_usuario');	
+
+		if($evaluar=="si"){
+
+		$guser="Ya existe una comisión similar a la que intente cargar.";
+
+		}elseif($evaluar=="no"){
 		
 		$guser = $this->config_model->guardar_comision(
 			$concepto,
@@ -316,6 +327,8 @@ class Config extends CI_Controller {
 			$id_basec
 
 		);
+
+		}
 
 		echo "<script> alert('".$guser."') </script>";
 
