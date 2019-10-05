@@ -84,6 +84,33 @@ class Config_model extends CI_Model{
 			return $retorno;
 
 	}
+	function modificar_comision($concepto,$calculo,$cuota,$min,$max,$fecha,$usuario,$planc,$id_basec,$id_comision){
+
+		  	$data = array(
+			'id_tcomision'=>$concepto,
+			'id_tcalculo'=>$calculo,
+			'cuota'=>$cuota,
+			'min'=>$min,
+			'max'=>$max,
+			'fecha_registro'=>$fecha,
+			'ult_mod'=>$fecha,
+			'id_usuario'=>$usuario,
+			'id_plan'=>$planc,
+			'id_basec'=>$id_basec,
+			);
+
+
+
+			$this->db->where('id_comision',$id_comision);
+			$this->db->update('public.t_comisiones',$data);
+
+			//echo $this->db->last_query();
+
+			$retorno="Comisión Modificada";
+
+			return $retorno;
+
+	}
 
 	function guardar_tpoliza($tpoliza,$factor,$fecha,$usuario){
 

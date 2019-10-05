@@ -323,6 +323,48 @@ class Config extends CI_Controller {
 
 	}
 
+	public function modificar_comision()
+	{ // guarda las comisiones
+		/*echo "<pre>";
+		print_r($_POST);
+		echo "</pre>";*/
+
+		//break;
+
+
+		$concepto=$_POST['concepto_e'];
+		$calculo=$_POST['calculo_e'];
+		$cuota=$_POST['cuota_e'];
+		$min=$_POST['min_e'];
+		$max=$_POST['max_e'];
+		$planc=$_POST['planc_e'];
+		$id_basec=$_POST['id_basec_e'];
+		$id_comision=$_POST['id_comision'];
+		
+
+		$fecha=date("d/m/Y");
+		$usuario=$this->session->userdata('id_usuario');	
+		
+		$guser = $this->config_model->modificar_comision(
+			$concepto,
+			$calculo,
+			$cuota,
+			$min,
+			$max,
+			$fecha,
+			$usuario,
+			$planc,
+			$id_basec,
+			$id_comision
+
+		);
+
+		echo "<script> alert('".$guser."') </script>";
+
+		redirect('/config/comisiones', 'refresh');
+
+	}
+
 	public function buscarComision(){
 
 		$guser = $this->config_model->buscarComision($_POST['id']);
