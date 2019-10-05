@@ -198,6 +198,7 @@ class Polizas_model extends CI_Model{
 
 	function listtpago()
 	{
+		$this->db->where('estatus', '0');
 		$this->db->select('id_tpago, tpago');
 		$listusuarios = $this->db->get('public.t_tpago');
 

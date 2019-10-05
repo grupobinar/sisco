@@ -112,6 +112,26 @@ class Config_model extends CI_Model{
 
 	}
 
+	function evaluar_comisiones($concepto,$calculo,$planc,$id_basec){
+
+
+			$this->db->select('id_comision');
+			if (isset($concepto)) $this->db->where('id_tcomision',$concepto);
+			if (isset($calculo)) $this->db->where('id_tcalculo',$calculo);
+			if (isset($planc)) $this->db->where('id_plan',$planc);
+			if (isset($id_basec)) $this->db->where('id_basec',$id_basec);
+			$listusuarios = $this->db->get('public.t_comisiones');
+
+			if($listusuarios->num_rows()>0)
+			{
+				return "si";
+			}else {
+				return "no";
+			}
+
+
+	}
+
 	function guardar_tpoliza($tpoliza,$factor,$fecha,$usuario){
 
 		  	$data = array(
