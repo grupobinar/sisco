@@ -274,12 +274,14 @@ class Polizas extends CI_Controller {
 				$estatus_venta = $_POST['estatus_venta'];
 			}
 		}
-		
+
+
 		if (!is_string($cod_vendedor)) {
 			$ventas = $this->polizas_model->getVendedoresVentasPolizas($semana, $cod_vendedor, $estatus_venta);
 		}else{
 			$ventas = $this->polizas_model->getVendedoresVentasPolizas($semana, 'vendedores', $estatus_venta);
 		}
+
 
 		$vendedores_orden = array();
 		$vendedor_datos = '';
@@ -358,6 +360,7 @@ class Polizas extends CI_Controller {
 						$size_tpoliza = sizeof($vendedores_orden[$keys_vendedor[$x]][$keys_poliza[$i]]);
 		
 						for ($j=0; $j < $size_tpoliza; $j++) {	
+							$vendedores_orden[$keys_vendedor[$x]][$keys_poliza[$i]][$keys_tpoliza[$j]] = array_values($vendedores_orden[$keys_vendedor[$x]][$keys_poliza[$i]][$keys_tpoliza[$j]]);
 							$result = $this->polizas_model->calculoComisionBase($vendedores_orden[$keys_vendedor[$x]][$keys_poliza[$i]][$keys_tpoliza[$j]], 0);
 
 							if ($keys_tpoliza[$j] == 30000) {
@@ -365,11 +368,13 @@ class Polizas extends CI_Controller {
 							} else {
 								$vendedores_orden[$keys_vendedor[$x]][$keys_poliza[$i]][$keys_tpoliza[$j]]['comision_total'] = $result;
 							}
+
 							$vendedores_orden[$keys_vendedor[$x]][$keys_poliza[$i]][$keys_tpoliza[$j]]['ventas_totales'] = count($vendedores_orden[$keys_vendedor[$x]][$keys_poliza[$i]][$keys_tpoliza[$j]]) - 1;
+							highlight_string("<?php\n\$data =\n" . var_export($result, true) . ";\n?>");
+
 						}
 					}
 				} 
-	
 				return $vendedores_orden;
 			}
 		}
@@ -377,27 +382,35 @@ class Polizas extends CI_Controller {
 
 	public function preliquidacion(){
 		$semana = $this->polizas_model->getSemanaDetalle();
+		$vendedores = array();
 
 		if ($semana != 'No hay ventas con semanas cerradas') {
-			$vendedores_data = $this->arrayVentasBuild($semana[0]['id_semana'], 'A');
+			for ($i=0; $i < count($semana); $i++) { 
+				$vendedores_data = $this->arrayVentasBuild($semana[$i]['id_semana'], 'A');
+				array_push($vendedores, $vendedores_data);
+			}
 		}
 
 		$this->load->view('layout/header');
 		$this->load->view('layout/nav');
-		$this->load->view('polizas/preliquidacion',$vendedores_data);
+		$this->load->view('polizas/preliquidacion',$vendedores);
 		$this->load->view('layout/footer');
 	}
 
 	public function liquidacion(){
 		$semana = $this->polizas_model->getSemanaDetalle();
-
+		$vendedores = array();
+				
 		if ($semana != 'No hay ventas con semanas cerradas') {
-			$vendedores_data = $this->arrayVentasBuild($semana[0]['id_semana'], 'P');
+			for ($i=0; $i < count($semana); $i++) { 
+				$vendedores_data = $this->arrayVentasBuild($semana[$i]['id_semana'], 'P');
+				array_push($vendedores, $vendedores_data);
+			}
 		}
 
 		$this->load->view('layout/header');
 		$this->load->view('layout/nav');
-		$this->load->view('polizas/liquidacion',$vendedores_data);
+		$this->load->view('polizas/liquidacion',$vendedores);
 		$this->load->view('layout/footer');
 	}
 
@@ -409,8 +422,10 @@ class Polizas extends CI_Controller {
 	}	
 
 	public function arrayVentasBuild($semana, $estatus_venta){
-		$semana_numero = $this->polizas_model->getSemanaDetalle($semana, 0)[0]['nsem'];
+		$semana_numero = $this->polizas_model->getSemanaDetalle($semana, 1)[0]['nsem'];
+
 		$ventas_semana = $this->liquidacionVendedores($semana, 'ventas', 0, $estatus_venta);
+
 		$vendedores_cod = array_keys($ventas_semana);
 		$keys_vendedor = array_keys($ventas_semana); 
 		$size_vendedor = sizeof($ventas_semana); 

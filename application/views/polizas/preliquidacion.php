@@ -25,23 +25,25 @@
             </tr>
         </thead>
         <tbody>
-            <?php if ($_ci_vars <>"") { foreach ($_ci_vars as $key) { ?>
-                <tr>
-                    <td><?php echo ucwords($key['identificacion']);?></td>
-                    <td><?php echo ucwords($key['apellidos'].' '.$key['nombres']);?></td>
-                    <td><?php echo ucwords($key['telefono']);?></td>
-                    <td><?php echo ucwords($key['ventas_totales']);?></td>
-                    <td id="semana_id"><?php echo ucwords($key['numero_semana']);?></td>
-                    <td><?php echo ucwords($key['comision_total']);?></td>
-                    <td>
-                        <center>
-                            <a class="btn btn-sm btn-default detalleVendedor" id="<?php echo $key['cod_vendedor']?>" data-toggle="modal" data-target="#detalleVendedor" title="editar" data-backdrop="static" data-keyboard="false">
-                                <i class="fa fa-pencil"></i>
-                            </a>
-                        </center>
-                    </td>
-                </tr>
-            <?php }} ?>
+            <?php for ($i=0; $i < count($_ci_vars); $i++) { ?>
+                <?php if ($_ci_vars[$i] <>"") { foreach ($_ci_vars[$i] as $key) { ?>
+                    <tr>
+                        <td><?php echo ucwords($key['identificacion']);?></td>
+                        <td><?php echo ucwords($key['apellidos'].' '.$key['nombres']);?></td>
+                        <td><?php echo ucwords($key['telefono']);?></td>
+                        <td><?php echo ucwords($key['ventas_totales']);?></td>
+                        <td id="semana_id"><?php echo ucwords($key['numero_semana']);?></td>
+                        <td><?php echo number_format($key['comision_total'], 2, ',', '.');?></td>
+                        <td>
+                            <center>
+                                <a class="btn btn-sm btn-default detalleVendedor" id="<?php echo $key['cod_vendedor']?>" data-toggle="modal" data-target="#detalleVendedor" title="editar" data-backdrop="static" data-keyboard="false">
+                                    <i class="fa fa-pencil"></i>
+                                </a>
+                            </center>
+                        </td>
+                    </tr>
+                <?php }} ?>
+            <?php } ?>
         </tbody>
     </table>
 </div>
@@ -199,11 +201,11 @@
                 var td_child4 = document.createElement('td');
                 td_child4.innerText = ventas_json[0][keys[index]][i].cobertura_descripcion;
                 var td_child5 = document.createElement('td');
-                td_child5.innerText = ventas_json[0][keys[index]][i].suma_asegurada;
+                td_child5.innerText = ventas_json[0][keys[index]][i].suma_asegurada.toLocaleString('ve-VE');
                 var td_child6 = document.createElement('td');
-                td_child6.innerText = ventas_json[0][keys[index]][i].prima_mensual;
+                td_child6.innerText = ventas_json[0][keys[index]][i].prima_mensual.toLocaleString('ve-VE');
                 var td_child7 = document.createElement('td');
-                td_child7.innerText = ventas_json[0][keys[index]][i].comision_calculada;
+                td_child7.innerText = ventas_json[0][keys[index]][i].comision_calculada.toLocaleString('ve-VE');
 
                 var td_child8 = document.createElement('td');
 

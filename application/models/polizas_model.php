@@ -423,7 +423,7 @@ class Polizas_model extends CI_Model{
 			$this->db->where('estatus_venta', $estatus_venta);
 			$list_ventas_vendedores = $this->db->get('public.vendedores_ventas_detalles');
 		}else{
-			//$this->db->where('id_semana',$semana);
+			$this->db->where('id_semana',$semana);
 			$this->db->where('estatus_venta', $estatus_venta);
 			$list_ventas_vendedores = $this->db->get('public.vendedores_ventas_detalles');
 		}
@@ -439,6 +439,7 @@ class Polizas_model extends CI_Model{
 			$cantidad_polizas_vendidas = count($ventas) + $adicionales_ventas;
 
 			for ($i=0; $i < count($ventas); $i++) { 
+
 				//Obtener la poliza, cobertura y plan para poder manipular la suma asegurada
 				$this->db->where('polizas_plan_coberturas.id_poliza', $ventas[$i]['id_poliza']);
 				$this->db->where('polizas_plan_coberturas.id_plan_poliza', $ventas[$i]['id_plan']);
@@ -466,9 +467,10 @@ class Polizas_model extends CI_Model{
 				$this->db->where('t_comisiones.id_tcomision',intval($ventas[$i]['id_concepto_venta']));
 				$t_comision = $this->db->get('public.t_comisiones')->result_array();
 
-				for ($i=0; $i < count($t_comision); $i++) { 
-					if ($cantidad_polizas_vendidas <= $t_comision[$i]['max'] ) {
-						$t_comision_venta = $t_comision[$i];
+
+				for ($j=0; $j < count($t_comision); $j++) { 
+					if ($cantidad_polizas_vendidas >= $t_comision[$j]['min']) {
+						$t_comision_venta = $t_comision[$j];
 					}
 				}
 
@@ -477,8 +479,7 @@ class Polizas_model extends CI_Model{
 				$poliza['poliza']['comision_base'] = round(($poliza['poliza']['prima_mensual'] * $porcentaje), 2);
 				$calculos = $this->preprocesarComision($poliza);
 				$poliza['poliza']['comision_preprocesada'] = $calculos['poliza']['comision_preprocesada'];
-				$ventas[$i]['comision_preprocesada'] = $poliza['poliza']['comision_preprocesada'];
-
+				$ventas[$i]['comision_preprocesada'] = $poliza['poliza']['comision_preprocesada'];				
 			}
 
 			$comision_total = 0;
@@ -520,18 +521,19 @@ class Polizas_model extends CI_Model{
 			$this->db->where('t_comisiones.id_tcomision',intval($ventas['id_concepto_venta']));
 			$t_comision = $this->db->get('public.t_comisiones')->result_array();
 
-			for ($i=0; $i < count($t_comision); $i++) { 
-				if ($cantidad_polizas_vendidas <= $t_comision[$i]['max'] ) {
-					$t_comision_venta = $t_comision[$i];
+			for ($j=0; $j < count($t_comision); $j++) { 
+				if ($cantidad_polizas_vendidas >= $t_comision[$j]['min']) {
+					$t_comision_venta = $t_comision[$j];
 				}
 			}
 
+
 			$porcentaje = (intval($t_comision_venta['cuota'])/100);
 			$poliza['poliza']['comision_base'] = round(($poliza['poliza']['prima_mensual'] * $porcentaje), 2);
+
 			$calculos = $this->preprocesarComision($poliza);
 			$poliza['poliza']['comision_preprocesada'] = $calculos['poliza']['comision_preprocesada'];
 			$ventas['comision_preprocesada'] = $poliza['poliza']['comision_preprocesada'];
-
 			$comision_total = round($poliza['poliza']['comision_preprocesada'], 2);
 			
 			$datos_retorno['comision_total'] = $comision_total;
@@ -557,6 +559,7 @@ class Polizas_model extends CI_Model{
 	}
 
 	public function preprocesarComision($poliza){
+
 		if ($poliza['poliza']['coutas_pagadas_poliza'] >= 3) {
 
 			$porcentaje_cuotas = $poliza['poliza']['comision_base'] * (20/100);
@@ -567,10 +570,12 @@ class Polizas_model extends CI_Model{
 		}
 
 		$poliza['poliza']['comision_preprocesada'] = $poliza['poliza']['comision_preprocesada'] + (3500 * $poliza['poliza']['poliza_adicional_familiar']);
-			
+
+		
 		if($poliza['poliza']['tipo_venta'] == 2){
 			$poliza['poliza']['comision_preprocesada'] = $poliza['poliza']['comision_preprocesada'][$i] + 1000;
 		}
+
 
 		return $poliza;
 	}
@@ -588,10 +593,19 @@ class Polizas_model extends CI_Model{
 			$this->db->where('t_semanas.estatus', 1);
 			$this->db->where('t_semanas.nsem', $numero_semana);
 			$semana_detalle = $this->db->get('public.t_semanas')->result_array();
+
+
+			if (!count($semana_detalle)) {
+				$this->db->order_by('id_semana','desc');
+				$this->db->where('t_semanas.estatus', 1);
+				$this->db->where('t_semanas.id_semana', $numero_semana);
+				$semana_detalle = $this->db->get('public.t_semanas')->result_array();
+			}
+
 			return $semana_detalle;
 		}else{
 			$this->db->order_by('id_semana','desc');
-			$this->db->limit(1);
+			//$this->db->limit(1);
 			$this->db->where('t_semanas.estatus', 1);
 			$semana_detalle = $this->db->get('public.t_semanas')->result_array();
 			
