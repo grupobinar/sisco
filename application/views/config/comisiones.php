@@ -37,9 +37,9 @@
       <td>
         <div class="btn-group">
         <center>
-          <a class="btn btn-sm btn-default editUsuario" id="<?php echo $key['id_comision']?>" data-toggle="modal" data-target="#editarUsuario" href="<?php echo base_url();?>index.php/usuarios/modificar" title="editar"><i class="fa fa-pencil"></i></a>
+          <a class="btn btn-sm btn-default editUsuario" id="<?php echo $key['id_comision']?>" data-toggle="modal" data-target="#editarUsuario"><i class="fa fa-pencil"></i></a>
 
-          <a class="btn btn-sm btn-default desactivar" id="<?php echo $key['id_comision']?>" data-toggle="modal" data-target="#Desactivar" href="<?php echo base_url();?>index.php/usuarios/desactivar" title="Eliminar"><i class="fa fa-close"></i></a>
+          <a class="btn btn-sm btn-default desactivar" id="<?php echo $key['id_comision']?>" data-toggle="modal" data-target="#Desactivar" title="Eliminar"><i class="fa fa-close"></i></a>
 
         </center>
         </div>
@@ -66,17 +66,19 @@
             <div class="row">
               <div class="col-lg-6"><b>Concepto</b></div>
               <div class="col-lg-6"><b>Tipo de calculo</b></div>
-              <div class="col-lg-6">
-                <select class="form-control" name="calculo" id="calculo">
-                  <?php foreach ($_ci_vars[calculos] as $key) {
-                    echo "<option value='".$key[id_calculo]."'>".$key[calculo]."</option>";
-                  } ?>
-                </select>
-              </div>
+
               <div class="col-lg-6">
                 <select class="form-control" name="concepto" id="concepto">
                   <?php foreach ($_ci_vars[conceptos] as $key) {
                     echo "<option value='".$key[id_concepto]."'>".$key[concepto]."</option>";
+                  } ?>
+                </select>
+              </div>
+              <div class="col-lg-6">
+                <select class="form-control" name="calculo" id="calculo">
+                  <option value=''>--</option>;
+                  <?php foreach ($_ci_vars[calculos] as $key) {
+                    echo "<option value='".$key[id_calculo]."'>".$key[calculo]."</option>";
                   } ?>
                 </select>
               </div>
@@ -116,8 +118,8 @@
 </div>
 </div>
 
-
-<?=form_open_multipart(base_url().'index.php/config/guardar_comision')?>
+</form>
+<?=form_open_multipart(base_url().'index.php/config/modificar_comision')?>
   <div class="modal fade" id="editarUsuario" role="dialog">
     <div class="modal-dialog">
     
@@ -133,19 +135,21 @@
               <div class="col-lg-6"><b>Concepto</b></div>
               <div class="col-lg-6"><b>Tipo de calculo</b></div>
               <div class="col-lg-6">
-                <select class="form-control" name="calculo_e" id="calculo_e">
-                  <?php foreach ($_ci_vars[calculos] as $key) {
-                    echo "<option value='".$key[id_calculo]."'>".$key[calculo]."</option>";
-                  } ?>
-                </select>
-              </div>
-              <div class="col-lg-6">
                 <select class="form-control" name="concepto_e" id="concepto_e">
                   <?php foreach ($_ci_vars[conceptos] as $key) {
                     echo "<option value='".$key[id_concepto]."'>".$key[concepto]."</option>";
                   } ?>
                 </select>
               </div>
+              <div class="col-lg-6">
+                <select class="form-control" name="calculo_e" id="calculo_e">
+                <option value=''>--</option>
+                  <?php foreach ($_ci_vars[calculos] as $key) {
+                    echo "<option value='".$key[id_calculo]."'>".$key[calculo]."</option>";
+                  } ?>
+                </select>
+              </div>
+              
 
               <div class="col-lg-6"><b>Cuota</b></div>
               <div class="col-lg-6"><b>Plan</b></div>
@@ -163,14 +167,13 @@
 
               <div class="col-lg-6">
                 <select class="form-control" name="id_basec_e" id="id_basec_e">
-                  <option value="3"> No Aplica</option>
-                  <option value="1"> Sobre la suma asegurada</option>
-                  <option value="2"> Sobre la comisión</option>
                 </select>
               </div>
               
               <div class="col-lg-3"><input type="text" name="min_e" id="min_e" class="form-control numero"></div>
               <div class="col-lg-3"><input type="text" name="max_e" id="max_e" class="form-control numero"></div>
+              <input type="hidden" name="id_comision" id="id_comision">
+
         </div>
         <div class="modal-footer">
           <input type="submit" name="guardar" id="guardar" class="btn btn-primary" value="Guardar Comisión">
@@ -248,10 +251,29 @@ $(document).ready(function(){
 
         $("#min_e").val(result[3]);
         $("#max_e").val(result[4]);
+        $("#id_comision").val(result[0]);
 
         result="";
 
       });
+    });
+
+    $("#calculo_e").change(function(){
+        if ($("#calculo_e").val()==2) {
+          $("#id_basec_e").html('<option value="3"> NO APLICA</option>'); 
+          $("#planc_e").html('<option value=""> NO APLICA</option>'); 
+        }else{
+          $("#id_basec_e").html('<option value="1"> Sobre la suma asegurada</option><option value="2"> Sobre la comisión</option>'); 
+        }
+    });
+    $("#calculo").change(function(){
+        if ($("#calculo").val()==2) {
+          $("#id_basec").html('<option value="3"> NO APLICA</option>'); 
+          $("#planc").html('<option value=""> NO APLICA</option>'); 
+        }else{
+          $("#id_basec").html('<option value="1"> Sobre la suma asegurada</option><option value="2"> Sobre la comisión</option>'); 
+
+        }
     });
 
     $(".desactivar").click(function() {
