@@ -108,7 +108,7 @@
 
               <div class="col-lg-3"><input type="text" name="apellidos" id="apellidos" class="form-control letras nm"></div>
               <div class="col-lg-3"><input type="text" name="nombres" id="nombres" class="form-control letras nm"></div>
-              <div class="col-lg-3"><input type="text" name="correo" id="correo" class="form-control nm"></div>
+              <div class="col-lg-3"><input type="text" name="correo" id="correo" class="form-control mail nm"></div>
               <div class="col-lg-3"><input type="text" name="telefono" id="telefono" class="form-control numero nm"></div>
 
               <div class="col-lg-12"><b class="text-blue">Datos de la poliza</b></div>
@@ -215,6 +215,14 @@ $(document).ready(function(){
 
     $('.decimales').on('input', function () { 
         this.value = this.value.replace(/[^0-9\.]/g,'');
+    });
+
+    $('.mail').blur('input', function () { 
+        if($(".mail").val().indexOf('@', 0) == -1 || $(".mail").val().indexOf('.', 0) == -1) {
+            alert('El correo electrónico introducido no es correcto.');
+            $('.mail').val("");
+            return false;
+        }
     });
 
     $("#tventa").change(function(){

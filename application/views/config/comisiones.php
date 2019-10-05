@@ -26,7 +26,7 @@
     </thead>
     <tbody>
     <?php if ($_ci_vars[comisiones]<>"") { foreach ($_ci_vars[comisiones] as $key) { ?>
-    <tr>
+    <tr id="fila_<?php echo $key['id_tcomision']?>">
       <td><?php echo ucwords($key['planc']);?></td>
       <td><?php echo ucwords($key['concepto']);?></td>
       <td><?php echo ucwords($key['calculo']);?></td>
@@ -37,9 +37,9 @@
       <td>
         <div class="btn-group">
         <center>
-          <a class="btn btn-sm btn-default editUsuario" id="<?php echo $key['id_comision']?>" data-toggle="modal" data-target="#editarUsuario" href="<?php echo base_url();?>index.php/usuarios/modificar" title="editar"><i class="fa fa-pencil"></i></a>
+          <a class="btn btn-sm btn-default editUsuario" id="<?php echo $key['id_tcomision']?>" data-toggle="modal" data-target="#editarUsuario" href="<?php echo base_url();?>index.php/usuarios/modificar" title="editar"><i class="fa fa-pencil"></i></a>
 
-          <a class="btn btn-sm btn-default desactivar" id="<?php echo $key['id_comision']?>" data-toggle="modal" data-target="#DesactivarPoliza" href="<?php echo base_url();?>index.php/usuarios/desactivar" title="Eliminar"><i class="fa fa-close"></i></a>
+          <a class="btn btn-sm btn-default desactivar" id="<?php echo $key['id_tcomision']?>" data-toggle="modal" data-target="#Desactivar" href="<?php echo base_url();?>index.php/usuarios/desactivar" title="Eliminar"><i class="fa fa-close"></i></a>
 
         </center>
         </div>
@@ -180,6 +180,35 @@
 </div>
 </div>
 
+
+<div class="modal fade" id="Desactivar" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title"><i class="fa fa-spinner"></i> Eliminar Comision</h4>
+        </div>
+        <div class="modal-body">
+          <div class="container-fluid">
+            <div class="row" id="row_desactivar">
+              <div class="col-lg-12">Una vez eliminado el tipo de cobro no podra utilizarlo ni recuperarlo.</div>
+              <div class="col-lg-12">¿Desea continuar?</div>
+              <input type="hidden" name="id_desactivar" id="id_desactivar">
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <input type="button" name="btn_desactivar" id="btn_desactivar" class="btn btn-primary" value="Desactivar Poliza">
+          <input type="button" class="btn btn-default"  data-dismiss="modal" value="Cancelar" id="_desctivar" name="_desctivar">
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+</div>
 <script type="text/javascript">
 $(document).ready(function(){
     $('.numero').on('input', function () { 
@@ -233,9 +262,13 @@ $(document).ready(function(){
 
     $("#btn_desactivar").click(function() {
 
-      $.post("<?php echo base_url() ?>/index.php/polizas/desactivarPoliza", { id:$("#id_desactivar").val() }, function(data){
+      var ide = $("#id_desactivar").val();
+      alert(ide);
 
+        $.post("<?php echo base_url() ?>/index.php/config/eliminarRegistros", { id:$("#id_desactivar").val(), tb:'t_comisiones', id_name: 'id_tcomision' }, function(data){
         $("#row_desactivar").html("<div><p class='text-light-blue'>"+data+"</p></div>");
+
+        $("#fila_"+ide).hide();
 
         $("#btn_desactivar").css("display", "none").delay(1000);
 
@@ -245,7 +278,9 @@ $(document).ready(function(){
 
       });
 
+
+      });
+
     });
-});
 </script>
 
