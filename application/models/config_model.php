@@ -282,6 +282,7 @@ class Config_model extends CI_Model{
 		$this->db->join('t_calculo','t_calculo.id_calculo = t_comisiones.id_tcalculo');
 		$this->db->join('t_concepto','t_concepto.id_concepto = t_comisiones.id_tcomision');
 		$this->db->join('t_plan_comision','t_plan_comision.id_planc = t_comisiones.id_plan');
+		$this->db->where('t_comisiones.estatus','0');
 		$persona = $this->db->get('public.t_comisiones');
 
 		//echo $this->db->last_query();
