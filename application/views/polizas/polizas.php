@@ -135,7 +135,7 @@
         </div>
         </div>
         <div class="modal-footer">
-          <input type="submit" name="editar" id="editar" class="btn btn-primary" value="Modificar Usuario">
+          <input type="submit" name="editar" id="editar" class="btn btn-primary" value="Modificar Poliza">
         </div>
       </div>
       <!-- /.modal-content -->
