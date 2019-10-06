@@ -578,7 +578,7 @@ class Polizas_model extends CI_Model{
 					$poliza['poliza']['comision_base'] = $t_comision_venta['cuota'];
 					break;
 			}
-			
+
 			$calculos = $this->preprocesarComision($poliza);
 			$poliza['poliza']['comision_preprocesada'] = $calculos['poliza']['comision_preprocesada'];
 			$ventas['comision_preprocesada'] = $poliza['poliza']['comision_preprocesada'];
@@ -725,7 +725,7 @@ class Polizas_model extends CI_Model{
 			$data = array(
 				'id_vendedor'=> $ventas[$i]['id_vendedor'],
 				'id_venta'=> $ventas[$i]['id_venta'],	
-				'id_semana'=> 2,	
+				'id_semana'=> $ventas[$i]['id_semana'],	
 				'comision_liquidada' => $ventas[$i]['comision_total']
 			);
 	

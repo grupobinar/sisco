@@ -312,6 +312,7 @@ class Polizas extends CI_Controller {
 				$estatus_venta = $_POST['estatus_venta'];
 			}
 		}
+		
 
 		/**
 		 * Condicion que identifica si la consulta de las ventas por vendedor debe ser general o especifica
@@ -319,6 +320,12 @@ class Polizas extends CI_Controller {
 		*/
 		if (!is_string($cod_vendedor)) {
 			$ventas = $this->polizas_model->getVendedoresVentasPolizas($semana, $cod_vendedor, $estatus_venta);
+		}elseif(isset($semana_array)){
+			$ventas_array = array();
+			for ($i=0; $i < count($semana_array); $i++) { 
+				$ventas = $this->polizas_model->getVendedoresVentasPolizas($semana_array[$i], 'vendedores', $estatus_venta);
+				array_push($ventas_array, $ventas);
+			}
 		}else{
 			$ventas = $this->polizas_model->getVendedoresVentasPolizas($semana, 'vendedores', $estatus_venta);
 		}
@@ -393,31 +400,29 @@ class Polizas extends CI_Controller {
 				echo json_encode($data);
 		} else {
 			if ($preliquidacion == 2) {
-				$cobertura_count = array_count_values(array_column($ventas, 'id_cobertura'));
+				for ($j=0; $j < count($ventas_array); $j++) { 
+					$cobertura_count = array_count_values(array_column($ventas_array[$j], 'id_cobertura'));
 
-				for ($i=0; $i < count($ventas); $i++) { 
-					$ventas[$i]['cantidad_cobertura'] = $cobertura_count[$ventas[$i]['id_cobertura']];
-					$result = $this->polizas_model->calculoComisionBase($ventas[$i], 1);
-
-					if (intval($ventas[$i]['id_poliza']) == 30000) {
-						$ventas[$i]['comision_total'] = $result['comision_total'] + 3500;
-					}else{
-						$ventas[$i]['comision_total'] = $result['comision_total'];
+					for ($i=0; $i < count($ventas_array[$j]); $i++) {
+						$ventas_array[$j][$i]['cantidad_cobertura'] = $cobertura_count[$ventas_array[$j][$i]['id_cobertura']];
+						$result = $this->polizas_model->calculoComisionBase($ventas_array[$j][$i], 1);
+						$ventas_array[$j][$i]['comision_total'] = $result['comision_total'];
 					}
+					
+					$liquidacion_result = $this->polizas_model->liquidacion($ventas_array[$j]);
 				}
-				$liquidacion_result = $this->polizas_model->liquidacion($ventas);
+
 				echo json_encode($liquidacion_result);
 			} elseif($preliquidacion == 1) {
 				
-				for ($i=0; $i < count($ventas); $i++) { 
-					$result = $this->polizas_model->calculoComisionBase($ventas[$i], 1);
-
-					if (intval($ventas[$i]['id_poliza']) == 30000) {
-						$ventas[$i]['comision_total'] = $result['comision_total'] + 3500;
+				for ($j=0; $j < count($ventas_array); $j++) { 
+					for ($i=0; $i < count($ventas_array[$j]); $i++) { 
+						$result = $this->polizas_model->calculoComisionBase($ventas_array[$j][$i], 1);
 					}
+
+					$preliquidacion_result = $this->polizas_model->preliquidacion($ventas_array[$j]);
 				}
 
-				$preliquidacion_result = $this->polizas_model->preliquidacion($ventas);
 				echo json_encode($preliquidacion_result);
 			}else{
 
