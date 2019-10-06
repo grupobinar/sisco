@@ -237,7 +237,9 @@ class Reportes extends CI_Controller {
 			$this->fpdf->Cell(35,8,'Cuotas',0,0,'C', True);
 			$this->fpdf->Cell(35,8,'Comision',0,0,'C', True);
 
+			$vendedores_orden[$keys_semanas[$i]] = array_values($vendedores_orden[$keys_semanas[$i]]);
 			for ($j=0; $j < count($vendedores_orden[$keys_semanas[$i]]); $j++) { 
+
 				$this->db->where('t_adicionales.id_venta',$vendedores_orden[$keys_semanas[$i]][$j]['id_venta']);
 				$adicionales_venta = $this->db->get('public.t_adicionales')->result_array();
 

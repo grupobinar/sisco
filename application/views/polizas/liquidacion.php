@@ -184,7 +184,8 @@
                 var td_child6 = document.createElement('td');
                 td_child6.innerText = ventas_json[0][keys[index]][i].suma_asegurada.toLocaleString('ve-VE');
                 var td_child7 = document.createElement('td');
-                prima_mensual = parseFloat(Math.round(ventas_json[0][keys[index]][i].prima_mensual * 100) / 100).toFixed(2);
+                //prima_mensual = parseFloat(Math.round(ventas_json[0][keys[index]][i].prima_mensual * 100) / 100).toFixed(2);
+                prima_mensual = ventas_json[0][keys[index]][i].prima_mensual;                
                 td_child7.innerText = prima_mensual.toLocaleString('ve-VE');
                 var td_child8 = document.createElement('td');
                 td_child8.innerText = ventas_json[0][keys[index]][i].comision_calculada.toLocaleString('ve-VE');

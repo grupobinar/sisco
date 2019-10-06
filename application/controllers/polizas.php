@@ -317,6 +317,7 @@ class Polizas extends CI_Controller {
 							$vendedores_orden[$keys_vendedor[$x]][$keys_tipo_venta[$i]][$j]['cantidad_cobertura'] = $cobertura_count[$vendedores_orden[$keys_vendedor[$x]][$keys_tipo_venta[$i]][$j]['id_cobertura']];
 							$datos_venta = $this->polizas_model->calculoComisionBase($vendedores_orden[$keys_vendedor[$x]][$keys_tipo_venta[$i]][$j], 1);
 							$vendedores_orden[$keys_vendedor[$x]][$keys_tipo_venta[$i]][$j]['comision_calculada'] = $datos_venta['comision_total'];
+							$vendedores_orden[$keys_vendedor[$x]][$keys_tipo_venta[$i]][$j]['descripcion_plan'] = ($datos_venta['descripcion_plan'] == 0) ? 'NO APLICA' : $datos_venta['descripcion_plan'];
 							$vendedores_orden[$keys_vendedor[$x]][$keys_tipo_venta[$i]][$j]['prima_mensual'] = ($datos_venta['prima_mensual'] == 0) ? 'NO APLICA' : $datos_venta['prima_mensual'];
 							$vendedores_orden[$keys_vendedor[$x]][$keys_tipo_venta[$i]][$j]['suma_asegurada'] = (is_null($datos_venta['suma_asegurada'])) ? 'NO APLICA' : $datos_venta['suma_asegurada'];
 							$vendedor_datos = $datos_venta['vendedor_data'];
