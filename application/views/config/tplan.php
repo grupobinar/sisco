@@ -26,6 +26,8 @@
 
  <div class="col-lg-6">
 
+ <div class="box" style="padding: 10px">
+
  <div class="col-lg-12"><br></div>
  
  <table id="example1" class="table table-bordered table-striped">
@@ -44,6 +46,7 @@
     <?php }} ?>
     </tfoot>
   </table>
+</div>
 </div>
  
  <script type="text/javascript">

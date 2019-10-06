@@ -114,6 +114,15 @@ class Polizas extends CI_Controller {
 		redirect('/polizas/ventas', 'refresh');
 	}
 
+	public function buscarSolicitud()
+	{
+
+		//print_r($_POST);
+		$bool=$this->polizas_model->buscarSolicitud($_POST['nsol']);
+
+		echo $bool;
+	}
+
 	public function editar(){
 
 		$tpoliza=$_POST['tpoliza_e'];
