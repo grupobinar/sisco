@@ -12,14 +12,14 @@ class Reportes_model extends CI_Model{
         if ($individual != 'I') {
             $this->db->where('id_vendedor', $individual);
             $this->db->select("t_vendedores.*, t_personas.nombres || ' ' || t_personas.apellidos as nombre_coordinador");
-            $this->db->join('t_usuarios','t_usuarios.id_usuario = t_vendedores.id_coordinador');
+            $this->db->join('t_usuarios','t_usuarios.id_user = t_vendedores.id_coordinador');
             $this->db->join('t_personas','t_usuarios.id_persona = t_personas.id_persona');
             $listusuarios = $this->db->get('public.t_vendedores')->result_array();
         }else{
             $this->db->select("t_vendedores.*, t_personas.nombres || ' ' || t_personas.apellidos as nombre_coordinador");
-            $this->db->join('t_usuarios','t_usuarios.id_usuario = t_vendedores.id_coordinador');
+            $this->db->join('t_usuarios','t_usuarios.id_user = t_vendedores.id_coordinador');
             $this->db->join('t_personas','t_usuarios.id_persona = t_personas.id_persona');
-            $listusuarios = $this->db->get('public.t_vendedores')->result_array();
+			$listusuarios = $this->db->get('public.t_vendedores')->result_array();
         }
 
 		return $listusuarios;
