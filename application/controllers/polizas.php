@@ -62,6 +62,7 @@ class Polizas extends CI_Controller {
 		$cobertura=$_POST['cobertura'];
 		$tpoliza=$_POST['tpoliza'];
 		$tpago=$_POST['tpago'];
+		$tedad=$_POST['tedad'];
 
 		$tventa=$_POST['tventa'];
 		$nsolicitud=$_POST['nsolicitud'];
@@ -92,6 +93,7 @@ class Polizas extends CI_Controller {
 			$cobertura,
 			$tpoliza,
 			$tpago,
+			$tedad,
 			$fecha,
 			$usuario,
 			$tventa,

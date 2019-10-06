@@ -151,7 +151,7 @@ class Config extends CI_Controller {
 	// planes de las polizas
 
 	public function plan()
-	{ // lleva a la vista de los planesa
+	{ // lleva a la vista de los planes
 
 		$data = $this->config_model->listplan();
 
