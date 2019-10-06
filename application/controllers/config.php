@@ -202,6 +202,9 @@ class Config extends CI_Controller {
 
 	public function comisiones()
 	{ //lleva a la vista de las comisiones
+		$data = $this->config_model->ccoordinador();
+
+		$datos['ccoordinador']=$data;
 
 		$data = $this->config_model->listplanc();
 
@@ -276,6 +279,7 @@ class Config extends CI_Controller {
 			$lista2[$i]["max"]=$sheet->max;
 			$lista2[$i]["planc"]=$sheet->planc;
 			$lista2[$i]["base"]=$sheet->id_basec;
+			$lista2[$i]["c_minmax"]=$sheet->c_minmax;
 			
 			}
 		}
@@ -299,8 +303,9 @@ class Config extends CI_Controller {
 		$max=$_POST['max'];
 		$planc=$_POST['planc'];
 		$id_basec=$_POST['id_basec'];
+		$c_minmax=$_POST['c_minmax'];
 
-		$evaluar = $this->config_model->evaluar_comisiones($concepto,$calculo,$planc,$id_basec);
+		$evaluar = $this->config_model->evaluar_comisiones($concepto,$calculo,$planc,$id_basec,$c_minmax);
 
 		/*print_r($evaluar);
 		break;*/

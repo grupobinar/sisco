@@ -58,7 +58,15 @@ class Config_model extends CI_Model{
 
 	}
 
-	function guardar_comision($concepto,$calculo,$cuota,$min,$max,$fecha,$usuario,$planc,$id_basec){
+	function ccoordinador()
+	{
+		$this->db->select('comision_c');
+		$listusuarios = $this->db->get('public.t_ccoordinador');
+
+		return $listusuarios->row()->comision_c;
+	}
+
+	function guardar_comision($concepto,$calculo,$cuota,$min,$max,$fecha,$usuario,$planc,$id_basec,$c_minmax){
 
 		  	$data = array(
 			'id_tcomision'=>$concepto,
@@ -71,6 +79,7 @@ class Config_model extends CI_Model{
 			'id_usuario'=>$usuario,
 			'id_plan'=>$planc,
 			'id_basec'=>$id_basec,
+			'c_minmax'=>$c_minmax,
 			);
 
 

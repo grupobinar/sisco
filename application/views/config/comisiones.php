@@ -1,13 +1,31 @@
-<?php ?>
+<?php // print_r($_ci_vars[comisiones]) ?>
 
 <!-- #lista de usuarios ############################################################################-->
 <div class="col-lg-12"> 
+ 
+
  <div class="col-lg-12"><br></div>
+
  <div class="col-lg-10"><br></div>
- <div class="col-lg-2"><a href="#" class="btn btn-primary btn-xm" data-toggle="modal" data-target="#myModal"><b><i class="fa fa-user"></i> Nueva Comisión</b></a></div>
-</div>
+ <div class="col-lg-2"><a href="#" class="btn btn-primary btn-xm" data-toggle="modal" data-target="#myModal">
+  <b><i class="fa fa-user"></i> Nueva Comisión</b></a>
+ </div>
+ </div>
+
+
 <div class="col-lg-12"><br></div>
 
+ <div class="col-lg-12 box">
+   <table width="50%" style="margin: 20px">
+     <tr>
+       <th>Comision del coordinador</th>
+       <td><?php echo $_ci_vars['ccoordinador']."% Sobre la comisión del vendedor";?></td>
+       <td><button class="btn btn-default"><i class="fa fa-pencil"></i></button></td>
+     </tr>
+   </table>
+ </div>
+
+<div class="col-lg-12"><br></div>
 
 <div class="col-lg-12 box"> 
  <div class="col-lg-12"><br></div>
@@ -21,6 +39,7 @@
       <th>Tasa comisión</th>
       <th>Desde</th>
       <th>Hasta</th>
+      <th></th>
       <th><center><i class="fa fa-cog"></i> Opciones</center></th>
     </tr>
     </thead>
@@ -30,10 +49,11 @@
       <td><?php echo ucwords($key['planc']);?></td>
       <td><?php echo ucwords($key['concepto']);?></td>
       <td><?php echo ucwords($key['calculo']);?></td>
-      <td><?php if ($key['base']==1) echo "Sobre la suma asegurada"; elseif($key['base']==2) echo "sobre la comisión"; ?></td>
+      <td><?php if ($key['base']==1) echo "Sobre la suma asegurada"; elseif($key['base']==2) echo "sobre la comisión"; elseif($key['base']==3) echo "NO APLICA"; ?></td>
       <td><?php echo number_format($key['cuota'], 2, ',', '.');?></td>
       <td><?php echo $key['min'];?></td>
       <td><?php echo $key['max'];?></td>
+      <td><?php if ($key['c_minmax']==0) echo "De ventas"; elseif($key['c_minmax']==1) echo "De cuotas canceladas"; elseif($key['c_minmax']==2) echo "NO APLICA"; ?></td>
       <td>
         <div class="btn-group">
         <center>
@@ -69,8 +89,9 @@
 
               <div class="col-lg-6">
                 <select class="form-control" name="concepto" id="concepto">
-                  <?php foreach ($_ci_vars[conceptos] as $key) {
+                  <?php  foreach ($_ci_vars[conceptos] as $key) { if (isset($key[concepto])) {
                     echo "<option value='".$key[id_concepto]."'>".$key[concepto]."</option>";
+                  }
                   } ?>
                 </select>
               </div>
@@ -83,20 +104,18 @@
                 </select>
               </div>
 
-              <div class="col-lg-6"><b>Cuota</b></div>
-              <div class="col-lg-6"><b>Plan</b></div>
-              <div class="col-lg-6"><input type="text" name="cuota" id="cuota" class="form-control decimales"></div>
-               <div class="col-lg-6">
+              <div class="col-lg-3"><b>Cuota</b></div>
+              <div class="col-lg-3"><b>Plan</b></div>
+              <div class="col-lg-6"><b>Base de calculo</b></div>
+
+              <div class="col-lg-3"><input type="text" name="cuota" id="cuota" class="form-control decimales"></div>
+               <div class="col-lg-3">
                 <select class="form-control" name="planc" id="planc">
                   <?php foreach ($_ci_vars[planc] as $key) {
                     echo "<option value='".$key[id_planc]."'>".$key[planc]."</option>";
                   } ?>
                 </select>
               </div>
-
-              <div class="col-lg-6"><b>Base de calculo</b></div>
-              <div class="col-lg-3"><b>Desde</b></div>
-              <div class="col-lg-3"><b>Hasta</b></div>
 
               <div class="col-lg-6">
                 <select class="form-control" name="id_basec" id="id_basec">
@@ -105,8 +124,21 @@
                   <option value="2"> Sobre la comisión</option>
                 </select>
               </div>
+
+              <div class="col-lg-3"><b>Desde</b></div>
+              <div class="col-lg-9"><b>Hasta</b></div>
+
+           
               <div class="col-lg-3"><input type="text" name="min" id="min" class="form-control numero"></div>
               <div class="col-lg-3"><input type="text" name="max" id="max" class="form-control numero"></div>
+
+              <div class="col-lg-6">
+                <select class="form-control" name="c_minmax" id="c_minmax">
+                  <option value="1"> de ventas</option>
+                  <option value="2"> sobre las cuotas canceladas</option>
+                  <option value="3"> NO APLICA</option>
+                </select>
+              </div>
         </div>
         <div class="modal-footer">
           <input type="submit" name="guardar" id="guardar" class="btn btn-primary" value="Guardar Comisión">
@@ -283,6 +315,16 @@ $(document).ready(function(){
           $('#planc option:not(:selected)').attr('disabled',false);
 
         }
+    });
+    $("#c_minmax option[value='2']").attr('disabled',true);
+
+    $("#concepto").change(function () {
+      // body...
+      if ($("#concepto").val()==3) {
+          $("#c_minmax option[value='2']").attr('disabled',true);
+      }else{
+          $("#c_minmax option[value='2']").attr('disabled',false);
+      }
     });
 
     $(".desactivar").click(function() {
