@@ -63,7 +63,18 @@ class Reportes extends CI_Controller {
 		$this->load->view('layout/footer');
 	}
 
+
+	public function comisiones_general(){
+		$data = $this->polizas_model->getSemanaDetalle(0,0);		
+		$this->load->view('layout/header');
+		$this->load->view('layout/nav');
+		$this->load->view('reportes/comisiones_general', $data);
+		$this->load->view('layout/footer');
+	}
+
     public function estado_general(){
+		$data = $this->reportes_model->listVendedores('I', $_GET['id_semana']);
+
 		//$pdf = new FPDF('L');
 		$this->fpdf->AddPage();
 		$this->fpdf->SetFont('Arial','B',16);
@@ -80,7 +91,6 @@ class Reportes extends CI_Controller {
 
 		$this->fpdf->SetFont('Arial','B',10);
 		$this->fpdf->SetFillColor(148, 196, 241); 
-
 		$this->fpdf->Cell(65,8,'Vendedor', 0, 0, 'C', True);
 		$this->fpdf->Cell(30,8,'Codigo',0,0,'C', True);
 		$this->fpdf->Cell(60,8,'Tipo Venta',0,0,'C', True);
@@ -88,42 +98,103 @@ class Reportes extends CI_Controller {
 		$this->fpdf->Cell(35,8,'Comision',0,0,'C', True);
 		$this->fpdf->Cell(35,8,'Coordinador',0,0,'C', True);
 
-		$this->fpdf->Ln(8);
-		$this->fpdf->SetFont('Arial','',10);
+		for ($x=0; $x < count($data); $x++) { 
+			$data_ventas = $this->polizas_model->getVendedoresVentasPolizas($_GET['id_semana'], 'vendedores', 'L');
 
-		$this->fpdf->Cell(65,12,utf8_decode('Alvaro Angulo'), 1, 0, 'C');
-		$this->fpdf->Cell(30,12,'30756',1,0,'C');
-		$this->fpdf->Cell(60,6,utf8_decode('Emisión'),1,0,'C');
-		$this->fpdf->Cell(50,6,'2',1,0,'C');
-		$this->fpdf->Cell(35,6,'102.441,50',1,0,'C');
-		$this->fpdf->Cell(35,6,'20.488,30',1,0,'C');
+			foreach ($data_ventas as $key => $item) {
+				$data_ventas_orden[$item['id_vendedor']][$item['id_concepto_venta']][$key] = $item;
+			}
+	
+			$keys_vendedor = array_keys($data_ventas_orden); 
+			$size_vendedor = sizeof($data_ventas_orden);
+	
+			for ($j=0; $j < $size_vendedor; $j++) { 
+				$keys_semanas = array_keys($data_ventas_orden[$keys_vendedor[$j]]); 
+				$size_semanas = sizeof($data_ventas_orden[$keys_vendedor[$j]]); 
+		
+				for ($i=0; $i < $size_semanas; $i++) { 
+					$tipo_count = array_count_values(array_column($data_ventas_orden[$keys_vendedor[$j]][$keys_semanas[$i]], 'id_concepto_venta'));
+				}		
+			}
+	
+			$celdas_multi = count($tipo_count) * 6;
+			$tipo_count_keys = array_keys($tipo_count);
 
-		$this->fpdf->Ln(6);
+			$this->fpdf->Ln(8);
+			$this->fpdf->SetFont('Arial','',10);
+	
+			$this->fpdf->Cell(65,$celdas_multi,utf8_decode($data[$x]['nombres'].' '.$data[$x]['apellidos']), 1, 0, 'C');
+			$this->fpdf->Cell(30,$celdas_multi,'30756',1,0,'C');
 
-		$this->fpdf->Cell(65,6,utf8_decode(''), 0, 0, 'C');
-		$this->fpdf->Cell(30,6,'',0,0,'C');
-		$this->fpdf->Cell(60,6,utf8_decode('Actualización de Datos'),1,0,'C');
-		$this->fpdf->Cell(50,6,'8',1,0,'C');
-		$this->fpdf->Cell(35,6,'8.000,00',1,0,'C');
-		$this->fpdf->Cell(35,6,'1.600,00',1,0,'C');
+			for ($y=0; $y < count($tipo_count_keys); $y++) {
+				if ($y === 0) {
+					switch ($tipo_count_keys[$y]) {
+						case 1:
+							$this->fpdf->Cell(60,6,utf8_decode('Emisión'),1,0,'C');
+							$this->fpdf->Cell(50,6, $tipo_count[$tipo_count_keys[$y]],1,0,'C');
+							$this->fpdf->Cell(35,6,'102.441,50',1,0,'C');
+							$this->fpdf->Cell(35,6,'20.488,30',1,0,'C');
+							break;
+						
+						case 2:
+							$this->fpdf->Cell(60,6,utf8_decode('Actualización de Datos'),1,0,'C');
+							$this->fpdf->Cell(50,6,'8',1,0,'C');
+							$this->fpdf->Cell(35,6,'8.000,00',1,0,'C');
+							$this->fpdf->Cell(35,6,'1.600,00',1,0,'C');
+							break;
+	
+						case 3:
+							$this->fpdf->Cell(60,6,utf8_decode('Persona Adicional'),1,0,'C');
+							$this->fpdf->Cell(50,6,'8',1,0,'C');
+							$this->fpdf->Cell(35,6,'8.000,00',1,0,'C');
+							$this->fpdf->Cell(35,6,'1.600,00',1,0,'C');
+							break;
+					}
+				}else{
+					switch ($tipo_count[$y]) {
+						case 1:
+							$this->fpdf->Ln(6);
+							$this->fpdf->Cell(65,6,utf8_decode(''), 0, 0, 'C');
+							$this->fpdf->Cell(30,6,'',0,0,'C');
+							$this->fpdf->Cell(60,6,utf8_decode('Emisión'),1,0,'C');
+							$this->fpdf->Cell(50,6,'2',1,0,'C');
+							$this->fpdf->Cell(35,6,'102.441,50',1,0,'C');
+							$this->fpdf->Cell(35,6,'20.488,30',1,0,'C');
+							break;
+						
+						case 2:
+							$this->fpdf->Ln(6);
+							$this->fpdf->Cell(65,6,utf8_decode(''), 0, 0, 'C');
+							$this->fpdf->Cell(30,6,'',0,0,'C');
+							$this->fpdf->Cell(60,6,utf8_decode('Actualización de Datos'),1,0,'C');
+							$this->fpdf->Cell(50,6,'8',1,0,'C');
+							$this->fpdf->Cell(35,6,'8.000,00',1,0,'C');
+							$this->fpdf->Cell(35,6,'1.600,00',1,0,'C');
+							break;
+	
+						case 3:
+							$this->fpdf->Ln(6);
+							$this->fpdf->Cell(65,6,utf8_decode(''), 0, 0, 'C');
+							$this->fpdf->Cell(30,6,'',0,0,'C');
+							$this->fpdf->Cell(60,6,utf8_decode('Persona Adicional'),1,0,'C');
+							$this->fpdf->Cell(50,6,'8',1,0,'C');
+							$this->fpdf->Cell(35,6,'8.000,00',1,0,'C');
+							$this->fpdf->Cell(35,6,'1.600,00',1,0,'C');
+							break;
+					}
+				}
+			}
 
-		$this->fpdf->Ln(6);
+			$this->fpdf->Ln(8);
+			$this->fpdf->SetFont('Arial','B',10);
+	
+			$this->fpdf->Cell(155,6,utf8_decode('Total asignaciones'), 0, 0, 'R');
+			$this->fpdf->Cell(50,6,'12',1,0,'C');
+			$this->fpdf->Cell(35,6,'suma total',1,0,'C');
+			$this->fpdf->Cell(35,6,'suma total',1,0,'C');
+		}
 
-		$this->fpdf->Cell(65,6,utf8_decode('Ericson Velasco'), 1, 0, 'C');
-		$this->fpdf->Cell(30,6,'21022',1,0,'C');
-		$this->fpdf->Cell(60,6,utf8_decode('Emisión'),1,0,'C');
-		$this->fpdf->Cell(50,6,'2',1,0,'C');
-		$this->fpdf->Cell(35,6,'102.441,50',1,0,'C');
-		$this->fpdf->Cell(35,6,'20.488,30',1,0,'C');
-
-		$this->fpdf->Ln(8);
-		$this->fpdf->SetFont('Arial','B',10);
-
-		$this->fpdf->Cell(155,6,utf8_decode('Total asignaciones'), 0, 0, 'R');
-		$this->fpdf->Cell(50,6,'12',1,0,'C');
-		$this->fpdf->Cell(35,6,'suma total',1,0,'C');
-		$this->fpdf->Cell(35,6,'suma total',1,0,'C');
-
+		
 		$this->fpdf->Ln(10);
 		$this->fpdf->SetFont('Arial','',14);
 
