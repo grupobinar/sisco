@@ -333,7 +333,10 @@ class Polizas extends CI_Controller {
 				echo json_encode($data);
 		} else {
 			if ($preliquidacion == 2) {
+				$cobertura_count = array_count_values(array_column($ventas, 'id_cobertura'));
+
 				for ($i=0; $i < count($ventas); $i++) { 
+					$ventas[$i]['cantidad_cobertura'] = $cobertura_count[$ventas[$i]['id_cobertura']];
 					$result = $this->polizas_model->calculoComisionBase($ventas[$i], 1);
 
 					if (intval($ventas[$i]['id_poliza']) == 30000) {
@@ -345,6 +348,7 @@ class Polizas extends CI_Controller {
 				$liquidacion_result = $this->polizas_model->liquidacion($ventas);
 				echo json_encode($liquidacion_result);
 			} elseif($preliquidacion == 1) {
+				
 				for ($i=0; $i < count($ventas); $i++) { 
 					$result = $this->polizas_model->calculoComisionBase($ventas[$i], 1);
 

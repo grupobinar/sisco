@@ -538,7 +538,7 @@ class Polizas_model extends CI_Model{
 
 			$porcentaje = (intval($t_comision_venta['cuota'])/100);
 			$poliza['poliza']['comision_base'] = round(($poliza['poliza']['prima_mensual'] * $porcentaje), 2);
-
+			
 			$calculos = $this->preprocesarComision($poliza);
 			$poliza['poliza']['comision_preprocesada'] = $calculos['poliza']['comision_preprocesada'];
 			$ventas['comision_preprocesada'] = $poliza['poliza']['comision_preprocesada'];
