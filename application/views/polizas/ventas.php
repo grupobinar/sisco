@@ -231,6 +231,17 @@ $(document).ready(function(){
         }
     });
 
+    $("#nsolicitud").blur(function(){
+        $.post("<?php echo base_url();?>/index.php/polizas/buscarSolicitud", { nsol:$("#nsolicitud").val() }, function(data){
+            if (data=="existe") {
+              $("._respuesta").html("<p class='text-red'>Este numero de solicitud ya existe</p>");
+              $("#nsolicitud").val("");
+            }else{
+              $("._respuesta").html("");
+            }
+        });
+    });
+
     $("#tventa").change(function(){
       $("._respuesta").html("");
       $("#telefono").val("");

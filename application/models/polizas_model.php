@@ -28,7 +28,7 @@ class Polizas_model extends CI_Model{
 		$this->db->select('nombres, apellidos, correo, telefono, tedad');
 		$this->db->where('identificacion',$cedula);
 
-		echo $this->db->last_query();
+		//echo $this->db->last_query();
 		
 		$listusuarios = $this->db->get('public.t_tomadores');
 
@@ -39,6 +39,22 @@ class Polizas_model extends CI_Model{
 		} else{
 			return false;
 		}
+    }
+
+    function buscarSolicitud($nsol)
+    {
+    	$this->db->select('solicitud');
+		$this->db->where('solicitud',$nsol);
+
+		$var = $this->db->get('public.t_ventas');
+
+		//echo $this->db->last_query();
+
+		if($var->num_rows()>0)
+			return "existe";
+		else
+			return "no";
+
     }
 
 	function editar($tpoliza,$plan,$cobertura,$suma,$id_poliza,$fecha,$usuario){
