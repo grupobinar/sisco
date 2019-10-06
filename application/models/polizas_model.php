@@ -459,6 +459,16 @@ class Polizas_model extends CI_Model{
 				$poliza['poliza']['coutas_pagadas_poliza'] = $ventas[$i]['cuotas_canceladas'];
 
 				//Primas Anuales y Mensual
+				if ($poliza['poliza']['id_poliza'] == 5) {
+					$poliza['poliza']['edad_tomador'] = intval($ventas[$i]['edad_tomador']);
+
+					$this->db->where('t_factor_edad.edad', $poliza['poliza']['edad_tomador']);
+					$factor_edad = $this->db->get('public.t_factor_edad')->result_array();
+
+					$poliza['poliza']['factor_poliza'] = $factor_edad[0]['factor'];
+
+				}
+				
 				$poliza['poliza']['prima_anual'] = round(($poliza['poliza']['suma_poliza'] * $poliza['poliza']['factor_poliza'])/1000, 2);
 				$poliza['poliza']['prima_mensual'] = round($poliza['poliza']['prima_anual']/12, 2);
 
@@ -534,6 +544,16 @@ class Polizas_model extends CI_Model{
 			$poliza['poliza']['coutas_pagadas_poliza'] = $ventas['cuotas_canceladas'];
 
 			//Primas Anuales y Mensual
+			if ($poliza['poliza']['id_poliza'] == 5) {
+				$poliza['poliza']['edad_tomador'] = intval($ventas['edad_tomador']);
+
+				$this->db->where('t_factor_edad.edad', $poliza['poliza']['edad_tomador']);
+				$factor_edad = $this->db->get('public.t_factor_edad')->result_array();
+
+				$poliza['poliza']['factor_poliza'] = $factor_edad[0]['factor'];
+
+			}
+
 			$poliza['poliza']['prima_anual'] = round(($poliza['poliza']['suma_poliza'] * $poliza['poliza']['factor_poliza'])/1000, 2);
 			$poliza['poliza']['prima_mensual'] = round($poliza['poliza']['prima_anual']/12, 2);
 

@@ -178,129 +178,133 @@ class Reportes extends CI_Controller {
 	public function estado_comisiones(){
 		$data = $this->reportes_model->listVendedores($_GET['id_vendedor']);
 		$ventas_vendedores = $this->polizas_model->getVendedoresVentasPolizas(0, intval($data[0]['cod_vendedor']), 'L');
-		$vendedor_name = $data[0]['apellidos'].' '.$data[0]['nombres'];
-		$vendedores_orden = array();
-
-		foreach ($ventas_vendedores as $key => $item) {
-			$vendedores_orden[$item['id_semana']][$key] = $item;
-		}
-
-		$keys_semanas = array_keys($vendedores_orden); 
-		$size_semanas = sizeof($vendedores_orden);
-
-		for ($i=0; $i < $size_semanas; $i++) { 
-			$semana_detalle = $this->polizas_model->getSemanaDetalle($keys_semanas[$i], 1);
-			$nsem = $semana_detalle[0]['nsem'];
-			$desde = $semana_detalle[0]['desde'];
-			$hasta = $semana_detalle[0]['hasta'];
-
-			$this->fpdf->AddPage();
-			$this->fpdf->SetFont('Arial','B',16);
-			$this->fpdf->Cell(275,10,'Estado de cuenta de Comisiones',0,0,'C');
+		if (count($ventas_vendedores)) {
+			$vendedor_name = $data[0]['apellidos'].' '.$data[0]['nombres'];
+			$vendedores_orden = array();
+	
+			foreach ($ventas_vendedores as $key => $item) {
+				$vendedores_orden[$item['id_semana']][$key] = $item;
+			}
+	
+			$keys_semanas = array_keys($vendedores_orden); 
+			$size_semanas = sizeof($vendedores_orden);
+	
+			for ($i=0; $i < $size_semanas; $i++) { 
+				$semana_detalle = $this->polizas_model->getSemanaDetalle($keys_semanas[$i], 1);
+				$nsem = $semana_detalle[0]['nsem'];
+				$desde = $semana_detalle[0]['desde'];
+				$hasta = $semana_detalle[0]['hasta'];
+	
+				$this->fpdf->AddPage();
+				$this->fpdf->SetFont('Arial','B',16);
+				$this->fpdf->Cell(275,10,'Estado de cuenta de Comisiones',0,0,'C');
+				
+				$this->fpdf->Ln(10);
+				$this->fpdf->SetFont('Arial','B',10);
+	
+				// DATOS DEL VENDEDOR ********************************************************************
+	
+				$this->fpdf->SetFillColor(148, 196, 241); 
+	
+				$this->fpdf->Cell(80,8,'Vendedor', 0, 0, 'C', True);
+				$this->fpdf->Cell(35,8,'Codigo',0,0,'C', True);
+				$this->fpdf->Cell(80,8,'Coordinador',0,0,'C', True);
+				$this->fpdf->Cell(80,8,'Periodo',0,0,'C', True);
+	
+				$this->fpdf->Ln(8);
+	
+				$this->fpdf->Cell(80,8, $vendedor_name, 0, 0, 'C');
+				$this->fpdf->Cell(35,8, $data[0]['cod_vendedor'],0,0,'C');
+				$this->fpdf->Cell(80,8, $data[0]['nombre_coordinador'],0,0,'C');
+				$this->fpdf->Cell(80,8,"SEM $nsem DEL $desde AL $hasta",0,0,'C');
+	
+				$this->fpdf->Line(10,36,285,36);
+				// ASIGNACIONES **************************************************************************
+	
+				$this->fpdf->Ln(10);
+				$this->fpdf->SetFont('Arial','',14);
+	
+				$this->fpdf->Cell(275,10,'a) Asignaciones',0,0,'L');
+	
+				$this->fpdf->Ln(15);
+	
+				$this->fpdf->SetFont('Arial','B',10);
+				$this->fpdf->Cell(45,8,'Asegurado', 0, 0, 'C', True);
+				$this->fpdf->Cell(30,8,'Cedula',0,0,'C', True);
+				$this->fpdf->Cell(45,8,'Tipo Venta',0,0,'C', True);
+				$this->fpdf->Cell(30,8,'Plan',0,0,'C', True);
+				$this->fpdf->Cell(20,8,'Adicionales',0,0,'C', True);
+				$this->fpdf->Cell(35,8,'Suma',0,0,'C', True);
+				$this->fpdf->Cell(35,8,'Cuotas',0,0,'C', True);
+				$this->fpdf->Cell(35,8,'Comision',0,0,'C', True);
+	
+				$vendedores_orden[$keys_semanas[$i]] = array_values($vendedores_orden[$keys_semanas[$i]]);
+				for ($j=0; $j < count($vendedores_orden[$keys_semanas[$i]]); $j++) { 
+	
+					$this->db->where('t_adicionales.id_venta',$vendedores_orden[$keys_semanas[$i]][$j]['id_venta']);
+					$adicionales_venta = $this->db->get('public.t_adicionales')->result_array();
+	
+					$this->db->where('t_liquidacion.id_venta',$vendedores_orden[$keys_semanas[$i]][$j]['id_venta']);
+					$liquidacion_venta = $this->db->get('public.t_liquidacion')->result_array();
+	
+					$this->fpdf->Ln(8);
+					$this->fpdf->SetFont('Arial','',10);
 			
-			$this->fpdf->Ln(10);
-			$this->fpdf->SetFont('Arial','B',10);
-
-			// DATOS DEL VENDEDOR ********************************************************************
-
-			$this->fpdf->SetFillColor(148, 196, 241); 
-
-			$this->fpdf->Cell(80,8,'Vendedor', 0, 0, 'C', True);
-			$this->fpdf->Cell(35,8,'Codigo',0,0,'C', True);
-			$this->fpdf->Cell(80,8,'Coordinador',0,0,'C', True);
-			$this->fpdf->Cell(80,8,'Periodo',0,0,'C', True);
-
-			$this->fpdf->Ln(8);
-
-			$this->fpdf->Cell(80,8, $vendedor_name, 0, 0, 'C');
-			$this->fpdf->Cell(35,8, $data[0]['cod_vendedor'],0,0,'C');
-			$this->fpdf->Cell(80,8, $data[0]['nombre_coordinador'],0,0,'C');
-			$this->fpdf->Cell(80,8,"SEM $nsem DEL $desde AL $hasta",0,0,'C');
-
-			$this->fpdf->Line(10,36,285,36);
-			// ASIGNACIONES **************************************************************************
-
-			$this->fpdf->Ln(10);
-			$this->fpdf->SetFont('Arial','',14);
-
-			$this->fpdf->Cell(275,10,'a) Asignaciones',0,0,'L');
-
-			$this->fpdf->Ln(15);
-
-			$this->fpdf->SetFont('Arial','B',10);
-			$this->fpdf->Cell(45,8,'Asegurado', 0, 0, 'C', True);
-			$this->fpdf->Cell(30,8,'Cedula',0,0,'C', True);
-			$this->fpdf->Cell(40,8,'Tipo Venta',0,0,'C', True);
-			$this->fpdf->Cell(30,8,'Plan',0,0,'C', True);
-			$this->fpdf->Cell(30,8,'Adicionales',0,0,'C', True);
-			$this->fpdf->Cell(35,8,'Suma',0,0,'C', True);
-			$this->fpdf->Cell(35,8,'Cuotas',0,0,'C', True);
-			$this->fpdf->Cell(35,8,'Comision',0,0,'C', True);
-
-			$vendedores_orden[$keys_semanas[$i]] = array_values($vendedores_orden[$keys_semanas[$i]]);
-			for ($j=0; $j < count($vendedores_orden[$keys_semanas[$i]]); $j++) { 
-
-				$this->db->where('t_adicionales.id_venta',$vendedores_orden[$keys_semanas[$i]][$j]['id_venta']);
-				$adicionales_venta = $this->db->get('public.t_adicionales')->result_array();
-
-				$this->db->where('t_liquidacion.id_venta',$vendedores_orden[$keys_semanas[$i]][$j]['id_venta']);
-				$liquidacion_venta = $this->db->get('public.t_liquidacion')->result_array();
-
+					$this->fpdf->Cell(45,8, $vendedores_orden[$keys_semanas[$i]][$j]['tomador_nombre'],1,0, 'C');
+					$this->fpdf->Cell(30,8, $vendedores_orden[$keys_semanas[$i]][$j]['tomador_cedula'],1,0,'C');
+					$this->fpdf->Cell(45,8, utf8_decode($vendedores_orden[$keys_semanas[$i]][$j]['concepto_venta']),1,0,'C');
+					$this->fpdf->Cell(30,8, $vendedores_orden[$keys_semanas[$i]][$j]['descripcion_plan'],1,0,'C');
+					$this->fpdf->Cell(20,8, count($adicionales_venta),1,0,'C');
+					$this->fpdf->Cell(35,8, $vendedores_orden[$keys_semanas[$i]][$j]['suma_asegurada'],1,0,'C');
+					$this->fpdf->Cell(35,8, $vendedores_orden[$keys_semanas[$i]][$j]['cuotas_canceladas'],1,0,'C');
+					$this->fpdf->Cell(35,8, $liquidacion_venta[0]['comision_liquidada'],1,0,'C');
+				}
+			
+				$this->fpdf->Ln(10);
+	
+				$this->fpdf->SetFont('Arial','',14);
+	
+				// DEDUCCIONES **************************************************************************
+	
+	
+				$this->fpdf->Cell(275,10,'b) Deducciones',0,0,'L');
+	
+				$this->fpdf->Ln(15);
+	
+				$this->fpdf->SetFont('Arial','B',10);
+	
+				$this->fpdf->SetFont('Arial','B',10);
+				$this->fpdf->Cell(40,8,'Asegurado', 0, 0, 'C', True);
+				$this->fpdf->Cell(30,8,'Cedula',0,0,'C', True);
+				$this->fpdf->Cell(40,8,'Tipo Venta',0,0,'C', True);
+				$this->fpdf->Cell(30,8,'Plan',0,0,'C', True);
+				$this->fpdf->Cell(30,8,'Adicionales',0,0,'C', True);
+				$this->fpdf->Cell(35,8,'Suma',0,0,'C', True);
+				$this->fpdf->Cell(35,8,'Cuotas',0,0,'C', True);
+				$this->fpdf->Cell(35,8,'Comision',0,0,'C', True);
+	
 				$this->fpdf->Ln(8);
 				$this->fpdf->SetFont('Arial','',10);
-		
-				$this->fpdf->Cell(45,8, $vendedores_orden[$keys_semanas[$i]][$j]['tomador_nombre'],1,0, 'C');
-				$this->fpdf->Cell(30,8, $vendedores_orden[$keys_semanas[$i]][$j]['tomador_cedula'],1,0,'C');
-				$this->fpdf->Cell(40,8, $vendedores_orden[$keys_semanas[$i]][$j]['concepto_venta'],1,0,'C');
-				$this->fpdf->Cell(30,8, $vendedores_orden[$keys_semanas[$i]][$j]['descripcion_plan'],1,0,'C');
-				$this->fpdf->Cell(30,8, count($adicionales_venta),1,0,'C');
-				$this->fpdf->Cell(35,8, $vendedores_orden[$keys_semanas[$i]][$j]['suma_asegurada'],1,0,'C');
-				$this->fpdf->Cell(35,8, $vendedores_orden[$keys_semanas[$i]][$j]['cuotas_canceladas'],1,0,'C');
-				$this->fpdf->Cell(35,8, $liquidacion_venta[0]['comision_liquidada'],1,0,'C');
+	
+				$this->fpdf->Cell(40,8,'Asegurado',1,0, 'C');
+				$this->fpdf->Cell(30,8,'Cedula',1,0,'C');
+				$this->fpdf->Cell(40,8,'Tipo Venta',1,0,'C');
+				$this->fpdf->Cell(30,8,'Plan',1,0,'C');
+				$this->fpdf->Cell(30,8,'Adicionales',1,0,'C');
+				$this->fpdf->Cell(35,8,'Suma',1,0,'C');
+				$this->fpdf->Cell(35,8,'Cuotas',1,0,'C');
+				$this->fpdf->Cell(35,8,'Comision',1,0,'C');
+	
+				$this->fpdf->Ln(10);
+	
+				$this->fpdf->Cell(240,8,utf8_decode('Total a pagar'), 0, 0, 'R');
+				$this->fpdf->Cell(35,8,'asig - deduc',1,0,'C');
 			}
-		
-			$this->fpdf->Ln(10);
-
-			$this->fpdf->SetFont('Arial','',14);
-
-			// DEDUCCIONES **************************************************************************
-
-
-			$this->fpdf->Cell(275,10,'b) Deducciones',0,0,'L');
-
-			$this->fpdf->Ln(15);
-
-			$this->fpdf->SetFont('Arial','B',10);
-
-			$this->fpdf->SetFont('Arial','B',10);
-			$this->fpdf->Cell(40,8,'Asegurado', 0, 0, 'C', True);
-			$this->fpdf->Cell(30,8,'Cedula',0,0,'C', True);
-			$this->fpdf->Cell(40,8,'Tipo Venta',0,0,'C', True);
-			$this->fpdf->Cell(30,8,'Plan',0,0,'C', True);
-			$this->fpdf->Cell(30,8,'Adicionales',0,0,'C', True);
-			$this->fpdf->Cell(35,8,'Suma',0,0,'C', True);
-			$this->fpdf->Cell(35,8,'Cuotas',0,0,'C', True);
-			$this->fpdf->Cell(35,8,'Comision',0,0,'C', True);
-
-			$this->fpdf->Ln(8);
-			$this->fpdf->SetFont('Arial','',10);
-
-			$this->fpdf->Cell(40,8,'Asegurado',1,0, 'C');
-			$this->fpdf->Cell(30,8,'Cedula',1,0,'C');
-			$this->fpdf->Cell(40,8,'Tipo Venta',1,0,'C');
-			$this->fpdf->Cell(30,8,'Plan',1,0,'C');
-			$this->fpdf->Cell(30,8,'Adicionales',1,0,'C');
-			$this->fpdf->Cell(35,8,'Suma',1,0,'C');
-			$this->fpdf->Cell(35,8,'Cuotas',1,0,'C');
-			$this->fpdf->Cell(35,8,'Comision',1,0,'C');
-
-			$this->fpdf->Ln(10);
-
-			$this->fpdf->Cell(240,8,utf8_decode('Total a pagar'), 0, 0, 'R');
-			$this->fpdf->Cell(35,8,'asig - deduc',1,0,'C');
+			
+			$this->fpdf->Output();		
+		}else{
+			echo "<script>window.close();</script>";
 		}
-		
-		$this->fpdf->Output();
 	}
 }
 
