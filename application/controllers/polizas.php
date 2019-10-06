@@ -416,6 +416,7 @@ class Polizas extends CI_Controller {
 						$ventas_array[$j][$i]['cantidad_cobertura'] = $cobertura_count[$ventas_array[$j][$i]['id_cobertura']];
 						$result = $this->polizas_model->calculoComisionBase($ventas_array[$j][$i], 1);
 						$ventas_array[$j][$i]['comision_total'] = $result['comision_total'];
+						$ventas_array[$j][$i]['comision_coordinador'] = $result['comision_coordinador'];
 					}
 					
 					$liquidacion_result = $this->polizas_model->liquidacion($ventas_array[$j]);
@@ -592,6 +593,7 @@ class Polizas extends CI_Controller {
 		}else{
 			$vendedores_data = 'No hay ventas por liquidar.';
 		}
+
 		for ($i=0; $i < count($vendedores_cod); $i++) { 
 			$vendedor_index = array_search($vendedores_cod[$i], array_column($vendedores_data, 'cod_vendedor'));
 			$vendedores_data[$vendedor_index]['ventas_totales'] = $ventas_semana[$vendedores_cod[$i]]['ventas_totales'];

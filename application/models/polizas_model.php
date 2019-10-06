@@ -625,6 +625,10 @@ class Polizas_model extends CI_Model{
 			$datos_retorno['suma_asegurada'] = $poliza['poliza']['suma_poliza'];
 			$datos_retorno['vendedor_data'] = $ventas['vendedor_data'];
 
+			$t_comision_coordinador = $this->db->get('public.t_ccoordinador')->result_array()[0]['comision_c'];
+			$datos_retorno['comision_coordinador'] = $datos_retorno['comision_total'] * ($t_comision_coordinador/100);
+
+
 			return $datos_retorno;
 		}
 	}
@@ -748,6 +752,7 @@ class Polizas_model extends CI_Model{
 	}
 
 	public function liquidacion($ventas){
+
 		for ($i=0; $i < count($ventas); $i++) { 
 
 			$data = array(
@@ -762,7 +767,8 @@ class Polizas_model extends CI_Model{
 				'id_vendedor'=> $ventas[$i]['id_vendedor'],
 				'id_venta'=> $ventas[$i]['id_venta'],	
 				'id_semana'=> $ventas[$i]['id_semana'],	
-				'comision_liquidada' => $ventas[$i]['comision_total']
+				'comision_liquidada' => $ventas[$i]['comision_total'],
+				'comision_coordinador' => $ventas[$i]['comision_coordinador']
 			);
 	
 			$this->db->insert('public.t_liquidacion',$data);

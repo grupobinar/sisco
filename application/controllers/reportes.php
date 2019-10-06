@@ -98,6 +98,8 @@ class Reportes extends CI_Controller {
 		$this->fpdf->Cell(35,8,'Comision',0,0,'C', True);
 		$this->fpdf->Cell(35,8,'Coordinador',0,0,'C', True);
 
+		highlight_string("<?php\n\$data =\n" . var_export($data, true) . ";\n?>"); die();
+
 		for ($x=0; $x < count($data); $x++) { 
 			$data_ventas = $this->polizas_model->getVendedoresVentasPolizas($_GET['id_semana'], 'vendedores', 'L');
 
@@ -125,7 +127,7 @@ class Reportes extends CI_Controller {
 	
 			$this->fpdf->Cell(65,$celdas_multi,utf8_decode($data[$x]['nombres'].' '.$data[$x]['apellidos']), 1, 0, 'C');
 			$this->fpdf->Cell(30,$celdas_multi,'30756',1,0,'C');
-
+			
 			for ($y=0; $y < count($tipo_count_keys); $y++) {
 				if ($y === 0) {
 					switch ($tipo_count_keys[$y]) {
