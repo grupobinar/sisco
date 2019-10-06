@@ -13,12 +13,14 @@ echo "</pre>";*/
 	<tr style="font-size: 13px;">
 		<th>Cedula:</th>
 		<th>Apellidos y Nombres:</th>
+		<th>Edad:</th>
 		<th>Telefono:</th>
 		<th>Correo:</th>
 	</tr>
 	<tr style="font-size: 13px;">
 		<td><?php echo $_ci_vars['poliza']['identificacion'];?></td>
 		<td><?php echo ucwords($_ci_vars['poliza']['apellidos'].' '.$_ci_vars['poliza']['nombres']);?></td>
+		<td><?php echo ucwords($_ci_vars['poliza']['tedad']);?></td>
 		<td><?php echo $_ci_vars['poliza']['telefono'];?></td>
 		<td><?php echo strtolower($_ci_vars['poliza']['correo']);?></td>
 	</tr>

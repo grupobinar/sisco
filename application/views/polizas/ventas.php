@@ -81,7 +81,10 @@
 
               <div class="col-lg-12"><b class="text-blue">Datos del tomador</b></div>
               <div class="_respuesta col-lg-12"></div>
-              <div class="col-lg-12"><b>Cedula</b></div>
+              <div class="col-lg-3"><b>Cedula</b></div>
+              <div class="col-lg-3"><b>Apellidos</b></div>
+              <div class="col-lg-3"><b>Nombres</b></div>
+              <div class="col-lg-12"></div>
               <div class="col-lg-3">
                 <table>
                   <tr>
@@ -99,15 +102,18 @@
                   </tr>
                 </table>
               </div>
+              <div class="col-lg-3"><input type="text" name="apellidos" id="apellidos" class="form-control letras nm"></div>
+              <div class="col-lg-3"><input type="text" name="nombres" id="nombres" class="form-control letras nm"></div>
               <div class="col-lg-12"></div>
 
-              <div class="col-lg-3"><b>Apellidos</b></div>
-              <div class="col-lg-3"><b>Nombres</b></div>
+              <div class="col-lg-3"><b>Edad</b></div>
               <div class="col-lg-3"><b>Correo</b></div>
               <div class="col-lg-3"><b>Telefono</b></div>
 
-              <div class="col-lg-3"><input type="text" name="apellidos" id="apellidos" class="form-control letras nm"></div>
-              <div class="col-lg-3"><input type="text" name="nombres" id="nombres" class="form-control letras nm"></div>
+              <div class="col-lg-12"></div>
+
+              
+              <div class="col-lg-3"><input type="text" name="tedad" id="tedad" class="form-control numero nm"></div>
               <div class="col-lg-3"><input type="text" name="correo" id="correo" class="form-control mail nm"></div>
               <div class="col-lg-3"><input type="text" name="telefono" id="telefono" class="form-control numero nm"></div>
 

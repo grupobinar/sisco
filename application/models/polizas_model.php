@@ -25,7 +25,7 @@ class Polizas_model extends CI_Model{
 		
 		$cedula = $n.'-'.$c;
 
-		$this->db->select('nombres, apellidos, correo, telefono');
+		$this->db->select('nombres, apellidos, correo, telefono, tedad');
 		$this->db->where('identificacion',$cedula);
 
 		echo $this->db->last_query();
@@ -134,7 +134,7 @@ class Polizas_model extends CI_Model{
 
 	function buscarventa($id)
 	{
-		$this->db->select('id_venta, tipo_pago, referencia_pago, monto, cuotas_canceladas, solicitud, t_tomadores.identificacion, t_tomadores.nombres, t_tomadores.apellidos, t_tomadores.telefono, t_tomadores.correo, usuario, tplan, cobertura, suma, num_poliza, tpoliza, factor, tpago, desde, hasta, observaciones, nsem, t_vendedores.nombres as name_vendedor, t_vendedores.apellidos as lastname_vendedor, cod_vendedor, tventa');
+		$this->db->select('id_venta, tipo_pago, referencia_pago, monto, cuotas_canceladas, solicitud, t_tomadores.identificacion, t_tomadores.nombres, t_tomadores.apellidos, t_tomadores.telefono, t_tomadores.correo, usuario, tplan, cobertura, suma, num_poliza, tpoliza, factor, tpago, desde, hasta, observaciones, nsem, t_vendedores.nombres as name_vendedor, t_vendedores.apellidos as lastname_vendedor, cod_vendedor, tventa, tedad');
 		$this->db->join('t_tomadores','t_tomadores.id_tomador = t_ventas.id_tomador','left');
 		$this->db->join('t_plan','t_plan.id_tplan = t_ventas.id_plan','left');
 		$this->db->join('t_polizas','t_polizas.id_poliza = t_ventas.id_poliza','left');
@@ -274,7 +274,7 @@ class Polizas_model extends CI_Model{
 
 	}
 
-	function guardar_venta($nac,$cedula,$rpago,$monto,$ccancelada,$nombres,$apellidos,$tplan,$cobertura,$tpoliza,$tpago,$fecha,$usuario,$tventa,$nsolicitud,$correo,$telefono,$cod_vendedor,$adicionales,$ad_nac,$ad_cedula,$ad_name,$ad_edad,$ad_parent){ 
+	function guardar_venta($nac,$cedula,$rpago,$monto,$ccancelada,$nombres,$apellidos,$tplan,$cobertura,$tpoliza,$tpago,$tedad, $fecha,$usuario,$tventa,$nsolicitud,$correo,$telefono,$cod_vendedor,$adicionales,$ad_nac,$ad_cedula,$ad_name,$ad_edad,$ad_parent){ 
 
 	$q = $this->db->query("SELECT id_tomador FROM t_tomadores WHERE identificacion='".$nac."-".$cedula."'");
 		  $count = $q->num_rows(); 
@@ -296,6 +296,7 @@ class Polizas_model extends CI_Model{
 				'usuario'=>$usuario,
 				'fecha_registro'=>$fecha,
 				'ult_mod'=>$fecha,
+				'tedad'=>$tedad,
 			);
 
 
