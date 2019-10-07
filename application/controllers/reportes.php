@@ -127,8 +127,11 @@ class Reportes extends CI_Controller {
 			$this->fpdf->Cell(65,$celdas_multi,utf8_decode($data[$x]['nombres'].' '.$data[$x]['apellidos']), 1, 0, 'C');
 			$this->fpdf->Cell(30,$celdas_multi,'30756',1,0,'C');
 			
+			$sum_comision_total = array();
+			$sum_comision_total_coordinador = array();
 			for ($y=0; $y < count($tipo_count_keys); $y++) {
 				$comision_total = 0;
+				$comision_total_coordinador = 0;
 
 				if ($y === 0) {
 					switch ($tipo_count_keys[$y]) {
@@ -136,36 +139,45 @@ class Reportes extends CI_Controller {
 							for ($z=0; $z < count($data_ventas_orden[$data[$x]['id_vendedor']][$tipo_count_keys[$y]]); $z++) { 
 								$total_comision = $this->reportes_model->getLiquidacion($data_ventas_orden[$data[$x]['id_vendedor']][$tipo_count_keys[$y]][$z]['id_venta']);
 								$comision_total += $total_comision[0]['comision_liquidada'];
+								$comision_total_coordinador += $total_comision[0]['comision_coordinador'];
 							}
 									
 							$this->fpdf->Cell(60,6,utf8_decode('Emisión'),1,0,'C');
 							$this->fpdf->Cell(50,6, $tipo_count[$tipo_count_keys[$y]],1,0,'C');
 							$this->fpdf->Cell(35,6, $comision_total,1,0,'C');
-							$this->fpdf->Cell(35,6,'20.488,30',1,0,'C');
+							$this->fpdf->Cell(35,6, $comision_total_coordinador,1,0,'C');
+							array_push($sum_comision_total, $comision_total);
+							array_push($sum_comision_total_coordinador, $comision_total_coordinador);
 							break;
 						
 						case 2:
 							for ($z=0; $z < count($data_ventas_orden[$data[$x]['id_vendedor']][$tipo_count_keys[$y]]); $z++) { 
 								$total_comision = $this->reportes_model->getLiquidacion($data_ventas_orden[$data[$x]['id_vendedor']][$tipo_count_keys[$y]][$z]['id_venta']);
 								$comision_total += $total_comision[0]['comision_liquidada'];
+								$comision_total_coordinador += $total_comision[0]['comision_coordinador'];
 							}
 
 							$this->fpdf->Cell(60,6,utf8_decode('Actualización de Datos'),1,0,'C');
 							$this->fpdf->Cell(50,6, $tipo_count[$tipo_count_keys[$y]],1,0,'C');
 							$this->fpdf->Cell(35,6, $comision_total,1,0,'C');
 							$this->fpdf->Cell(35,6,'1.600,00',1,0,'C');
+							array_push($sum_comision_total, $comision_total);
+							array_push($sum_comision_total_coordinador, $comision_total_coordinador);
 							break;
 	
 						case 3:
 							for ($z=0; $z < count($data_ventas_orden[$data[$x]['id_vendedor']][$tipo_count_keys[$y]]); $z++) { 
 								$total_comision = $this->reportes_model->getLiquidacion($data_ventas_orden[$data[$x]['id_vendedor']][$tipo_count_keys[$y]][$z]['id_venta']);
 								$comision_total += $total_comision[0]['comision_liquidada'];
+								$comision_total_coordinador += $total_comision[0]['comision_coordinador'];
 							}
 
 							$this->fpdf->Cell(60,6,utf8_decode('Persona Adicional'),1,0,'C');
 							$this->fpdf->Cell(50,6, $tipo_count[$tipo_count_keys[$y]],1,0,'C');
 							$this->fpdf->Cell(35,6, $comision_total,1,0,'C');
 							$this->fpdf->Cell(35,6,'1.600,00',1,0,'C');
+							array_push($sum_comision_total, $comision_total);
+							array_push($sum_comision_total_coordinador, $comision_total_coordinador);
 							break;
 					}
 				}else{
@@ -174,6 +186,7 @@ class Reportes extends CI_Controller {
 							for ($z=0; $z < count($data_ventas_orden[$data[$x]['id_vendedor']][$tipo_count_keys[$y]]); $z++) { 
 								$total_comision = $this->reportes_model->getLiquidacion($data_ventas_orden[$data[$x]['id_vendedor']][$tipo_count_keys[$y]][$z]['id_venta']);
 								$comision_total += $total_comision[0]['comision_liquidada'];
+								$comision_total_coordinador += $total_comision[0]['comision_coordinador'];
 							}
 
 							$this->fpdf->Ln(6);
@@ -182,13 +195,16 @@ class Reportes extends CI_Controller {
 							$this->fpdf->Cell(60,6,utf8_decode('Emisión'),1,0,'C');
 							$this->fpdf->Cell(50,6, $tipo_count[$tipo_count_keys[$y]],1,0,'C');
 							$this->fpdf->Cell(35,6, $comision_total,1,0,'C');
-							$this->fpdf->Cell(35,6,'20.488,30',1,0,'C');
+							$this->fpdf->Cell(35,6, $comision_total_coordinador,1,0,'C');
+							array_push($sum_comision_total, $comision_total);
+							array_push($sum_comision_total_coordinador, $comision_total_coordinador);
 							break;
 						
 						case 2:
 							for ($z=0; $z < count($data_ventas_orden[$data[$x]['id_vendedor']][$tipo_count_keys[$y]]); $z++) { 
 								$total_comision = $this->reportes_model->getLiquidacion($data_ventas_orden[$data[$x]['id_vendedor']][$tipo_count_keys[$y]][$z]['id_venta']);
 								$comision_total += $total_comision[0]['comision_liquidada'];
+								$comision_total_coordinador += $total_comision[0]['comision_coordinador'];
 							}
 
 							$this->fpdf->Ln(6);
@@ -198,12 +214,15 @@ class Reportes extends CI_Controller {
 							$this->fpdf->Cell(50,6, $tipo_count[$tipo_count_keys[$y]],1,0,'C');
 							$this->fpdf->Cell(35,6, $comision_total,1,0,'C');
 							$this->fpdf->Cell(35,6,'1.600,00',1,0,'C');
+							array_push($sum_comision_total, $comision_total);
+							array_push($sum_comision_total_coordinador, $comision_total_coordinador);
 							break;
 	
 						case 3:
 							for ($z=0; $z < count($data_ventas_orden[$data[$x]['id_vendedor']][$tipo_count_keys[$y]]); $z++) { 
 								$total_comision = $this->reportes_model->getLiquidacion($data_ventas_orden[$data[$x]['id_vendedor']][$tipo_count_keys[$y]][$z]['id_venta']);
 								$comision_total += $total_comision[0]['comision_liquidada'];
+								$comision_total_coordinador += $total_comision[0]['comision_coordinador'];
 							}
 
 							$this->fpdf->Ln(6);
@@ -213,6 +232,8 @@ class Reportes extends CI_Controller {
 							$this->fpdf->Cell(50,6, $tipo_count[$tipo_count_keys[$y]],1,0,'C');
 							$this->fpdf->Cell(35,6, $comision_total,1,0,'C');
 							$this->fpdf->Cell(35,6,'1.600,00',1,0,'C');
+							array_push($sum_comision_total, $comision_total);
+							array_push($sum_comision_total_coordinador, $comision_total_coordinador);
 							break;
 					}
 				}
@@ -222,9 +243,9 @@ class Reportes extends CI_Controller {
 			$this->fpdf->SetFont('Arial','B',10);
 	
 			$this->fpdf->Cell(155,6,utf8_decode('Total asignaciones'), 0, 0, 'R');
-			$this->fpdf->Cell(50,6,'12',1,0,'C');
-			$this->fpdf->Cell(35,6,'suma total',1,0,'C');
-			$this->fpdf->Cell(35,6,'suma total',1,0,'C');
+			$this->fpdf->Cell(50,6, array_sum($tipo_count),1,0,'C');
+			$this->fpdf->Cell(35,6, array_sum($sum_comision_total),1,0,'C');
+			$this->fpdf->Cell(35,6, array_sum($sum_comision_total_coordinador),1,0,'C');
 		}
 
 		
