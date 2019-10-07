@@ -98,7 +98,6 @@ class Reportes extends CI_Controller {
 		$this->fpdf->Cell(35,8,'Comision',0,0,'C', True);
 		$this->fpdf->Cell(35,8,'Coordinador',0,0,'C', True);
 
-		highlight_string("<?php\n\$data =\n" . var_export($data, true) . ";\n?>"); die();
 
 		for ($x=0; $x < count($data); $x++) { 
 			$data_ventas = $this->polizas_model->getVendedoresVentasPolizas($_GET['id_semana'], 'vendedores', 'L');
@@ -128,60 +127,113 @@ class Reportes extends CI_Controller {
 			$this->fpdf->Cell(65,$celdas_multi,utf8_decode($data[$x]['nombres'].' '.$data[$x]['apellidos']), 1, 0, 'C');
 			$this->fpdf->Cell(30,$celdas_multi,'30756',1,0,'C');
 			
+			$sum_comision_total = array();
+			$sum_comision_total_coordinador = array();
 			for ($y=0; $y < count($tipo_count_keys); $y++) {
+				$comision_total = 0;
+				$comision_total_coordinador = 0;
+
 				if ($y === 0) {
 					switch ($tipo_count_keys[$y]) {
 						case 1:
+							for ($z=0; $z < count($data_ventas_orden[$data[$x]['id_vendedor']][$tipo_count_keys[$y]]); $z++) { 
+								$total_comision = $this->reportes_model->getLiquidacion($data_ventas_orden[$data[$x]['id_vendedor']][$tipo_count_keys[$y]][$z]['id_venta']);
+								$comision_total += $total_comision[0]['comision_liquidada'];
+								$comision_total_coordinador += $total_comision[0]['comision_coordinador'];
+							}
+									
 							$this->fpdf->Cell(60,6,utf8_decode('Emisión'),1,0,'C');
 							$this->fpdf->Cell(50,6, $tipo_count[$tipo_count_keys[$y]],1,0,'C');
-							$this->fpdf->Cell(35,6,'102.441,50',1,0,'C');
-							$this->fpdf->Cell(35,6,'20.488,30',1,0,'C');
+							$this->fpdf->Cell(35,6, $comision_total,1,0,'C');
+							$this->fpdf->Cell(35,6, $comision_total_coordinador,1,0,'C');
+							array_push($sum_comision_total, $comision_total);
+							array_push($sum_comision_total_coordinador, $comision_total_coordinador);
 							break;
 						
 						case 2:
+							for ($z=0; $z < count($data_ventas_orden[$data[$x]['id_vendedor']][$tipo_count_keys[$y]]); $z++) { 
+								$total_comision = $this->reportes_model->getLiquidacion($data_ventas_orden[$data[$x]['id_vendedor']][$tipo_count_keys[$y]][$z]['id_venta']);
+								$comision_total += $total_comision[0]['comision_liquidada'];
+								$comision_total_coordinador += $total_comision[0]['comision_coordinador'];
+							}
+
 							$this->fpdf->Cell(60,6,utf8_decode('Actualización de Datos'),1,0,'C');
-							$this->fpdf->Cell(50,6,'8',1,0,'C');
-							$this->fpdf->Cell(35,6,'8.000,00',1,0,'C');
+							$this->fpdf->Cell(50,6, $tipo_count[$tipo_count_keys[$y]],1,0,'C');
+							$this->fpdf->Cell(35,6, $comision_total,1,0,'C');
 							$this->fpdf->Cell(35,6,'1.600,00',1,0,'C');
+							array_push($sum_comision_total, $comision_total);
+							array_push($sum_comision_total_coordinador, $comision_total_coordinador);
 							break;
 	
 						case 3:
+							for ($z=0; $z < count($data_ventas_orden[$data[$x]['id_vendedor']][$tipo_count_keys[$y]]); $z++) { 
+								$total_comision = $this->reportes_model->getLiquidacion($data_ventas_orden[$data[$x]['id_vendedor']][$tipo_count_keys[$y]][$z]['id_venta']);
+								$comision_total += $total_comision[0]['comision_liquidada'];
+								$comision_total_coordinador += $total_comision[0]['comision_coordinador'];
+							}
+
 							$this->fpdf->Cell(60,6,utf8_decode('Persona Adicional'),1,0,'C');
-							$this->fpdf->Cell(50,6,'8',1,0,'C');
-							$this->fpdf->Cell(35,6,'8.000,00',1,0,'C');
+							$this->fpdf->Cell(50,6, $tipo_count[$tipo_count_keys[$y]],1,0,'C');
+							$this->fpdf->Cell(35,6, $comision_total,1,0,'C');
 							$this->fpdf->Cell(35,6,'1.600,00',1,0,'C');
+							array_push($sum_comision_total, $comision_total);
+							array_push($sum_comision_total_coordinador, $comision_total_coordinador);
 							break;
 					}
 				}else{
 					switch ($tipo_count[$y]) {
 						case 1:
+							for ($z=0; $z < count($data_ventas_orden[$data[$x]['id_vendedor']][$tipo_count_keys[$y]]); $z++) { 
+								$total_comision = $this->reportes_model->getLiquidacion($data_ventas_orden[$data[$x]['id_vendedor']][$tipo_count_keys[$y]][$z]['id_venta']);
+								$comision_total += $total_comision[0]['comision_liquidada'];
+								$comision_total_coordinador += $total_comision[0]['comision_coordinador'];
+							}
+
 							$this->fpdf->Ln(6);
 							$this->fpdf->Cell(65,6,utf8_decode(''), 0, 0, 'C');
 							$this->fpdf->Cell(30,6,'',0,0,'C');
 							$this->fpdf->Cell(60,6,utf8_decode('Emisión'),1,0,'C');
-							$this->fpdf->Cell(50,6,'2',1,0,'C');
-							$this->fpdf->Cell(35,6,'102.441,50',1,0,'C');
-							$this->fpdf->Cell(35,6,'20.488,30',1,0,'C');
+							$this->fpdf->Cell(50,6, $tipo_count[$tipo_count_keys[$y]],1,0,'C');
+							$this->fpdf->Cell(35,6, $comision_total,1,0,'C');
+							$this->fpdf->Cell(35,6, $comision_total_coordinador,1,0,'C');
+							array_push($sum_comision_total, $comision_total);
+							array_push($sum_comision_total_coordinador, $comision_total_coordinador);
 							break;
 						
 						case 2:
+							for ($z=0; $z < count($data_ventas_orden[$data[$x]['id_vendedor']][$tipo_count_keys[$y]]); $z++) { 
+								$total_comision = $this->reportes_model->getLiquidacion($data_ventas_orden[$data[$x]['id_vendedor']][$tipo_count_keys[$y]][$z]['id_venta']);
+								$comision_total += $total_comision[0]['comision_liquidada'];
+								$comision_total_coordinador += $total_comision[0]['comision_coordinador'];
+							}
+
 							$this->fpdf->Ln(6);
 							$this->fpdf->Cell(65,6,utf8_decode(''), 0, 0, 'C');
 							$this->fpdf->Cell(30,6,'',0,0,'C');
 							$this->fpdf->Cell(60,6,utf8_decode('Actualización de Datos'),1,0,'C');
-							$this->fpdf->Cell(50,6,'8',1,0,'C');
-							$this->fpdf->Cell(35,6,'8.000,00',1,0,'C');
+							$this->fpdf->Cell(50,6, $tipo_count[$tipo_count_keys[$y]],1,0,'C');
+							$this->fpdf->Cell(35,6, $comision_total,1,0,'C');
 							$this->fpdf->Cell(35,6,'1.600,00',1,0,'C');
+							array_push($sum_comision_total, $comision_total);
+							array_push($sum_comision_total_coordinador, $comision_total_coordinador);
 							break;
 	
 						case 3:
+							for ($z=0; $z < count($data_ventas_orden[$data[$x]['id_vendedor']][$tipo_count_keys[$y]]); $z++) { 
+								$total_comision = $this->reportes_model->getLiquidacion($data_ventas_orden[$data[$x]['id_vendedor']][$tipo_count_keys[$y]][$z]['id_venta']);
+								$comision_total += $total_comision[0]['comision_liquidada'];
+								$comision_total_coordinador += $total_comision[0]['comision_coordinador'];
+							}
+
 							$this->fpdf->Ln(6);
 							$this->fpdf->Cell(65,6,utf8_decode(''), 0, 0, 'C');
 							$this->fpdf->Cell(30,6,'',0,0,'C');
 							$this->fpdf->Cell(60,6,utf8_decode('Persona Adicional'),1,0,'C');
-							$this->fpdf->Cell(50,6,'8',1,0,'C');
-							$this->fpdf->Cell(35,6,'8.000,00',1,0,'C');
+							$this->fpdf->Cell(50,6, $tipo_count[$tipo_count_keys[$y]],1,0,'C');
+							$this->fpdf->Cell(35,6, $comision_total,1,0,'C');
 							$this->fpdf->Cell(35,6,'1.600,00',1,0,'C');
+							array_push($sum_comision_total, $comision_total);
+							array_push($sum_comision_total_coordinador, $comision_total_coordinador);
 							break;
 					}
 				}
@@ -191,9 +243,9 @@ class Reportes extends CI_Controller {
 			$this->fpdf->SetFont('Arial','B',10);
 	
 			$this->fpdf->Cell(155,6,utf8_decode('Total asignaciones'), 0, 0, 'R');
-			$this->fpdf->Cell(50,6,'12',1,0,'C');
-			$this->fpdf->Cell(35,6,'suma total',1,0,'C');
-			$this->fpdf->Cell(35,6,'suma total',1,0,'C');
+			$this->fpdf->Cell(50,6, array_sum($tipo_count),1,0,'C');
+			$this->fpdf->Cell(35,6, array_sum($sum_comision_total),1,0,'C');
+			$this->fpdf->Cell(35,6, array_sum($sum_comision_total_coordinador),1,0,'C');
 		}
 
 		
@@ -379,6 +431,149 @@ class Reportes extends CI_Controller {
 			echo "<script>window.close();</script>";
 		}
 	}
+
+	public function produccion_por_coordinador(){
+
+		$data = $this->reportes_model->listVendedores($_GET['id_vendedor']);
+
+		//var_dump($data); die();
+		$vendedor_name = $data[0]['apellidos'].' '.$data[0]['nombres'];
+
+		$this->fpdf->AddPage();
+		$this->fpdf->SetFont('Arial','B',16);
+		$this->fpdf->Cell(275,10,utf8_decode('REPORTE SEMANAL DE PRODUCCIÓN POR COORDINADOR'),0,0,'C');
+		$this->fpdf->SetFont('Arial','B',12);
+		$this->fpdf->Ln(10);
+		$this->fpdf->Cell(275,8,'SEM 38 DEL 23/09/19 AL 29/09/19',0,0,'C');
+
+		
+		$this->fpdf->Ln(10);
+		$this->fpdf->SetFont('Arial','B',10);
+
+		// DATOS DEL COORDINADOR *****************************************************************
+
+		$this->fpdf->SetFillColor(148, 196, 241); 
+		$this->fpdf->Cell(275,8,'COORDINADOR: PEDRO PEREZ',0,0,'L');
+		$this->fpdf->Ln(8);
+		$this->fpdf->Line(10,38,285,38);
+
+		// CUADRO RESUMEN ************************************************************************
+
+		$this->fpdf->Ln(10);
+		$this->fpdf->SetFont('Arial','',14);
+
+		$this->fpdf->SetFont('Arial','B',8);
+		$this->fpdf->Cell(50,16,'ASESOR', 1, 0, 'C');
+		$this->fpdf->Cell(8,16,'VTAS',1,0,'C');
+		$this->fpdf->Cell(8,16,'I1',1,0,'C');
+		$this->fpdf->Cell(8,16,'I2',1,0,'C');
+		$this->fpdf->Cell(8,16,'I3',1,0,'C');
+		$this->fpdf->Cell(8,16,'I4',1,0,'C');
+		$this->fpdf->Cell(8,16,'I5',1,0,'C');
+		$this->fpdf->Cell(8,16,'I6',1,0,'C');
+		$this->fpdf->Cell(8,16,'I10',1,0,'C');
+		$this->fpdf->Cell(8,16,'TCH',1,0,'C');
+		$this->fpdf->Cell(8,16,'TCHP',1,0,'C');
+		$this->fpdf->Cell(8,16,'ADC',1,0,'C');
+		$this->fpdf->Cell(64,8,'S.A (MILES)', 1, 0, 'C');
+		$this->fpdf->Cell(8,16,'AC',1,0,'C');
+		$this->fpdf->Cell(8,16,'TSV',1,0,'C');
+		$this->fpdf->Cell(8,16,'IN',1,0,'C');
+		$this->fpdf->Cell(8,16,'CC',1,0,'C');
+		$this->fpdf->Cell(8,16,'CP',1,0,'C');
+		$this->fpdf->Cell(33,16,'COMISIONES',1,0,'C');
+
+		$this->fpdf->Ln(8);
+
+		$this->fpdf->Cell(138,8,'', 0, 0, 'C');
+		$this->fpdf->Cell(8,8,'200',1,0,'C');
+		$this->fpdf->Cell(8,8,'1000',1,0,'C');
+		$this->fpdf->Cell(8,8,'1500',1,0,'C');
+		$this->fpdf->Cell(8,8,'2000',1,0,'C');
+		$this->fpdf->Cell(8,8,'2500',1,0,'C');
+		$this->fpdf->Cell(8,8,'3500',1,0,'C');
+		$this->fpdf->Cell(8,8,'5000',1,0,'C');
+		$this->fpdf->Cell(8,8,'6500',1,0,'C');
+
+		$this->fpdf->Ln(8);
+
+		// VENDEDORES *********************************************************************************
+
+		$this->fpdf->Cell(50,8,'', 1, 0, 'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(33,8,'0,00',1,0,'R');
+
+		// TOTALES *****************************************************************************************
+
+		$this->fpdf->Ln(8);
+
+		$this->fpdf->Cell(50,8,'TOTALES	', 1, 0, 'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(33,8,'0,00',1,0,'R');
+
+		$this->fpdf->Ln(20);
+
+		$this->fpdf->Cell(68,8,'__________________________________',0,0,'C');
+		$this->fpdf->Cell(68,8,'__________________________________',0,0,'C');
+		$this->fpdf->Cell(68,8,'__________________________________',0,0,'C');
+		$this->fpdf->Cell(68,8,'__________________________________',0,0,'C');
+
+		$this->fpdf->Ln(8);
+
+		$this->fpdf->Cell(68,8,'COORDINADOR',0,0,'C');
+		$this->fpdf->Cell(68,8,'AUDITOR',0,0,'C');
+		$this->fpdf->Cell(68,8,'SUPERVISOR',0,0,'C');
+		$this->fpdf->Cell(68,8,'GERENTE DE VENTAS',0,0,'C');
+
+		$this->fpdf->Output();
+	}
+
 }
 
 /* End of file welcome.php */
