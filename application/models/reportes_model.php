@@ -16,7 +16,7 @@ class Reportes_model extends CI_Model{
             $this->db->join('t_personas','t_usuarios.id_persona = t_personas.id_persona');
             $listusuarios = $this->db->get('public.t_vendedores')->result_array();
         }else{
-			if ($semana) {
+			if($semana) {
 				$this->db->where('vendedores_ventas_detalles.id_semana', $semana);
 			}
 
@@ -41,6 +41,13 @@ class Reportes_model extends CI_Model{
 			 return $listusuarios->row()->total;
 		}
 
+	}
+
+	function getLiquidacion($id_venta){
+		$this->db->where('id_venta', $id_venta);
+		$listusuarios = $this->db->get('public.t_liquidacion')->result_array();
+
+		return $listusuarios;
 	}
 
 	function ventas_vendedor($id){

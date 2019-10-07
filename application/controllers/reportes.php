@@ -98,7 +98,6 @@ class Reportes extends CI_Controller {
 		$this->fpdf->Cell(35,8,'Comision',0,0,'C', True);
 		$this->fpdf->Cell(35,8,'Coordinador',0,0,'C', True);
 
-		highlight_string("<?php\n\$data =\n" . var_export($data, true) . ";\n?>"); die();
 
 		for ($x=0; $x < count($data); $x++) { 
 			$data_ventas = $this->polizas_model->getVendedoresVentasPolizas($_GET['id_semana'], 'vendedores', 'L');
@@ -129,58 +128,90 @@ class Reportes extends CI_Controller {
 			$this->fpdf->Cell(30,$celdas_multi,'30756',1,0,'C');
 			
 			for ($y=0; $y < count($tipo_count_keys); $y++) {
+				$comision_total = 0;
+
 				if ($y === 0) {
 					switch ($tipo_count_keys[$y]) {
 						case 1:
+							for ($z=0; $z < count($data_ventas_orden[$data[$x]['id_vendedor']][$tipo_count_keys[$y]]); $z++) { 
+								$total_comision = $this->reportes_model->getLiquidacion($data_ventas_orden[$data[$x]['id_vendedor']][$tipo_count_keys[$y]][$z]['id_venta']);
+								$comision_total += $total_comision[0]['comision_liquidada'];
+							}
+									
 							$this->fpdf->Cell(60,6,utf8_decode('Emisión'),1,0,'C');
 							$this->fpdf->Cell(50,6, $tipo_count[$tipo_count_keys[$y]],1,0,'C');
-							$this->fpdf->Cell(35,6,'102.441,50',1,0,'C');
+							$this->fpdf->Cell(35,6, $comision_total,1,0,'C');
 							$this->fpdf->Cell(35,6,'20.488,30',1,0,'C');
 							break;
 						
 						case 2:
+							for ($z=0; $z < count($data_ventas_orden[$data[$x]['id_vendedor']][$tipo_count_keys[$y]]); $z++) { 
+								$total_comision = $this->reportes_model->getLiquidacion($data_ventas_orden[$data[$x]['id_vendedor']][$tipo_count_keys[$y]][$z]['id_venta']);
+								$comision_total += $total_comision[0]['comision_liquidada'];
+							}
+
 							$this->fpdf->Cell(60,6,utf8_decode('Actualización de Datos'),1,0,'C');
-							$this->fpdf->Cell(50,6,'8',1,0,'C');
-							$this->fpdf->Cell(35,6,'8.000,00',1,0,'C');
+							$this->fpdf->Cell(50,6, $tipo_count[$tipo_count_keys[$y]],1,0,'C');
+							$this->fpdf->Cell(35,6, $comision_total,1,0,'C');
 							$this->fpdf->Cell(35,6,'1.600,00',1,0,'C');
 							break;
 	
 						case 3:
+							for ($z=0; $z < count($data_ventas_orden[$data[$x]['id_vendedor']][$tipo_count_keys[$y]]); $z++) { 
+								$total_comision = $this->reportes_model->getLiquidacion($data_ventas_orden[$data[$x]['id_vendedor']][$tipo_count_keys[$y]][$z]['id_venta']);
+								$comision_total += $total_comision[0]['comision_liquidada'];
+							}
+
 							$this->fpdf->Cell(60,6,utf8_decode('Persona Adicional'),1,0,'C');
-							$this->fpdf->Cell(50,6,'8',1,0,'C');
-							$this->fpdf->Cell(35,6,'8.000,00',1,0,'C');
+							$this->fpdf->Cell(50,6, $tipo_count[$tipo_count_keys[$y]],1,0,'C');
+							$this->fpdf->Cell(35,6, $comision_total,1,0,'C');
 							$this->fpdf->Cell(35,6,'1.600,00',1,0,'C');
 							break;
 					}
 				}else{
 					switch ($tipo_count[$y]) {
 						case 1:
+							for ($z=0; $z < count($data_ventas_orden[$data[$x]['id_vendedor']][$tipo_count_keys[$y]]); $z++) { 
+								$total_comision = $this->reportes_model->getLiquidacion($data_ventas_orden[$data[$x]['id_vendedor']][$tipo_count_keys[$y]][$z]['id_venta']);
+								$comision_total += $total_comision[0]['comision_liquidada'];
+							}
+
 							$this->fpdf->Ln(6);
 							$this->fpdf->Cell(65,6,utf8_decode(''), 0, 0, 'C');
 							$this->fpdf->Cell(30,6,'',0,0,'C');
 							$this->fpdf->Cell(60,6,utf8_decode('Emisión'),1,0,'C');
-							$this->fpdf->Cell(50,6,'2',1,0,'C');
-							$this->fpdf->Cell(35,6,'102.441,50',1,0,'C');
+							$this->fpdf->Cell(50,6, $tipo_count[$tipo_count_keys[$y]],1,0,'C');
+							$this->fpdf->Cell(35,6, $comision_total,1,0,'C');
 							$this->fpdf->Cell(35,6,'20.488,30',1,0,'C');
 							break;
 						
 						case 2:
+							for ($z=0; $z < count($data_ventas_orden[$data[$x]['id_vendedor']][$tipo_count_keys[$y]]); $z++) { 
+								$total_comision = $this->reportes_model->getLiquidacion($data_ventas_orden[$data[$x]['id_vendedor']][$tipo_count_keys[$y]][$z]['id_venta']);
+								$comision_total += $total_comision[0]['comision_liquidada'];
+							}
+
 							$this->fpdf->Ln(6);
 							$this->fpdf->Cell(65,6,utf8_decode(''), 0, 0, 'C');
 							$this->fpdf->Cell(30,6,'',0,0,'C');
 							$this->fpdf->Cell(60,6,utf8_decode('Actualización de Datos'),1,0,'C');
-							$this->fpdf->Cell(50,6,'8',1,0,'C');
-							$this->fpdf->Cell(35,6,'8.000,00',1,0,'C');
+							$this->fpdf->Cell(50,6, $tipo_count[$tipo_count_keys[$y]],1,0,'C');
+							$this->fpdf->Cell(35,6, $comision_total,1,0,'C');
 							$this->fpdf->Cell(35,6,'1.600,00',1,0,'C');
 							break;
 	
 						case 3:
+							for ($z=0; $z < count($data_ventas_orden[$data[$x]['id_vendedor']][$tipo_count_keys[$y]]); $z++) { 
+								$total_comision = $this->reportes_model->getLiquidacion($data_ventas_orden[$data[$x]['id_vendedor']][$tipo_count_keys[$y]][$z]['id_venta']);
+								$comision_total += $total_comision[0]['comision_liquidada'];
+							}
+
 							$this->fpdf->Ln(6);
 							$this->fpdf->Cell(65,6,utf8_decode(''), 0, 0, 'C');
 							$this->fpdf->Cell(30,6,'',0,0,'C');
 							$this->fpdf->Cell(60,6,utf8_decode('Persona Adicional'),1,0,'C');
-							$this->fpdf->Cell(50,6,'8',1,0,'C');
-							$this->fpdf->Cell(35,6,'8.000,00',1,0,'C');
+							$this->fpdf->Cell(50,6, $tipo_count[$tipo_count_keys[$y]],1,0,'C');
+							$this->fpdf->Cell(35,6, $comision_total,1,0,'C');
 							$this->fpdf->Cell(35,6,'1.600,00',1,0,'C');
 							break;
 					}
