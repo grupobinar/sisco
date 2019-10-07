@@ -15,11 +15,20 @@
        <div class="col-xs-6"><b>num. semana</b></div>
        
        <div class="col-xs-6">
-         <input class="form-control" placeholder="Cod vendedor" name="cod" id="cod" type="text">
+              <select class="selectpicker form-control" data-show-subtext="true" data-live-search="true" id="cod_vendedor" name="cod_vendedor">
+                  <?php foreach ($_ci_vars[vendedores] as $key) {
+                    echo "<option value='".$key[cod_vendedor]."' data-subtext='".$key[cod_vendedor]."'>".$key[apellidos].' '.$key[nombres]."</option>";
+                  } ?>
+              </select> 
        </div>
-        <div class="col-xs-6">
-         <input class="form-control" placeholder="Num semana" name="sem" id="sem" type="text">
+       <div class="col-xs-6">
+              <select class="selectpicker form-control" data-show-subtext="true" data-live-search="true" id="sem" name="sem">
+                  <?php foreach ($_ci_vars[sem] as $key) {
+                    echo "<option value='".$key[nsem]."' data-subtext='".$key[nsem]."'>".$key[desde].' - '.$key[hasta]."</option>";
+                  } ?>
+              </select> 
        </div>
+
        
        <div class="col-lg-12"> <br> </div>
        
@@ -37,11 +46,6 @@
  
  <script type="text/javascript">
   $(document).ready(function(){
-
- 
-   $("#ver").click(function() {
-      if ($("input").val() == "") { alert("Todos los campos son obligatorios"); return false; }
-    });
 
   });
 </script>
