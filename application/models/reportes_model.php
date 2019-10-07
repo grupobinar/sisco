@@ -16,8 +16,11 @@ class Reportes_model extends CI_Model{
             $this->db->join('t_personas','t_usuarios.id_persona = t_personas.id_persona');
             $listusuarios = $this->db->get('public.t_vendedores')->result_array();
         }else{
-			$this->db->where('vendedores_ventas_detalles.id_semana', $semana);
-            $this->db->select("t_vendedores.*, t_personas.nombres || ' ' || t_personas.apellidos as nombre_coordinador");
+			if ($semana) {
+				$this->db->where('vendedores_ventas_detalles.id_semana', $semana);
+			}
+
+            $this->db->select("distinct(t_vendedores.*), t_personas.nombres || ' ' || t_personas.apellidos as nombre_coordinador");
             $this->db->join('t_usuarios','t_usuarios.id_user = t_vendedores.id_coordinador');
 			$this->db->join('t_personas','t_usuarios.id_persona = t_personas.id_persona');
 			$this->db->join('vendedores_ventas_detalles','vendedores_ventas_detalles.id_vendedor = t_vendedores.id_vendedor');
