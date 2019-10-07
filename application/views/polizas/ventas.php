@@ -1,4 +1,4 @@
-<?php //echo "<pre>"; print_r($_ci_vars['parentesco']); echo "</pre>";?>
+<?php //echo "<pre>"; print_r($_ci_vars); echo "</pre>";?>
 
 
 <!-- #lista de usuarios ############################################################################-->
@@ -22,6 +22,7 @@
       <th>Plan</th>
       <th>cobertura</th>
       <th>Semana</th>
+      <th>Estatus</th>
       <th><i class="fa fa-cogs"></i> Opciones</th>
     </tr>
     </thead>
@@ -30,8 +31,13 @@
       if($key['tventa']==1) $tventa = "Venta de poliza";
       elseif($key['tventa']==2) $tventa = "Adicionales";
       elseif($key['tventa']==3) $tventa = "Actualización de Datos";
+
+      if($key['estatus_venta']=="P") {$estatus_venta="Preliquidada"; $clase="";}
+      elseif($key['estatus_venta']=="X") {$estatus_venta="Anulada"; $clase="text-red";}
+      if($key['estatus_venta']=="A") {$estatus_venta="Activa"; $clase="text-green";}
+      if($key['estatus_venta']=="L") {$estatus_venta="Liquidada"; $clase="";}
     ?>
-    <tr>
+    <tr class="<?php echo $clase?>">
       <td><?php echo ucwords($key['identificacion']);?></td>
       <td><?php echo ucwords($key['apellidos'].' '.$key['nombres']);?></td>
       <td><?php echo ucwords($tventa);?></td>
@@ -39,6 +45,7 @@
       <td><?php if(isset($key['tplan'])) echo ucwords($key['tplan']); else echo "N/A";?></td>
       <td><?php if(isset($key['cobertura'])) echo ucwords($key['cobertura']); else echo "N/A";?></td>
       <td><a href="#" title="<?php echo $key['desde'].' | '.$key['hasta'] ?>"><?php echo ucwords($key['nsem']);?></a></td>
+      <td><?php echo ucwords($estatus_venta);?></td>
       <td><a href="<?php echo base_url().'index.php/polizas/ver_ventas?id='.$key['id_venta']?>" class="btn btn-default" type="button"><i class="fa fa-eye"></i></a></td>
     </tr>
     <?php }} ?>
@@ -48,7 +55,7 @@
 <!-- #Agregar Usuario ############################################################################-->
 
 
-<form action="http://localhost/sisco/index.php/polizas/guardar_venta" method="post" accept-charset="utf-8" enctype="multipart/form-data">
+<form action="<?php echo base_url().'index.php/polizas/guardar_venta'?>" method="post" accept-charset="utf-8" enctype="multipart/form-data">
   <div class="modal fade" id="myModal" role="dialog">
     <div class="modal-dialog modal-lg">
     
@@ -74,7 +81,10 @@
 
               <div class="col-lg-12"><b class="text-blue">Datos del tomador</b></div>
               <div class="_respuesta col-lg-12"></div>
-              <div class="col-lg-12"><b>Cedula</b></div>
+              <div class="col-lg-3"><b>Cedula</b></div>
+              <div class="col-lg-3"><b>Apellidos</b></div>
+              <div class="col-lg-3"><b>Nombres</b></div>
+              <div class="col-lg-12"></div>
               <div class="col-lg-3">
                 <table>
                   <tr>
@@ -92,16 +102,19 @@
                   </tr>
                 </table>
               </div>
+              <div class="col-lg-3"><input type="text" name="apellidos" id="apellidos" class="form-control letras nm"></div>
+              <div class="col-lg-3"><input type="text" name="nombres" id="nombres" class="form-control letras nm"></div>
               <div class="col-lg-12"></div>
 
-              <div class="col-lg-3"><b>Apellidos</b></div>
-              <div class="col-lg-3"><b>Nombres</b></div>
+              <div class="col-lg-3"><b>Edad</b></div>
               <div class="col-lg-3"><b>Correo</b></div>
               <div class="col-lg-3"><b>Telefono</b></div>
 
-              <div class="col-lg-3"><input type="text" name="apellidos" id="apellidos" class="form-control letras nm"></div>
-              <div class="col-lg-3"><input type="text" name="nombres" id="nombres" class="form-control letras nm"></div>
-              <div class="col-lg-3"><input type="text" name="correo" id="correo" class="form-control nm"></div>
+              <div class="col-lg-12"></div>
+
+              
+              <div class="col-lg-3"><input type="text" name="tedad" id="tedad" class="form-control numero nm"></div>
+              <div class="col-lg-3"><input type="text" name="correo" id="correo" class="form-control mail nm"></div>
               <div class="col-lg-3"><input type="text" name="telefono" id="telefono" class="form-control numero nm"></div>
 
               <div class="col-lg-12"><b class="text-blue">Datos de la poliza</b></div>
@@ -208,6 +221,25 @@ $(document).ready(function(){
 
     $('.decimales').on('input', function () { 
         this.value = this.value.replace(/[^0-9\.]/g,'');
+    });
+
+    $('.mail').blur('input', function () { 
+        if($(".mail").val().indexOf('@', 0) == -1 || $(".mail").val().indexOf('.', 0) == -1) {
+            alert('El correo electrónico introducido no es correcto.');
+            $('.mail').val("");
+            return false;
+        }
+    });
+
+    $("#nsolicitud").blur(function(){
+        $.post("<?php echo base_url();?>/index.php/polizas/buscarSolicitud", { nsol:$("#nsolicitud").val() }, function(data){
+            if (data=="existe") {
+              $("._respuesta").html("<p class='text-red'>Este numero de solicitud ya existe</p>");
+              $("#nsolicitud").val("");
+            }else{
+              $("._respuesta").html("");
+            }
+        });
     });
 
     $("#tventa").change(function(){

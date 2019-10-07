@@ -3,7 +3,9 @@
 <div class="col-lg-12"> 
     <div class="col-lg-12"><br></div>
     <div class="col-lg-10"><br></div>
-    <div class="col-lg-2"><a href="#" class="btn btn-primary btn-xm" data-toggle="modal" data-target="#liquidacion"><b><i class="fa fa-user"></i> Ejecutar Liquidacion</b></a></div>
+    <div class="col-lg-2"><a href="#" class="btn btn-primary btn-xm" onclick="liquidacion()">
+        <b><i class="fa fa-user"></i> Ejecutar Liquidacion</b>
+    </a></div>
 </div>
 
 <div class="col-lg-12"><br></div>
@@ -23,23 +25,25 @@
             </tr>
         </thead>
         <tbody>
-            <?php if ($_ci_vars <>"") { foreach ($_ci_vars as $key) { ?>
-                <tr>
-                    <td><?php echo ucwords($key['identificacion']);?></td>
-                    <td><?php echo ucwords($key['apellidos'].' '.$key['nombres']);?></td>
-                    <td><?php echo ucwords($key['telefono']);?></td>
-                    <td><?php echo ucwords($key['ventas_totales']);?></td>
-                    <td>Numero de la semana abierta</td>
-                    <td><?php echo ucwords($key['comision_total']);?></td>
-                    <td>
-                        <center>
-                            <a class="btn btn-sm btn-default detalleVendedor" id="<?php echo $key['cod_vendedor']?>" data-toggle="modal" data-target="#detalleVendedor" title="editar" data-backdrop="static" data-keyboard="false">
-                                <i class="fa fa-pencil"></i>
-                            </a>
-                        </center>
-                    </td>
-                </tr>
-            <?php }} ?>
+            <?php for ($i=0; $i < count($_ci_vars); $i++) { ?>
+                <?php if ($_ci_vars[$i] <>"") { foreach ($_ci_vars[$i] as $key) { ?>
+                    <tr>
+                        <td><?php echo ucwords($key['identificacion']);?></td>
+                        <td><?php echo ucwords($key['apellidos'].' '.$key['nombres']);?></td>
+                        <td><?php echo ucwords($key['telefono']);?></td>
+                        <td><?php echo ucwords($key['ventas_totales']);?></td>
+                        <td name="semana_id"><?php echo ucwords($key['numero_semana']);?></td>
+                        <td><?php echo number_format($key['comision_total'], 2, ',', '.');?></td>
+                        <td>
+                            <center>
+                                <a class="btn btn-sm btn-default detalleVendedor" id="<?php echo $key['cod_vendedor']?>" data-toggle="modal" data-target="#detalleVendedor" title="editar" data-backdrop="static" data-keyboard="false">
+                                    <i class="fa fa-pencil"></i>
+                                </a>
+                            </center>
+                        </td>
+                    </tr>
+                <?php }} ?>
+            <?php } ?>
         </tbody>
     </table>
 </div>
@@ -53,11 +57,6 @@
                 </button>
                 
                 <h4 class="modal-title" id="name_vendedor"></h4>
-                <div class="col-lg-2">
-                    <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#liquidacion" style="float: right;">
-                        <b><i class="fa fa-user"></i> Ejecutar Pre - Liquidacion</b>
-                    </a>
-                </div>
         </div>
         
         <div class="modal-body">
@@ -68,10 +67,10 @@
                     <th>Tomador</th>
                     <th>Poliza</th>
                     <th>Cobertura</th>
+                    <th>Plan</th>
                     <th>Suma Asegurada</th>
                     <th>Prima Mensual</th>
                     <th>Comision</th>
-                    <th>Acciones</th>
                 </tr>
             </thead>
             <tbody id="tablechild">
@@ -85,18 +84,26 @@
 </div>
 
 <script>
+    function liquidacion(){
+        var semana_element = document.getElementsByName('semana_id');
+        var semana = [];
 
-    function anularVenta(vendedor_id, venta_id){
+        for (let j = 0; j < semana_element.length; j++) {
+            semana[j] = semana_element[j].innerText;
+            
+        }
+        
         Swal.fire({
-            title: 'Desea anular la venta?',
+            title: 'Desea liquidar a todos los vendedores de la tabla?',
             text: "Esta accion es irreversible!",
             type: 'info',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
-            confirmButtonText: 'Si, ANULAR VENTA'
+            confirmButtonText: 'Si, LIQUIDAR'
         }).then((result) => {
-            $.post("<?php echo base_url() ?>/index.php/polizas/anularVenta", { vendedor_id: vendedor_id, venta_id: venta_id }, function(data){
+            $.post("<?php echo base_url() ?>/index.php/polizas/liquidacionVendedores", { 
+                semana: semana, codigo_vendedor:'vendedores', preliquidacion: 2, estatus_venta: 'P' }, function(data){      
                 mensaje = JSON.parse(data);
                 Swal.fire({
                     title: mensaje.mensaje,
@@ -113,9 +120,11 @@
     }
 
     $(".detalleVendedor").click(function() {
-      $.post("<?php echo base_url() ?>/index.php/polizas/liquidacionVendedores", { semana: 2, codigo_vendedor:$(this).attr("id") }, function(data){
+        var semana = $(this)[0].parentElement.parentElement.parentElement.querySelector('td[name=semana_id]').innerText;
+      
+      $.post("<?php echo base_url() ?>/index.php/polizas/liquidacionVendedores", { semana: semana, codigo_vendedor:$(this).attr("id"), estatus_venta:'P' }, function(data){
         ventas_json = JSON.parse(data)
-        console.log(ventas_json);
+        console.log(data);
         document.getElementById('name_vendedor').innerText = 'Detalle De Ventas: ' + ventas_json[1];
 
         var keys = [];
@@ -171,27 +180,15 @@
                 var td_child4 = document.createElement('td');
                 td_child4.innerText = ventas_json[0][keys[index]][i].cobertura_descripcion;
                 var td_child5 = document.createElement('td');
-                td_child5.innerText = ventas_json[0][keys[index]][i].suma_asegurada;
+                td_child5.innerText = ventas_json[0][keys[index]][i].descripcion_plan;
                 var td_child6 = document.createElement('td');
-                td_child6.innerText = ventas_json[0][keys[index]][i].prima_mensual;
+                td_child6.innerText = ventas_json[0][keys[index]][i].suma_asegurada.toLocaleString('ve-VE');
                 var td_child7 = document.createElement('td');
-                td_child7.innerText = ventas_json[0][keys[index]][i].comision_calculada;
-
+                //prima_mensual = parseFloat(Math.round(ventas_json[0][keys[index]][i].prima_mensual * 100) / 100).toFixed(2);
+                prima_mensual = ventas_json[0][keys[index]][i].prima_mensual;                
+                td_child7.innerText = prima_mensual.toLocaleString('ve-VE');
                 var td_child8 = document.createElement('td');
-
-                var action_button = document.createElement('a');
-                action_button.setAttribute('class', 'btn btn-primary');
-                action_button.setAttribute('style', 'float: right;');
-                action_button.setAttribute('onclick', "anularVenta("+ventas_json[0][keys[index]][i].id_vendedor+","+ventas_json[0][keys[index]][i].id_venta+");");
-                action_button.id = 'anularventa';
-
-
-                var b_element = document.createElement('b');
-                b_element.innerText = 'Anular Venta';
-                
-                action_button.appendChild(b_element);
-                td_child8.appendChild(action_button);
-
+                td_child8.innerText = ventas_json[0][keys[index]][i].comision_calculada.toLocaleString('ve-VE');
 
                 tr_child.appendChild(td_child1);
                 tr_child.appendChild(td_child2);

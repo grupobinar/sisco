@@ -9,6 +9,7 @@ class Config extends CI_Controller {
     	$this->load->helper('form');
     	$this->load->model('config_model');
     	$this->load->library('session');
+    	$this->load->helper('date');
 	}
 
 	// Tipo de poliza ---------------------------------------------------------------------------------
@@ -150,7 +151,7 @@ class Config extends CI_Controller {
 	// planes de las polizas
 
 	public function plan()
-	{ // lleva a la vista de los planesa
+	{ // lleva a la vista de los planes
 
 		$data = $this->config_model->listplan();
 
@@ -201,6 +202,8 @@ class Config extends CI_Controller {
 
 	public function comisiones()
 	{ //lleva a la vista de las comisiones
+		$data = $this->config_model->ccoordinador();
+		$datos['ccoordinador']=$data;
 
 		$data = $this->config_model->listplanc();
 
@@ -275,6 +278,7 @@ class Config extends CI_Controller {
 			$lista2[$i]["max"]=$sheet->max;
 			$lista2[$i]["planc"]=$sheet->planc;
 			$lista2[$i]["base"]=$sheet->id_basec;
+			$lista2[$i]["c_minmax"]=$sheet->c_minmax;
 			
 			}
 		}
@@ -298,10 +302,22 @@ class Config extends CI_Controller {
 		$max=$_POST['max'];
 		$planc=$_POST['planc'];
 		$id_basec=$_POST['id_basec'];
+		$c_minmax=$_POST['c_minmax'];
+
+		$evaluar = $this->config_model->evaluar_comisiones($concepto,$calculo,$planc,$id_basec,$c_minmax);
+
+		/*print_r($evaluar);
+		break;*/
 		
 
 		$fecha=date("d/m/Y");
 		$usuario=$this->session->userdata('id_usuario');	
+
+		if($evaluar=="si"){
+
+		$guser="Ya existe una comisión similar a la que intente cargar.";
+
+		}elseif($evaluar=="no"){
 		
 		$guser = $this->config_model->guardar_comision(
 			$concepto,
@@ -314,6 +330,70 @@ class Config extends CI_Controller {
 			$planc,
 			$id_basec
 
+		);
+
+		}
+
+		echo "<script> alert('".$guser."') </script>";
+
+		redirect('/config/comisiones', 'refresh');
+
+	}
+
+	public function modificar_comision()
+	{ // guarda las comisiones
+		/*echo "<pre>";
+		print_r($_POST);
+		echo "</pre>";*/
+
+		//break;
+
+
+		$concepto=$_POST['concepto_e'];
+		$calculo=$_POST['calculo_e'];
+		$cuota=$_POST['cuota_e'];
+		$min=$_POST['min_e'];
+		$max=$_POST['max_e'];
+		$planc=$_POST['planc_e'];
+		$id_basec=$_POST['id_basec_e'];
+		$id_comision=$_POST['id_comision'];
+		
+
+		$fecha=date("d/m/Y");
+		$usuario=$this->session->userdata('id_usuario');	
+		
+		$guser = $this->config_model->modificar_comision(
+			$concepto,
+			$calculo,
+			$cuota,
+			$min,
+			$max,
+			$fecha,
+			$usuario,
+			$planc,
+			$id_basec,
+			$id_comision
+
+		);
+
+		echo "<script> alert('".$guser."') </script>";
+
+		redirect('/config/comisiones', 'refresh');
+
+	}
+
+	public function modificar_comision_coordinador()
+	{ // guarda las comisiones
+		$num_calculo=$_POST['num_calculo'];
+		$id_comision_coordinador=$_POST['id_comision_coordinador'];
+		$fecha=date("d/m/Y");
+		$usuario=$this->session->userdata('id_usuario');	
+		
+		$guser = $this->config_model->modificar_comision_coordinador(
+			$num_calculo,
+			$id_comision_coordinador,
+			$fecha,
+			$usuario
 		);
 
 		echo "<script> alert('".$guser."') </script>";
@@ -331,10 +411,17 @@ class Config extends CI_Controller {
 		echo $guser->id_comision.':'.$guser->id_concepto.':'.$guser->id_calculo.':'.$guser->min.':'.$guser->max.':'.$guser->cuota;
 	}
 	
+	public function buscarComisionCoordinador(){
 
+		$guser = $this->config_model->buscarComisionCoordinador($_POST['id']);
+
+		//print_r($guser);
+
+		echo $guser->comision_c.':'.$guser->id_ccoordinador;
+	}
 	// Usuarios ----------------------------------------------------------------------------------------
-
-	public function editar(){
+	//FIXME: REVISAR
+	/*public function editar(){
 
 		print_r($_POST);
 		break;
@@ -362,7 +449,7 @@ class Config extends CI_Controller {
 		
 		redirect('/config/', 'refresh');
 
-	}
+	}*/
 
 	public function buscarUsuario(){
 
@@ -416,6 +503,36 @@ class Config extends CI_Controller {
 		$this->load->view('layout/nav');
 		$this->load->view('config/edad',$data);
 		$this->load->view('layout/footer');
+	}
+
+
+	public function semana(){
+		$data['semanas'] = $this->config_model->listSemanas();
+
+		$this->load->view('layout/header');
+		$this->load->view('layout/nav');
+		$this->load->view('config/semana',$data);
+		$this->load->view('layout/footer');
+	}
+
+	/*	public function registrarSemana(){
+		$registro = $this->config_model->registrarSemana();
+		$this->session->set_flashdata('message', ['Semana creada con exito', 'success']);
+		header('Location: '.$_SERVER['HTTP_REFERER']);
+	}*/
+
+	public function cerrarSemana(){
+		$result = $this->config_model->registrarSemana($_POST['semana']);
+
+		echo $result;
+
+	}
+
+	public function reabrirSemana(){
+		$result = $this->config_model->reabrirSemana($_POST['semana']);
+
+		echo $result;
+
 	}
 	
 }

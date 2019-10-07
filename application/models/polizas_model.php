@@ -25,10 +25,10 @@ class Polizas_model extends CI_Model{
 		
 		$cedula = $n.'-'.$c;
 
-		$this->db->select('nombres, apellidos, correo, telefono');
+		$this->db->select('nombres, apellidos, correo, telefono, tedad');
 		$this->db->where('identificacion',$cedula);
 
-		echo $this->db->last_query();
+		//echo $this->db->last_query();
 		
 		$listusuarios = $this->db->get('public.t_tomadores');
 
@@ -39,6 +39,22 @@ class Polizas_model extends CI_Model{
 		} else{
 			return false;
 		}
+    }
+
+    function buscarSolicitud($nsol)
+    {
+    	$this->db->select('solicitud');
+		$this->db->where('solicitud',$nsol);
+
+		$var = $this->db->get('public.t_ventas');
+
+		//echo $this->db->last_query();
+
+		if($var->num_rows()>0)
+			return "existe";
+		else
+			return "no";
+
     }
 
 	function editar($tpoliza,$plan,$cobertura,$suma,$id_poliza,$fecha,$usuario){
@@ -115,7 +131,7 @@ class Polizas_model extends CI_Model{
 
 	function listventas()
 	{
-		$this->db->select('id_venta, identificacion, nsem, desde, hasta, referencia_pago, monto, cuotas_canceladas, t_ventas.fecha_registro, nombres, apellidos, telefono, correo, tplan, cobertura, tpoliza, tpago, tventa');
+		$this->db->select('id_venta, identificacion, nsem, desde, hasta, referencia_pago, monto, cuotas_canceladas, t_ventas.fecha_registro, nombres, apellidos, telefono, correo, tplan, cobertura, tpoliza, tpago, tventa, estatus_venta');
 		$this->db->join('t_tomadores','t_tomadores.id_tomador = t_ventas.id_tomador','left');
 		$this->db->join('t_plan','t_plan.id_tplan = t_ventas.id_plan','left');
 		$this->db->join('t_polizas','t_polizas.id_poliza = t_ventas.id_poliza','left');
@@ -134,7 +150,7 @@ class Polizas_model extends CI_Model{
 
 	function buscarventa($id)
 	{
-		$this->db->select('id_venta, tipo_pago, referencia_pago, monto, cuotas_canceladas, solicitud, t_tomadores.identificacion, t_tomadores.nombres, t_tomadores.apellidos, t_tomadores.telefono, t_tomadores.correo, usuario, tplan, cobertura, suma, num_poliza, tpoliza, factor, tpago, desde, hasta, observaciones, nsem, t_vendedores.nombres as name_vendedor, t_vendedores.apellidos as lastname_vendedor, cod_vendedor, tventa');
+		$this->db->select('id_venta, tipo_pago, referencia_pago, monto, cuotas_canceladas, solicitud, t_tomadores.identificacion, t_tomadores.nombres, t_tomadores.apellidos, t_tomadores.telefono, t_tomadores.correo, usuario, tplan, cobertura, suma, num_poliza, tpoliza, factor, tpago, desde, hasta, observaciones, nsem, t_vendedores.nombres as name_vendedor, t_vendedores.apellidos as lastname_vendedor, cod_vendedor, tventa, tedad');
 		$this->db->join('t_tomadores','t_tomadores.id_tomador = t_ventas.id_tomador','left');
 		$this->db->join('t_plan','t_plan.id_tplan = t_ventas.id_plan','left');
 		$this->db->join('t_polizas','t_polizas.id_poliza = t_ventas.id_poliza','left');
@@ -198,6 +214,7 @@ class Polizas_model extends CI_Model{
 
 	function listtpago()
 	{
+		$this->db->where('estatus', '0');
 		$this->db->select('id_tpago, tpago');
 		$listusuarios = $this->db->get('public.t_tpago');
 
@@ -273,7 +290,7 @@ class Polizas_model extends CI_Model{
 
 	}
 
-	function guardar_venta($nac,$cedula,$rpago,$monto,$ccancelada,$nombres,$apellidos,$tplan,$cobertura,$tpoliza,$tpago,$fecha,$usuario,$tventa,$nsolicitud,$correo,$telefono,$cod_vendedor,$adicionales,$ad_nac,$ad_cedula,$ad_name,$ad_edad,$ad_parent){ 
+	function guardar_venta($nac,$cedula,$rpago,$monto,$ccancelada,$nombres,$apellidos,$tplan,$cobertura,$tpoliza,$tpago,$tedad, $fecha,$usuario,$tventa,$nsolicitud,$correo,$telefono,$cod_vendedor,$adicionales,$ad_nac,$ad_cedula,$ad_name,$ad_edad,$ad_parent){ 
 
 	$q = $this->db->query("SELECT id_tomador FROM t_tomadores WHERE identificacion='".$nac."-".$cedula."'");
 		  $count = $q->num_rows(); 
@@ -295,6 +312,7 @@ class Polizas_model extends CI_Model{
 				'usuario'=>$usuario,
 				'fecha_registro'=>$fecha,
 				'ult_mod'=>$fecha,
+				'tedad'=>$tedad,
 			);
 
 
@@ -305,7 +323,7 @@ class Polizas_model extends CI_Model{
 		}
 	}
 
-			$this->db->where('estatus','0');
+			$this->db->where('estatus !=','1');
 			$sem = $this->db->get('public.t_semanas');
 
 	if ($tventa==1) {
@@ -416,25 +434,29 @@ class Polizas_model extends CI_Model{
 
 	}
 
-	public function getVendedoresVentasPolizas($semana, $vendedor = 'vendedores'){
+	public function getVendedoresVentasPolizas($semana, $vendedor = 'vendedores', $estatus_venta = 'A'){
 		if (!is_string($vendedor)) {
-			$this->db->where('id_semana', $semana);
+			if ($semana) {
+				$this->db->where('id_semana', $semana);
+			}
+			
 			$this->db->where('cod_vendedor', $vendedor);
+			$this->db->where('estatus_venta', $estatus_venta);
 			$list_ventas_vendedores = $this->db->get('public.vendedores_ventas_detalles');
 		}else{
 			$this->db->where('id_semana',$semana);
+			$this->db->where('estatus_venta', $estatus_venta);
 			$list_ventas_vendedores = $this->db->get('public.vendedores_ventas_detalles');
 		}
-
 
 		return $list_ventas_vendedores->result_array();
 	}
 
 	public function calculoComisionBase($ventas, $individual){
 		if ($individual == 0) {
-			$adicionales_ventas = $this->adicionalesVentasTotal($ventas);
 
-			$cantidad_polizas_vendidas = count($ventas) + $adicionales_ventas;
+			$adicionales_ventas = $this->adicionalesVentasTotal($ventas);
+			$cantidad_polizas_vendidas = count($ventas);
 
 			for ($i=0; $i < count($ventas); $i++) { 
 
@@ -443,50 +465,74 @@ class Polizas_model extends CI_Model{
 				$this->db->where('polizas_plan_coberturas.id_plan_poliza', $ventas[$i]['id_plan']);
 				$this->db->where('polizas_plan_coberturas.id_cobertura_poliza',$ventas[$i]['id_cobertura']);
 				$poliza['poliza'] = $this->db->get('public.polizas_plan_coberturas')->result_array()[0];
-				
+
 				$this->db->where('t_adicionales.id_venta',$ventas[$i]['id_venta']);
 				$adicionales_venta = $this->db->get('public.t_adicionales')->result_array();
 
 				$poliza['poliza']['poliza_adicional_familiar'] = count($adicionales_venta);
 				$poliza['poliza']['tipo_venta'] = $ventas[$i]['tipo_venta'];
 
-				if ($poliza['poliza']['poliza_adicional_familiar'] > 0) {
-					$cantidad_polizas_vendidas = $cantidad_polizas_vendidas + $poliza['poliza']['poliza_adicional_familiar'];
-				}
-
 				$poliza['poliza']['coutas_pagadas_poliza'] = $ventas[$i]['cuotas_canceladas'];
 
 				//Primas Anuales y Mensual
+				if ($poliza['poliza']['id_poliza'] == 5) {
+					$poliza['poliza']['edad_tomador'] = intval($ventas[$i]['edad_tomador']);
+
+					$this->db->where('t_factor_edad.edad', $poliza['poliza']['edad_tomador']);
+					$factor_edad = $this->db->get('public.t_factor_edad')->result_array();
+
+					$poliza['poliza']['factor_poliza'] = $factor_edad[0]['factor'];
+
+				}
+				
 				$poliza['poliza']['prima_anual'] = round(($poliza['poliza']['suma_poliza'] * $poliza['poliza']['factor_poliza'])/1000, 2);
 				$poliza['poliza']['prima_mensual'] = round($poliza['poliza']['prima_anual']/12, 2);
 
 				$planes_comision = $this->db->get('public.t_plan_comision')->result_array();
 
-				switch (true) {
-					case $cantidad_polizas_vendidas > 0 && $cantidad_polizas_vendidas < $planes_comision[1]['ventas_min']:
-						$porcentaje = (80/100);
-						$poliza['poliza']['comision_base'] = round(($poliza['poliza']['prima_mensual'] * $porcentaje), 2);
-						$calculos = $this->preprocesarComision($poliza);
-						$poliza['poliza']['comision_preprocesada'] = $calculos['poliza']['comision_preprocesada'];
-						$ventas[$i]['comision_preprocesada'] = $poliza['poliza']['comision_preprocesada'];
-					break;
-
-					case $cantidad_polizas_vendidas < $planes_comision[2]['ventas_min']:
-						$porcentaje = (100/100);
-						$poliza['poliza']['comision_base'] = round(($poliza['poliza']['prima_mensual'] * $porcentaje), 2);
-						$calculos = $this->preprocesarComision($poliza);
-						$poliza['poliza']['comision_preprocesada'] = $calculos['poliza']['comision_preprocesada'];
-						$ventas[$i]['comision_preprocesada'] = $poliza['poliza']['comision_preprocesada'];
-					break;
-
-					case $cantidad_polizas_vendidas >= $planes_comision[2]['ventas_min']:
-						$porcentaje = (110/100);
-						$poliza['poliza']['comision_base'] = round(($poliza['poliza']['prima_mensual'] * $porcentaje), 2);
-						$calculos = $this->preprocesarComision($poliza);
-						$poliza['poliza']['comision_preprocesada'] = $calculos['poliza']['comision_preprocesada'];
-						$ventas[$i]['comision_preprocesada'] = $poliza['poliza']['comision_preprocesada'];
-					break;
+				switch ($ventas[$i]['tipo_venta']) {
+					case 1:
+						$this->db->where('t_comisiones.id_tcomision', 1);
+						$this->db->where('t_comisiones.id_basec', 1);
+						$this->db->where('t_comisiones.estatus', 0);
+						$t_comision = $this->db->get('public.t_comisiones')->result_array();
+						break;
+	
+					case 2:
+						$this->db->where('t_comisiones.id_tcomision', 2);
+						$this->db->where('t_comisiones.id_basec', 3);
+						$this->db->where('t_comisiones.estatus', 0);
+						$t_comision = $this->db->get('public.t_comisiones')->result_array();
+						break;
+	
+					case 3:
+						$this->db->where('t_comisiones.id_tcomision', 3);
+						$this->db->where('t_comisiones.id_basec', 3);
+						$this->db->where('t_comisiones.estatus', 0);
+						$t_comision = $this->db->get('public.t_comisiones')->result_array();
+						break;
 				}
+
+				for ($j=0; $j < count($t_comision); $j++) { 
+					if ($cantidad_polizas_vendidas >= $t_comision[$j]['min']) {
+						$t_comision_venta = $t_comision[$j];
+					}
+				}
+
+				switch ($t_comision_venta['id_basec']) {
+					case 1:
+						$porcentaje = (intval($t_comision_venta['cuota'])/100);
+						$poliza['poliza']['comision_base'] = round(($poliza['poliza']['prima_mensual'] * $porcentaje), 2);
+						break;
+					
+					case 3:
+						$poliza['poliza']['comision_base'] = $t_comision_venta['cuota'];
+						break;
+				}
+
+				$calculos = $this->preprocesarComision($poliza);
+				$poliza['poliza']['comision_preprocesada'] = $calculos['poliza']['comision_preprocesada'];
+				$ventas[$i]['comision_preprocesada'] = $poliza['poliza']['comision_preprocesada'];
 			}
 
 			$comision_total = 0;
@@ -500,7 +546,6 @@ class Polizas_model extends CI_Model{
 
 		}else{
 			$adicionales_ventas = $this->adicionalesVentasTotal($ventas);
-			$cantidad_polizas_vendidas = 1 + $adicionales_ventas;
 
 			$this->db->where('polizas_plan_coberturas.id_poliza', $ventas['id_poliza']);
 			$this->db->where('polizas_plan_coberturas.id_plan_poliza', $ventas['id_plan']);
@@ -512,51 +557,77 @@ class Polizas_model extends CI_Model{
 
 			$poliza['poliza']['poliza_adicional_familiar'] = count($adicionales_venta);
 			$poliza['poliza']['tipo_venta'] = $ventas['tipo_venta'];
-
-			if ($poliza['poliza']['poliza_adicional_familiar'] > 0) {
-				$cantidad_polizas_vendidas = $cantidad_polizas_vendidas + $poliza['poliza']['poliza_adicional_familiar'];
-			}
-
-			$poliza['poliza']['coutas_pagadas_poliza'] = $ventas[$i]['cuotas_canceladas'];
+			$poliza['poliza']['coutas_pagadas_poliza'] = $ventas['cuotas_canceladas'];
 
 			//Primas Anuales y Mensual
+			if ($poliza['poliza']['id_poliza'] == 5) {
+				$poliza['poliza']['edad_tomador'] = intval($ventas['edad_tomador']);
+
+				$this->db->where('t_factor_edad.edad', $poliza['poliza']['edad_tomador']);
+				$factor_edad = $this->db->get('public.t_factor_edad')->result_array();
+
+				$poliza['poliza']['factor_poliza'] = $factor_edad[0]['factor'];
+
+			}
+
 			$poliza['poliza']['prima_anual'] = round(($poliza['poliza']['suma_poliza'] * $poliza['poliza']['factor_poliza'])/1000, 2);
 			$poliza['poliza']['prima_mensual'] = round($poliza['poliza']['prima_anual']/12, 2);
 
 			$planes_comision = $this->db->get('public.t_plan_comision')->result_array();
 
-			switch (true) {
-				case $cantidad_polizas_vendidas > 0 && $cantidad_polizas_vendidas < $planes_comision[1]['ventas_min']:
-					$porcentaje = (80/100);
-					$poliza['poliza']['comision_base'] = round(($poliza['poliza']['prima_mensual'] * $porcentaje), 2);
-					$calculos = $this->preprocesarComision($poliza);
-					$poliza['poliza']['comision_preprocesada'] = $calculos['poliza']['comision_preprocesada'];
-					$ventas['comision_preprocesada'] = $poliza['poliza']['comision_preprocesada'];
-				break;
+			switch ($ventas['tipo_venta']) {
+				case 1:
+					$this->db->where('t_comisiones.id_tcomision', 1);
+					$this->db->where('t_comisiones.id_basec', 1);
+					$this->db->where('t_comisiones.estatus', 0);
+					$t_comision = $this->db->get('public.t_comisiones')->result_array();
+					break;
 
-				case $cantidad_polizas_vendidas < $planes_comision[2]['ventas_min']:
-					$porcentaje = (100/100);
-					$poliza['poliza']['comision_base'] = round(($poliza['poliza']['prima_mensual'] * $porcentaje), 2);
-					$calculos = $this->preprocesarComision($poliza);
-					$poliza['poliza']['comision_preprocesada'] = $calculos['poliza']['comision_preprocesada'];
-					$ventas['comision_preprocesada'] = $poliza['poliza']['comision_preprocesada'];
-				break;
+				case 2:
+					$this->db->where('t_comisiones.id_tcomision', 2);
+					$this->db->where('t_comisiones.id_basec', 3);
+					$this->db->where('t_comisiones.estatus', 0);
+					$t_comision = $this->db->get('public.t_comisiones')->result_array();
+					break;
 
-				case $cantidad_polizas_vendidas >= $planes_comision[2]['ventas_min']:
-					$porcentaje = (110/100);
-					$poliza['poliza']['comision_base'] = round(($poliza['poliza']['prima_mensual'] * $porcentaje), 2);
-					$calculos = $this->preprocesarComision($poliza);
-					$poliza['poliza']['comision_preprocesada'] = $calculos['poliza']['comision_preprocesada'];
-					$ventas['comision_preprocesada'] = $poliza['poliza']['comision_preprocesada'];
-				break;
+				case 3:
+					$this->db->where('t_comisiones.id_tcomision', 3);
+					$this->db->where('t_comisiones.id_basec', 3);
+					$this->db->where('t_comisiones.estatus', 0);
+					$t_comision = $this->db->get('public.t_comisiones')->result_array();
+					break;
 			}
 
+			for ($j=0; $j < count($t_comision); $j++) { 
+				if ($ventas['cantidad_cobertura'] >= $t_comision[$j]['min']) {
+					$t_comision_venta = $t_comision[$j];
+				}
+			}
+
+			switch ($t_comision_venta['id_basec']) {
+				case 1:
+					$porcentaje = (intval($t_comision_venta['cuota'])/100);
+					$poliza['poliza']['comision_base'] = round(($poliza['poliza']['prima_mensual'] * $porcentaje), 2);
+					break;
+				
+				case 3:
+					$poliza['poliza']['comision_base'] = $t_comision_venta['cuota'];
+					break;
+			}
+
+			$calculos = $this->preprocesarComision($poliza);
+			$poliza['poliza']['comision_preprocesada'] = $calculos['poliza']['comision_preprocesada'];
+			$ventas['comision_preprocesada'] = $poliza['poliza']['comision_preprocesada'];
 			$comision_total = round($poliza['poliza']['comision_preprocesada'], 2);
 			
 			$datos_retorno['comision_total'] = $comision_total;
 			$datos_retorno['prima_mensual'] = $poliza['poliza']['prima_mensual'];
 			$datos_retorno['suma_asegurada'] = $poliza['poliza']['suma_poliza'];
 			$datos_retorno['vendedor_data'] = $ventas['vendedor_data'];
+
+			$t_comision_coordinador = $this->db->get('public.t_ccoordinador')->result_array()[0]['comision_c'];
+			$datos_retorno['comision_coordinador'] = $datos_retorno['comision_total'] * ($t_comision_coordinador/100);
+
 
 			return $datos_retorno;
 		}
@@ -576,19 +647,34 @@ class Polizas_model extends CI_Model{
 	}
 
 	public function preprocesarComision($poliza){
-		if ($poliza['poliza']['coutas_pagadas_poliza'] >= 3) {
+		$this->db->where('t_comisiones.id_tcomision',intval($poliza['poliza']['tipo_venta']));
+		$this->db->where('t_comisiones.id_basec', 2);
+		$t_comision = $this->db->get('public.t_comisiones')->result_array();
 
-			$porcentaje_cuotas = $poliza['poliza']['comision_base'] * (10/100);
+		for ($j=0; $j < count($t_comision); $j++) { 
+			if (intval($poliza['poliza']['coutas_pagadas_poliza']) >= $t_comision[$j]['min']) {
+				$t_comision_venta = $t_comision[$j];
+			}
+		}
+
+		if (count($t_comision_venta)) {
+			$porcentaje_cuotas = $poliza['poliza']['comision_base'] * ($t_comision_venta['cuota']/100);
 			$poliza['poliza']['comision_preprocesada'] = round($poliza['poliza']['comision_base'] + $porcentaje_cuotas, 2); 
 
 		}else{
 			$poliza['poliza']['comision_preprocesada'] = round($poliza['poliza']['comision_base'], 2);
 		}
 
-		$poliza['poliza']['comision_preprocesada'] = $poliza['poliza']['comision_preprocesada'] + (3500 * $poliza['poliza']['poliza_adicional_familiar']);
-			
-		if($poliza['poliza']['tipo_venta'] == 2){
-			$poliza['poliza']['comision_preprocesada'] = $poliza['poliza']['comision_preprocesada'][$i] + 1000;
+		if ($poliza['poliza']['poliza_adicional_familiar'] > 0) {
+			$this->db->where('t_concepto.concepto', 'Por personas adicionales');
+			$t_concepto = $this->db->get('public.t_concepto')->result_array();
+
+			$this->db->where('t_comisiones.id_tcomision', $t_concepto[0]['id_concepto']);
+			$this->db->where('t_comisiones.id_basec', 3);
+			$this->db->where('t_comisiones.estatus', 0);
+			$t_comision = $this->db->get('public.t_comisiones')->result_array();
+
+			$poliza['poliza']['comision_preprocesada'] = $poliza['poliza']['comision_preprocesada'] + ($t_comision[0]['cuota'] * $poliza['poliza']['poliza_adicional_familiar']);
 		}
 
 		return $poliza;
@@ -600,15 +686,41 @@ class Polizas_model extends CI_Model{
 		return $vendedores_data;
 	}
 
-	public function getSemanaDetalle($semana){
-		$this->db->where_in('t_semanas.id_semana', $semana);
-		$semana_detalle = $this->db->get('public.t_semanas')->result_array();
-		return $semana_detalle;
+	public function getSemanaDetalle($numero_semana = 0, $buscar_id = 0){
+		if ($buscar_id == 1) {
+			$this->db->order_by('id_semana','desc');
+			$this->db->limit(1);
+			$this->db->where('t_semanas.estatus', 1);
+			$this->db->where('t_semanas.nsem', $numero_semana);
+			$semana_detalle = $this->db->get('public.t_semanas')->result_array();
+
+
+			if (!count($semana_detalle)) {
+				$this->db->order_by('id_semana','desc');
+				$this->db->where('t_semanas.estatus', 1);
+				$this->db->where('t_semanas.id_semana', $numero_semana);
+				$semana_detalle = $this->db->get('public.t_semanas')->result_array();
+			}
+
+			return $semana_detalle;
+		}else{
+			$this->db->order_by('id_semana','desc');
+			//$this->db->limit(1);
+			$this->db->where('t_semanas.estatus', 1);
+			$semana_detalle = $this->db->get('public.t_semanas')->result_array();
+			
+			if (!count($semana_detalle)) {
+				$semana_detalle = 'No hay ventas con semanas cerradas';	
+			}
+
+			return $semana_detalle;
+		}
+
 	}
 
 	public function anularVenta($vendedor_id, $venta_id){
 		$data = array(
-			'estatus_venta' => 'P'
+			'estatus_venta' => 'X'
 		);
 		
 		$this->db->where('t_ventas.id_vendedor', $vendedor_id);
@@ -617,6 +729,53 @@ class Polizas_model extends CI_Model{
 
 		return array(
 			'mensaje' => 'Anulada con exito',
+			'tipo' => 'success'
+		);
+	}
+
+	public function preliquidacion($ventas){
+		for ($i=0; $i < count($ventas); $i++) { 
+
+			$data = array(
+				'estatus_venta' => 'P'
+			);
+			
+			$this->db->where('t_ventas.id_vendedor', $ventas[$i]['id_vendedor']);
+			$this->db->where('t_ventas.id_venta', $ventas[$i]['id_venta']);
+			$semana_detalle = $this->db->update('t_ventas', $data);
+		}
+		
+		return array(
+			'mensaje' => 'Venta preliquidada con exito',
+			'tipo' => 'success'
+		);
+	}
+
+	public function liquidacion($ventas){
+
+		for ($i=0; $i < count($ventas); $i++) { 
+
+			$data = array(
+				'estatus_venta' => 'L'
+			);
+
+			$this->db->where('t_ventas.id_vendedor', $ventas[$i]['id_vendedor']);
+			$this->db->where('t_ventas.id_venta', $ventas[$i]['id_venta']);
+			$semana_detalle = $this->db->update('t_ventas', $data);
+
+			$data = array(
+				'id_vendedor'=> $ventas[$i]['id_vendedor'],
+				'id_venta'=> $ventas[$i]['id_venta'],	
+				'id_semana'=> $ventas[$i]['id_semana'],	
+				'comision_liquidada' => $ventas[$i]['comision_total'],
+				'comision_coordinador' => $ventas[$i]['comision_coordinador']
+			);
+	
+			$this->db->insert('public.t_liquidacion',$data);
+		}
+
+		return array(
+			'mensaje' => 'Venta liquidada con exito',
 			'tipo' => 'success'
 		);
 	}

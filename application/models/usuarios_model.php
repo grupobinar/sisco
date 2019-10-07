@@ -61,7 +61,7 @@ class Usuarios_model extends CI_Model{
 
 	function guardar_vendedor($nac,$cedula,$nombres,$apellidos,$correo,$telefono,$fecha,$codvendedor,$usuario){
 
-		  $q = $this->db->query("SELECT id_vendedor FROM t_vendedores WHERE identificacion='".$nac."-".$cedula."'");
+		  $q = $this->db->query("SELECT id_vendedor FROM t_vendedores WHERE identificacion='".$nac."-".$cedula."' or cod_vendedor='".$codvendedor."'");
 		  $count = $q->num_rows(); 
 		  //break;
 		  if($count==0){ 
@@ -92,7 +92,7 @@ class Usuarios_model extends CI_Model{
 		  	else 
 		  { 
 
-		  	$retorno="Vendedor ya existe";
+		  	$retorno="Vendedor o Cod de Vendedor ya existe";
 
 		  } 
 

@@ -224,7 +224,9 @@
   }
 
   $('#Editar').on('hidden.bs.modal', function () {
-    //FIXME: desactivar todos los check
+		$('input[name="opciones[]"]').each(function() {
+			this.checked = false;
+    });  
   })
 
   function updateMenuRol(){

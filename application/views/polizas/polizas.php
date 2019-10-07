@@ -26,7 +26,7 @@
     <tr id="fila_<?php echo $key['id_poliza']?>">
       <td><?php echo strtoupper($key['tpoliza']);?></td>
       <td><?php echo strtoupper($key['plan']);?></td>
-      <td><?php echo ucwords($key['cobertura']);?></td>
+      <td><?php echo ucwords('['.$key['num_poliza'].'] '.$key['cobertura']);?></td>
       <td><?php echo number_format($key['suma'], 2, ',', '.');?></td>
       <td>
         <div class="btn-group">
@@ -135,7 +135,7 @@
         </div>
         </div>
         <div class="modal-footer">
-          <input type="submit" name="editar" id="editar" class="btn btn-primary" value="Modificar Usuario">
+          <input type="submit" name="editar" id="editar" class="btn btn-primary" value="Modificar Poliza">
         </div>
       </div>
       <!-- /.modal-content -->
