@@ -431,6 +431,149 @@ class Reportes extends CI_Controller {
 			echo "<script>window.close();</script>";
 		}
 	}
+
+	public function produccion_por_coordinador(){
+
+		$data = $this->reportes_model->listVendedores($_GET['id_vendedor']);
+
+		//var_dump($data); die();
+		$vendedor_name = $data[0]['apellidos'].' '.$data[0]['nombres'];
+
+		$this->fpdf->AddPage();
+		$this->fpdf->SetFont('Arial','B',16);
+		$this->fpdf->Cell(275,10,utf8_decode('REPORTE SEMANAL DE PRODUCCIÓN POR COORDINADOR'),0,0,'C');
+		$this->fpdf->SetFont('Arial','B',12);
+		$this->fpdf->Ln(10);
+		$this->fpdf->Cell(275,8,'SEM 38 DEL 23/09/19 AL 29/09/19',0,0,'C');
+
+		
+		$this->fpdf->Ln(10);
+		$this->fpdf->SetFont('Arial','B',10);
+
+		// DATOS DEL COORDINADOR *****************************************************************
+
+		$this->fpdf->SetFillColor(148, 196, 241); 
+		$this->fpdf->Cell(275,8,'COORDINADOR: PEDRO PEREZ',0,0,'L');
+		$this->fpdf->Ln(8);
+		$this->fpdf->Line(10,38,285,38);
+
+		// CUADRO RESUMEN ************************************************************************
+
+		$this->fpdf->Ln(10);
+		$this->fpdf->SetFont('Arial','',14);
+
+		$this->fpdf->SetFont('Arial','B',8);
+		$this->fpdf->Cell(50,16,'ASESOR', 1, 0, 'C');
+		$this->fpdf->Cell(8,16,'VTAS',1,0,'C');
+		$this->fpdf->Cell(8,16,'I1',1,0,'C');
+		$this->fpdf->Cell(8,16,'I2',1,0,'C');
+		$this->fpdf->Cell(8,16,'I3',1,0,'C');
+		$this->fpdf->Cell(8,16,'I4',1,0,'C');
+		$this->fpdf->Cell(8,16,'I5',1,0,'C');
+		$this->fpdf->Cell(8,16,'I6',1,0,'C');
+		$this->fpdf->Cell(8,16,'I10',1,0,'C');
+		$this->fpdf->Cell(8,16,'TCH',1,0,'C');
+		$this->fpdf->Cell(8,16,'TCHP',1,0,'C');
+		$this->fpdf->Cell(8,16,'ADC',1,0,'C');
+		$this->fpdf->Cell(64,8,'S.A (MILES)', 1, 0, 'C');
+		$this->fpdf->Cell(8,16,'AC',1,0,'C');
+		$this->fpdf->Cell(8,16,'TSV',1,0,'C');
+		$this->fpdf->Cell(8,16,'IN',1,0,'C');
+		$this->fpdf->Cell(8,16,'CC',1,0,'C');
+		$this->fpdf->Cell(8,16,'CP',1,0,'C');
+		$this->fpdf->Cell(33,16,'COMISIONES',1,0,'C');
+
+		$this->fpdf->Ln(8);
+
+		$this->fpdf->Cell(138,8,'', 0, 0, 'C');
+		$this->fpdf->Cell(8,8,'200',1,0,'C');
+		$this->fpdf->Cell(8,8,'1000',1,0,'C');
+		$this->fpdf->Cell(8,8,'1500',1,0,'C');
+		$this->fpdf->Cell(8,8,'2000',1,0,'C');
+		$this->fpdf->Cell(8,8,'2500',1,0,'C');
+		$this->fpdf->Cell(8,8,'3500',1,0,'C');
+		$this->fpdf->Cell(8,8,'5000',1,0,'C');
+		$this->fpdf->Cell(8,8,'6500',1,0,'C');
+
+		$this->fpdf->Ln(8);
+
+		// VENDEDORES *********************************************************************************
+
+		$this->fpdf->Cell(50,8,'', 1, 0, 'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(33,8,'0,00',1,0,'R');
+
+		// TOTALES *****************************************************************************************
+
+		$this->fpdf->Ln(8);
+
+		$this->fpdf->Cell(50,8,'TOTALES	', 1, 0, 'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(8,8,'',1,0,'C');
+		$this->fpdf->Cell(33,8,'0,00',1,0,'R');
+
+		$this->fpdf->Ln(20);
+
+		$this->fpdf->Cell(68,8,'__________________________________',0,0,'C');
+		$this->fpdf->Cell(68,8,'__________________________________',0,0,'C');
+		$this->fpdf->Cell(68,8,'__________________________________',0,0,'C');
+		$this->fpdf->Cell(68,8,'__________________________________',0,0,'C');
+
+		$this->fpdf->Ln(8);
+
+		$this->fpdf->Cell(68,8,'COORDINADOR',0,0,'C');
+		$this->fpdf->Cell(68,8,'AUDITOR',0,0,'C');
+		$this->fpdf->Cell(68,8,'SUPERVISOR',0,0,'C');
+		$this->fpdf->Cell(68,8,'GERENTE DE VENTAS',0,0,'C');
+
+		$this->fpdf->Output();
+	}
+
 }
 
 /* End of file welcome.php */
