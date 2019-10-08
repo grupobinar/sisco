@@ -65,7 +65,13 @@ class Login extends CI_Controller {
 			$this->load->view('layout/footer');
 		}
 	}
-	
+	 public function welcome()
+	 {
+	 		$this->load->view('layout/header');
+			$this->load->view('layout/nav');
+			$this->load->view('home');
+			$this->load->view('layout/footer');
+	 }
 
 	
 }

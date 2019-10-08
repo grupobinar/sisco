@@ -23,7 +23,10 @@
     </tr>
     </thead>
     <tbody>
-    <?php if ($_ci_vars<>"") { foreach ($_ci_vars[usuarios] as $key) { ?>
+    <?php if ($_ci_vars<>"") { foreach ($_ci_vars[usuarios] as $key) { 
+      if($key[estatus]==0) {$clase="fa fa-unlock"; $titulo="Bloquear";}
+      elseif($key[estatus]==1) {$clase="fa fa-lock"; $titulo="Desbloquear";}
+      ?>
     <tr>
       <td><?php echo strtoupper($key['identificacion']);?></td>
       <td><?php echo strtoupper($key['cod_vendedor']);?></td>
@@ -32,7 +35,9 @@
       <td><?php echo strtoupper($key['telefono']);?></td>
       <td>
         <center>
-          <a class="btn btn-sm btn-default editUsuario" id="<?php echo $key['id_vendedor']?>" data-toggle="modal" data-target="#editarUsuario" href="<?php echo base_url();?>index.php/usuarios/modificar" title="editar"><i class="fa fa-pencil"></i></a>
+          <a class="btn btn-sm btn-default editUsuario" id="<?php echo $key['id_vendedor']?>" data-toggle="modal" data-target="#editarUsuario" title="Editar"><i class="fa fa-pencil"></i></a>
+
+          <a class="btn btn-sm btn-default bloquear <?php echo 'estatus_'.$key['estatus']?>" id="<?php echo $key['id_vendedor']?>" title="<?php echo $titulo;?>"><i class="<?php echo $clase;?>"></i></a>
         </center>
       </td>  
     </tr>
@@ -103,11 +108,11 @@
         <div class="modal-body">
               <div class="row">
 
-              <div class="col-lg-12"><b>Cedula</b></div>
-              <div class="col-lg-12"><b>Cod. vendedor</b></div>
+              <div class="col-lg-6"><b>Cedula</b></div>
+              <div class="col-lg-6"><b>Cod. vendedor</b></div>
               <div class="col-lg-6"><input type="text" name="cedula_e" id="cedula_e" class="form-control" readonly="">
               </div>
-              <div class="col-lg-6"><input type="text" name="cod_vendedor_e" id="cod_vendedor_e" class="form-control numero"></div>
+              <div class="col-lg-6"><input type="text" name="cod_vendedor_e" id="cod_vendedor_e" class="form-control numero" readonly=""></div>
               <div class="col-lg-12"></div>
 
               <div class="col-lg-6"><b>Apellidos</b></div>
@@ -119,7 +124,7 @@
               <div class="col-lg-6"><b>Telefono</b></div>
               <div class="col-lg-6"><input type="text" name="correo_e" id="correo_e" class="form-control mail"></div>
               <div class="col-lg-6"><input type="text" name="telefono_e" id="telefono_e" class="form-control numero"></div>
-              <input type="hidden" name="id_p" id="id_p">
+               <input type="hidden" name="id_p" id="id_p">
         </div>
         </div>
         <div class="modal-footer">
@@ -181,6 +186,26 @@ $(document).ready(function(){
         result="";
 
       });
+    });
+
+    $(".bloquear").click(function() {
+
+        var status=confirm("Desea bloquear este usuario?");
+
+        var clase = $(this).attr('class').split(" ");
+
+        var v=0;
+
+        if (clase[4]=="estatus_0") v=1; if(clase[4]=="estatus_1") v=0;
+
+        if (status==true) {
+
+          $.post("<?php echo base_url() ?>/index.php/usuarios/bloquear", { id:$(this).attr("id"), v:v }, function(data){
+            alert(data);
+          });
+        }
+
+        location.reload();
     });
 });
 </script>

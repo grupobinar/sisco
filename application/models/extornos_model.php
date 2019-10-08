@@ -33,7 +33,10 @@ class Extornos_model extends CI_Model{
 
 	function e_listvendedores()
 	{
-		$data = $this->db->get('public.t_vendedores');
+
+		$data=$this->db->query("SELECT * FROM t_vendedores where id_vendedor in (select id_vendedor from t_ventas where estatus_venta='L')");
+		
+		//echo $this->db->last_query();
 
 		if($data->num_rows()>0)
 		{
@@ -44,8 +47,7 @@ class Extornos_model extends CI_Model{
 
 	function e_listsemana()
 	{
-		$this->db->where('estatus','1');
-		$data = $this->db->get('public.t_semanas');
+		$data=$this->db->query("SELECT * FROM t_semanas where estatus=1 and id_semana in (select id_semana from t_ventas where estatus_venta='L') order by nsem asc");
 
 		if($data->num_rows()>0)
 		{
@@ -62,6 +64,7 @@ class Extornos_model extends CI_Model{
 				'monto_extornable'=>$m_extornar,	
 				'cuotas_extornadas'=>$c_extornar,	
 				'id_usuario'=>$usuario,	
+				'motivo'=>$motivo,	
 				'fecha_registro'=>$fecha,
 				'ult_mod'=>$fecha
 			);
@@ -69,11 +72,32 @@ class Extornos_model extends CI_Model{
 
 			$this->db->insert('public.t_extornos',$data);
 
+			$data = array(
+				'estatus_venta'=>'E',
+			);
+
+			$this->db->set($data);
+			$this->db->where('id_venta', $id_venta);
+			$this->db->update('t_ventas');
+
 
 			$retorno="Venta Extornada";
 
 			return $retorno;
 
+	}
+
+	function buscarExtornos(){
+
+		$this->db->select('solicitud, cuotas_extornadas, monto_extornable, motivo, cod_vendedor, apellidos, nombres, telefono');
+		$this->db->join('t_ventas','t_ventas.id_venta = t_extornos.id_venta','left');
+		$this->db->join('t_vendedores','t_vendedores.id_vendedor = t_extornos.id_vendedor','left');
+		$extornos = $this->db->get('public.t_extornos');
+
+		if($extornos->num_rows()>0)
+		{
+			 return $extornos->result_array();
+		}
 	}
 
 }

@@ -55,11 +55,20 @@ class Extornos extends CI_Controller {
 		
 		$extorno = $this->extornos_model->guardar($c_extornar, $m_extornar, $motivo, $id_venta, $id_vendedor, $fecha, $usuario);
 
-		//return $extorno;
-
 		echo "<script> alert('".$extorno."') </script>";
 
 		redirect('/extornos/extornos', 'refresh');
+	}
+
+	public function view_extornos(){
+
+		$extorno = $this->extornos_model->buscarExtornos();
+
+		$this->load->view('layout/header');
+		$this->load->view('layout/nav');
+		$this->load->view('extornos/ver_extornos',$extorno);
+		$this->load->view('layout/footer');
+
 	}
 
 

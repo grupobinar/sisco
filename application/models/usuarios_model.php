@@ -144,6 +144,19 @@ class Usuarios_model extends CI_Model{
 
 	}
 
+	function bloquear($id,$v){
+
+			$data = array(
+				'estatus'=>$v,
+			);
+
+			$this->db->where('id_vendedor', $id);
+			$this->db->update('t_vendedores', $data);
+			//echo $this->db->last_query();
+
+			return "Usuario Bloqueado";
+	}
+
 
 	function editar_vendedor($id_vendedor,$nombres,$apellidos,$correo,$telefono,$cod_vendedor,$fecha,$usuario,$estatus){
 

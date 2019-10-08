@@ -160,6 +160,13 @@ class Usuarios extends CI_Controller {
 		redirect('/usuarios', 'refresh');
 	}
 
+	public function bloquear(){
+
+		$guser = $this->usuarios_model->bloquear($_POST['id'], $_POST['v']);
+
+		echo $guser;
+	}
+
 	public function editar_vendedor(){
 
 		$id_vendedor=$_POST['id_p'];
@@ -223,6 +230,7 @@ class Usuarios extends CI_Controller {
 			$lista[$i]["nombres"]=$sheet->nombres;
 			$lista[$i]["correo"]=$sheet->correo;
 			$lista[$i]["telefono"]=$sheet->telefono;
+			$lista[$i]["estatus"]=$sheet->estatus;
 			
 			}
 		}

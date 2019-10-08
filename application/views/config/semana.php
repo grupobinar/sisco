@@ -22,11 +22,6 @@
 <div class="col-lg-12"> 
     <div class="col-lg-12"><br></div>
     <div class="col-lg-10"><br></div>
-    <!--div class="col-lg-2">
-        <a href="#" class="btn btn-primary btn-xm" data-toggle="modal" data-target="#myModal">
-            <b><i class="fa fa-user"></i> Nueva Semana</b>
-        </a>
-    </div-->
 </div>
 
 <div class="col-lg-12"><br></div>
@@ -44,7 +39,9 @@
                 </tr>
             </thead>
             <tbody>
-                <?php if ($_ci_vars[semanas]<>"") { foreach ($_ci_vars[semanas] as $key) { ?>
+                <?php $i=0; if ($_ci_vars[semanas]<>"") { foreach ($_ci_vars[semanas] as $key) {
+                    $cant=count($_ci_vars[semanas]); $i++;
+                 ?>
                     <tr>
                         <td><?php echo ucwords($key['nsem']);?></td>
                         <td><?php echo ucwords($key['desde']);?></td>
@@ -56,7 +53,7 @@
                                 <center>
                                     <a class="btn btn-sm btn-default desactivar" id="<?php echo $key['id_semana']?>" title="Cerrar Semana"><i class="fa fa-close"></i></a>  
                                 </center>
-                                <?php } elseif($key['estatus']==1) { ?>
+                                <?php } elseif(($key['estatus']==1) && ($i==$cant-1)) { ?>
                                 <center>
                                     <a class="btn btn-sm btn-default reabrir" id="<?php echo $key['id_semana']?>" title="Reabrir semana"><i class="fa fa-folder-open"></i></a>  
                                 </center>

@@ -110,13 +110,15 @@
  <script type="text/javascript">
   $(document).ready(function(){
 
+    var data=0; var cc=0; var ccn=0;
+
     $(".ventana").click(function(){
 
-      var data=$(this).attr("id");
+      data=$(this).attr("id");
       data = data.split("|");
 
-      var cc = data[2]/12;
-      var ccn = (data[2]/12)*data[3];
+      cc = data[2]/12;
+      ccn = (data[2]/12)*data[3];
 
       $("#id_vendedor").val(data[1]);
       $("#id_venta").val(data[0]);
@@ -129,7 +131,7 @@
 
     $("#c_extornar").keyup(function () {
 
-        var monto = $(this).val() * $("#cuota_comision").val();
+        var monto = $(this).val() * cc;
 
         var dif_cuota = 12 - $("#cuota_cancel").val();
 

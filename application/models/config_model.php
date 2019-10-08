@@ -459,6 +459,18 @@ class Config_model extends CI_Model{
 
 	public function registrarSemana($semana_id){
 
+		// date("Y-m-d").' > '.$hasta->row()->hasta;
+		//break;
+
+		//Evaluar si la semana esta aun en curso
+
+		$this->db->select("hasta");
+		$this->db->where('t_semanas.id_semana', $semana_id);
+	    $hasta = $this->db->get('public.t_semanas');
+
+
+		if (date("Y-m-d") > $hasta->row()->hasta) {
+
 		// evaluar si es una semana reabierta
 
 		$this->db->select("estatus");
@@ -548,6 +560,11 @@ class Config_model extends CI_Model{
 			$result ="Fue cerrada la semana ".$nsem->row()->nsem." y se acaba de abrir la semana ".$numerosemana;
 
 		}
+
+	}else{
+
+		$result = "No se puede cerrar una semana en curso";
+	}
 
 			return $result; 
 

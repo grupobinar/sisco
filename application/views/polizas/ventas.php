@@ -36,6 +36,7 @@
       elseif($key['estatus_venta']=="X") {$estatus_venta="Anulada"; $clase="text-red";}
       if($key['estatus_venta']=="A") {$estatus_venta="Activa"; $clase="text-green";}
       if($key['estatus_venta']=="L") {$estatus_venta="Liquidada"; $clase="";}
+      if($key['estatus_venta']=="E") {$estatus_venta="Extornada"; $clase="text-blue";}
     ?>
     <tr class="<?php echo $clase?>">
       <td><?php echo ucwords($key['identificacion']);?></td>
