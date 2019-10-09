@@ -1,3 +1,22 @@
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
+
+<script>
+  function message(mensaje, tipo){
+    Swal.fire(
+      mensaje,
+      'Click en el boton para cerrar',
+      tipo
+    );
+  }
+
+</script>
+
+<?php if ($this->session->flashdata('message') != '') { ?>
+  <script>
+    message('<?= $this->session->flashdata('message')[0] ?>', '<?= $this->session->flashdata('message')[1] ?>');
+  </script>
+<?php } ?>
+
 <div class="col-lg-12"> <br> </div>
 <div class="col-lg-5"> 
   <div class="box box-primary">
@@ -113,17 +132,17 @@
 
       var ide = $("#id_desactivar").val();
 
-$.post("<?php echo base_url() ?>/index.php/config/eliminarRegistros", { id:$("#id_desactivar").val(), tb:'t_tpago', id_name: 'id_tpago' }, function(data){
+      $.post("<?php echo base_url() ?>/index.php/config/eliminarRegistros", { id:$("#id_desactivar").val(), tb:'t_tpago', id_name: 'id_tpago' }, function(data){
         $("#row_desactivar").html("<div><p class='text-light-blue'>"+data+"</p></div>");
+        /*Swal.fire(
+            data,
+            'Click en el boton para cerrar',
+            'success'
+        );*/
 
         $("#fila_"+ide).hide();
-
         $("#btn_desactivar").css("display", "none").delay(1000);
-
-
         $("#_desctivar").val("Cerrar");
-
-
       });
 
     });

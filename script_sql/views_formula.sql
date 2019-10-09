@@ -36,7 +36,7 @@ CREATE OR REPLACE VIEW public.vendedores_ventas_detalles
     (g.nombres::text || ' '::text) || g.apellidos::text AS tomador_nombre,
     e.tplan AS descripcion_plan,
     c.suma AS suma_asegurada,
-    g.tedad AS edad_tomador
+    a.id_coordinador
    FROM t_vendedores a
      JOIN t_ventas b ON a.id_vendedor = b.id_vendedor
      LEFT JOIN t_polizas c ON b.id_poliza = c.id_poliza

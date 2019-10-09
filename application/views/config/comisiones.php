@@ -1,5 +1,22 @@
 <?php  //print_r($_ci_vars) ?>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
 
+<script>
+  function message(mensaje, tipo){
+    Swal.fire(
+      mensaje,
+      'Click en el boton para cerrar',
+      tipo
+    );
+  }
+
+</script>
+
+<?php if ($this->session->flashdata('message') != '') { ?>
+  <script>
+    message('<?= $this->session->flashdata('message')[0] ?>', '<?= $this->session->flashdata('message')[1] ?>');
+  </script>
+<?php } ?>
 <!-- #lista de usuarios ############################################################################-->
 <div class="col-lg-12"> 
  

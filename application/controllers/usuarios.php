@@ -213,7 +213,6 @@ class Usuarios extends CI_Controller {
 
 
 	public function vendedores(){
-
 		$data = $this->usuarios_model->listvendedores();
 
 		$i=0;

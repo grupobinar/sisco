@@ -134,21 +134,25 @@ class Polizas_model extends CI_Model{
 
 	function listventas()
 	{
-		$this->db->select('id_venta, identificacion, nsem, desde, hasta, referencia_pago, monto, cuotas_canceladas, t_ventas.fecha_registro, nombres, apellidos, telefono, correo, tplan, cobertura, tpoliza, tpago, tventa, estatus_venta');
+		$this->db->select('id_venta, t_tomadores.identificacion, nsem, desde, hasta, referencia_pago, monto, cuotas_canceladas, t_ventas.fecha_registro, t_tomadores.nombres, t_tomadores.apellidos, t_tomadores.telefono, t_tomadores.correo, tplan, cobertura, tpoliza, tpago, tventa, estatus_venta');
 		$this->db->join('t_tomadores','t_tomadores.id_tomador = t_ventas.id_tomador','left');
 		$this->db->join('t_plan','t_plan.id_tplan = t_ventas.id_plan','left');
 		$this->db->join('t_polizas','t_polizas.id_poliza = t_ventas.id_poliza','left');
 		$this->db->join('t_tpoliza','t_tpoliza.id_tpoliza = t_ventas.id_tpoliza','left');
 		$this->db->join('t_tpago','t_tpago.id_tpago = t_ventas.tipo_pago','left');
 		$this->db->join('t_semanas','t_semanas.id_semana = t_ventas.id_semana','left');
-		$listusuarios = $this->db->get('public.t_ventas');
 
+		if ($this->session->userdata('rol')<>2) {
+			$this->db->join('t_vendedores','t_ventas.id_vendedor = t_vendedores.id_vendedor');
+			$this->db->where('t_vendedores.id_coordinador', $this->session->userdata('id_usuario'));
+		}
+
+		$listusuarios = $this->db->get('public.t_ventas');
 
 		if($listusuarios->num_rows()>0)
 		{
 			 return $listusuarios->result_array();
 		}
-
 	}
 
 	function buscarventa($id)
@@ -443,12 +447,24 @@ class Polizas_model extends CI_Model{
 				$this->db->where('id_semana', $semana);
 			}
 			
-			$this->db->where('cod_vendedor', $vendedor);
+			$this->db->where('vendedores_ventas_detalles.cod_vendedor', $vendedor);
 			$this->db->where('estatus_venta', $estatus_venta);
+			
+			if ($this->session->userdata('rol')<>2) {
+				$this->db->where('id_coordinador',$this->session->userdata('id_usuario'));
+			}
+
+			$this->db->join('t_vendedores', 'vendedores_ventas_detalles.id_vendedor = t_vendedores.id_vendedor');
 			$list_ventas_vendedores = $this->db->get('public.vendedores_ventas_detalles');
 		}else{
 			$this->db->where('id_semana',$semana);
 			$this->db->where('estatus_venta', $estatus_venta);
+			
+			if ($this->session->userdata('rol')<>2) {
+				$this->db->where('id_coordinador',$this->session->userdata('id_usuario'));
+			}
+
+			$this->db->join('t_vendedores', 'vendedores_ventas_detalles.id_vendedor = t_vendedores.id_vendedor');
 			$list_ventas_vendedores = $this->db->get('public.vendedores_ventas_detalles');
 		}
 
@@ -758,13 +774,78 @@ class Polizas_model extends CI_Model{
 
 		for ($i=0; $i < count($ventas); $i++) { 
 
+			$this->db->where('t_extornos.id_vendedor', intval($ventas[$i]['id_vendedor']));
+			$this->db->where('t_extornos.id_estatus =', 0);
+			$get_extornos = $this->db->get('public.t_extornos')->result_array();
+			
+
 			$data = array(
 				'estatus_venta' => 'L'
 			);
 
 			$this->db->where('t_ventas.id_vendedor', $ventas[$i]['id_vendedor']);
 			$this->db->where('t_ventas.id_venta', $ventas[$i]['id_venta']);
-			$semana_detalle = $this->db->update('t_ventas', $data);
+			$update_ventas = $this->db->update('t_ventas', $data);
+
+			if (count($get_extornos)) {
+				for ($j=0; $j < count($get_extornos); $j++) { 
+					if (is_null($get_extornos[$j]['monto_fraccionado'])) {
+						if ($get_extornos[$j]['monto_extornable'] > $ventas[$i]['comision_total']) {
+							$get_extornos[$j]['monto_extornable'] = $get_extornos[$j]['monto_extornable'] - $ventas[$i]['comision_total'];
+							$ventas[$i]['comision_total'] = $ventas[$i]['comision_total'] - $ventas[$i]['comision_total'];
+						}else{
+							$ventas[$i]['comision_total'] = $ventas[$i]['comision_total'] - $get_extornos[$j]['monto_extornable'];
+							$get_extornos[$j]['monto_extornable'] = $get_extornos[$j]['monto_extornable'] - $get_extornos[$j]['monto_extornable'];
+						}
+	
+						if ($get_extornos[$j]['monto_extornable'] == 0) {
+	
+							$data_extorno = array(
+								'id_estatus' => 1
+							);
+	
+							$this->db->where('t_extornos.id_vendedor', $ventas[$i]['id_vendedor']);
+							$update_ventas = $this->db->update('t_extornos', $data);
+						}else{
+							$data_extorno = array(
+								'monto_fraccionado' => $get_extornos[$j]['monto_extornable']
+							);
+	
+							$this->db->where('t_extornos.id_vendedor', $ventas[$i]['id_vendedor']);
+							$update_ventas = $this->db->update('t_extornos', $data_extorno);
+						}					
+					}else{
+						if ($get_extornos[$j]['monto_fraccionado'] > $ventas[$i]['comision_total']) {
+							$get_extornos[$j]['monto_fraccionado'] = $get_extornos[$j]['monto_fraccionado'] - $ventas[$i]['comision_total'];
+							$ventas[$i]['comision_total'] = $ventas[$i]['comision_total'] - $ventas[$i]['comision_total'];
+						}else{
+							$ventas[$i]['comision_total'] = $ventas[$i]['comision_total'] - $get_extornos[$j]['monto_fraccionado'];
+							$get_extornos[$j]['monto_fraccionado'] = $get_extornos[$j]['monto_fraccionado'] - $get_extornos[$j]['monto_fraccionado'];
+						}
+
+						if ($get_extornos[$j]['monto_fraccionado'] == 0) {
+							if ($get_extornos[$j]['monto_extornable'] > $ventas[$i]['comision_total']) {
+								$get_extornos[$j]['monto_extornable'] = $get_extornos[$j]['monto_extornable'] - $ventas[$i]['comision_total'];
+								$ventas[$i]['comision_total'] = $ventas[$i]['comision_total'] - $ventas[$i]['comision_total'];
+							}else{
+								$ventas[$i]['comision_total'] = $ventas[$i]['comision_total'] - $get_extornos[$j]['monto_extornable'];
+								$get_extornos[$j]['monto_extornable'] = $get_extornos[$j]['monto_extornable'] - $get_extornos[$j]['monto_extornable'];
+							}
+		
+							if ($get_extornos[$j]['monto_extornable'] == 0) {
+		
+								$data_extorno = array(
+									'id_estatus' => 1
+								);
+		
+								$this->db->where('t_extornos.id_vendedor', $ventas[$i]['id_vendedor']);
+								$update_ventas = $this->db->update('t_extornos', $data_extorno);
+							}
+						}
+					}
+				}
+			}
+		
 
 			$data = array(
 				'id_vendedor'=> $ventas[$i]['id_vendedor'],

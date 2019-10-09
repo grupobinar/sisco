@@ -240,7 +240,7 @@ class Usuarios_model extends CI_Model{
 	function listvendedores()
 	{
 		if ($this->session->userdata('rol')<>2) {
-		$this->db->where('id_coordinador',$this->session->userdata('id_usuario'));
+			$this->db->where('id_coordinador',$this->session->userdata('id_usuario'));
 		}
 
 		$listusuarios = $this->db->get('public.t_vendedores');

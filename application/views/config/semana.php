@@ -72,34 +72,51 @@
 <script type="text/javascript">
     $(".desactivar").click(function() {
         semana =  $(this).attr("id");
-        var confirmacion=confirm("Recuerde que al cerrar la semana no podran ser cargadas ventas en la misma. Desea continuar?");
-        if (confirmacion==true) {
-        $.post("<?php echo base_url() ?>/index.php/config/cerrarSemana", { semana: semana }, function(data){
 
-            console.log(data);
-
-            alert(data);     
-            location.reload(); 
-
-        });
-        }else{
-            alert("Operacion Cancelada");
-        }
+        Swal.fire({
+            title: 'Recuerde que al cerrar la semana no podran ser cargadas ventas en la misma.',
+            text: "Desea continuar?",
+            type: 'info',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Si, CERRAR SEMANA'
+        }).then((result) => {
+            $.post("<?php echo base_url() ?>/index.php/config/cerrarSemana", { semana: semana }, function(data){      
+                Swal.fire({
+                    title: data,
+                    text:  'Click en el boton para cerrar',
+                    type:  'mensaje.tipo',
+                    confirmButtonText: 'Cerrar'
+                }).then((result) => {
+                    location.reload();
+                });
+            });
+        })
     });
 
     $(".reabrir").click(function() {
         semana =  $(this).attr("id");
-        var confirmacion=confirm("Recuerde que solo puede tener una semana abierta, al ejecutar esta accion se cerrara la semana que se encuentre abierta. Desea continuar?");
-        if (confirmacion==true) {
-        $.post("<?php echo base_url() ?>/index.php/config/reabrirSemana", { semana: semana }, function(data){
-
-            alert(data);     
-            location.reload(); 
-
-        });
-        }else{
-            alert("Operacion Cancelada");
-        }
+        Swal.fire({
+            title: 'Recuerde que al cerrar la semana no podran ser cargadas ventas en la misma.',
+            text: "Desea continuar?",
+            type: 'info',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Si, CERRAR SEMANA'
+        }).then((result) => {
+            $.post("<?php echo base_url() ?>/index.php/config/reabrirSemana", { semana: semana }, function(data){      
+                Swal.fire({
+                    title: 'Recuerde que solo puede tener una semana abierta, al ejecutar esta accion se cerrara la semana que se encuentre abierta.',
+                    text:  'Desea continuar?',
+                    type:  'mensaje.tipo',
+                    confirmButtonText: 'Cerrar'
+                }).then((result) => {
+                    location.reload();
+                });
+            });
+        })            
     });
 
 </script>

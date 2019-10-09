@@ -1,3 +1,22 @@
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
+
+<script>
+  function message(mensaje, tipo){
+    Swal.fire(
+      mensaje,
+      'Click en el boton para cerrar',
+      tipo
+    );
+  }
+
+</script>
+
+<?php if ($this->session->flashdata('message') != '') { ?>
+  <script>
+    message('<?= $this->session->flashdata('message')[0] ?>', '<?= $this->session->flashdata('message')[1] ?>');
+  </script>
+<?php } ?>
+
 <div class="col-lg-12"> <br> </div>
 <div class="col-lg-5"> 
   <div class="box box-primary">
@@ -117,8 +136,6 @@
     $("#btn_desactivar").click(function() {
 
       var ide = $("#id_desactivar").val();
-
-      alert("aqui");
 
       $.post("<?php echo base_url() ?>/index.php/config/eliminarRegistros", { id:$("#id_desactivar").val(), tb:'t_tpoliza', id_name: 'id_tpoliza' }, function(data){
 
