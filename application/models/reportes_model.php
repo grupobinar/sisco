@@ -106,4 +106,29 @@ class Reportes_model extends CI_Model{
 
 	}
 
+
+	function metrica_tpago()
+	{
+		$this->db->select('tpago, count(*) as total, sum(monto) as suma');
+		$this->db->join('t_tpago','t_tpago.id_tpago = t_ventas.tipo_pago','left');
+		$this->db->group_by('tpago');
+
+		$data = $this->db->get('public.t_ventas'); 
+
+		return $data->result_array();
+
+
+	}
+
+	function metrica_tventa()
+	{
+		$this->db->select('tventa, count(*) as total');
+		$this->db->group_by('tventa');
+
+		$data = $this->db->get('public.t_ventas'); 
+
+		return $data->result_array();
+
+
+	}
 }

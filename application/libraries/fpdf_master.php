@@ -5,7 +5,7 @@ class fpdf_master {
 		
 		require_once APPPATH.'third_party/fpdf181/fpdf.php';
 		
-		$pdf = new FPDF('L');
+		$pdf = new FPDF('P');
 		//$pdf->AddPage();
 		
 		$CI =& get_instance();
