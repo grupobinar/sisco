@@ -23,24 +23,62 @@ class Reportes extends CI_Controller {
 			$this->mail->isSMTP();                                            // Send using SMTP
 			$this->mail->Host       = 'smtp.gmail.com';                    // Set the SMTP server to send through
 			$this->mail->SMTPAuth   = true;                                   // Enable SMTP authentication
-			$this->mail->Username   = 'thomasro10@gmail.com';                     // SMTP username
-			$this->mail->Password   = 'Thomasro_2903';                               // SMTP password
+			$this->mail->Username   = 'grupobinar@gmail.com';                     // SMTP username
+			$this->mail->Password   = 'Cotufas#85';                               // SMTP password
 			//$this->mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;         // Enable TLS encryption; `PHPMailer::ENCRYPTION_SMTPS` also accepted
 			$this->mail->Port       = 587;                                    // TCP port to connect to
 		
 			//Recipients
 			$this->mail->setFrom('from@example.com', 'Mailer');
-			$this->mail->addAddress('thisaparattusmoved@gmail.com', 'Thomas Romero');     // Add a recipient
+			$this->mail->addAddress('brujidat@gmail.com', 'Katherine');     // Add a recipient
 			$this->mail->addReplyTo('info@example.com', 'Information');
-		
-			// Attachments
-			//$this->mail->addAttachment('/var/tmp/file.tar.gz');         // Add attachments
-			//$this->mail->addAttachment('/tmp/image.jpg', 'new.jpg');    // Optional name
-		
+			//***************************************************************
+			$html="";
+			$html.='<div style="background: #cecece">';
+			$html.='<br>';
+			$html.='<table width="60%" style="margin:0 auto; background: white;">';
+				$html.='<tr>';
+					$html.='<td colspan="2">';
+						$html.='<table width="100%" style="background: #044767; height: 100px; color: white; font-size: 25px; font-weight: bold; ">';
+							$html.='<tr>';
+								$html.='<td style="padding: 5px; padding-left: 25;">Ventas realizadas</td>';
+								$html.='<td style="padding: 5px; padding-right: 25; text-align: right;">:::</td>';
+							$html.='</tr>';
+						$html.='</table>';
+					$html.='</td>';
+				$html.='</tr>';
+				$html.='<tr>';
+					$html.='<th style="vertical-align: middle;" colspan="2">';
+						$html.='<br>';
+						$html.='<img src="./sisco/assets/check.png" style="margin: 0 auto;" width="20%">';
+					$html.='</th>';
+				$html.='</tr>';
+				$html.='<tr style="vertical-align: middle;  color: #000000">';
+					$html.='<td style="padding: 15px;"> Vendedor: [nombre_del_vendedor] </td>';
+					$html.='<td style="padding: 15px; text-align: right;"> [correo] <br> [telefono] </td>';
+				$html.='</tr>';
+				$html.='<tr style="vertical-align: middle;  color: #666666">';
+					$html.='<td style="padding: 15px;"> [cedula_tomador][nombre_apellido_tomador] <br> [tipo_venta] [tipo_poliza] [num_poliza] </td>';
+					$html.='<td style="padding: 15px; text-align: right;"> [comision_a_cancelar] </td>';
+				$html.='</tr>';
+				$html.='<tr style="vertical-align: middle;  color: #666666">';
+					$html.='<td style="padding: 15px;"> [cedula_tomador][nombre_apellido_tomador] <br> [tipo_venta] [tipo_poliza] [num_poliza] [semana] </td>';
+					$html.='<td style="padding: 15px; text-align: right;"> [-monto_extornado] </td>';
+				$html.='</tr>';
+				$html.='<tr style="vertical-align: middle;  color: #000000">';
+					$html.='<td style="padding: 15px;"> <b>TOTAL</b> </td>';
+					$html.='<td style="padding: 15px; text-align: right;"> [comision_a_cancelar_total] </td>';
+				$html.='</tr>';
+			$html.='</table>';
+			$html.='<br>';
+			$html.='</div>';
+
+//*************************************************************************************************************
+	
 			// Content
 			$this->mail->isHTML(true);                                  // Set email format to HTML
 			$this->mail->Subject = 'Here is the subject';
-			$this->mail->Body    = 'This is the HTML message body <b>in bold!</b>';
+			$this->mail->Body    = $html;
 			$this->mail->AltBody = 'This is the body in plain text for non-HTML mail clients';
 		
 			$this->mail->send();

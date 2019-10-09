@@ -164,7 +164,7 @@
                 </select>
               </div>
               <div class="col-lg-3 ">
-                 <select class="selectpicker form-control" data-show-subtext="true" data-live-search="true" id="cod_vendedor" name="cod_vendedor">
+                 <select class="selectpicker form-control aqui" data-show-subtext="true" data-live-search="true" id="cod_vendedor" name="cod_vendedor">
                   <?php foreach ($_ci_vars[vendedores] as $key) {
                     echo "<option value='".$key[id_vendedor]."' data-subtext='".$key[cod_vendedor]."'>".$key[apellidos].' '.$key[nombres]."</option>";
                   } ?>
@@ -212,6 +212,10 @@
 
 <script type="text/javascript">
 $(document).ready(function(){
+
+    $(".aqui").click(function(){
+      alert($("#cod_vendedor").val());
+    });
     $('.numero').on('input', function () { 
         this.value = this.value.replace(/[^0-9]/g,'');
     });
@@ -281,6 +285,7 @@ $(document).ready(function(){
         if ($("#telefono").val() == "") { alert("Todos los campos son obligatorios"); return false; }
         if ($("#correo").val() == "") { alert("Todos los campos son obligatorios"); return false; }
         if ($("#nsolicitud").val() == "") { alert("Todos los campos son obligatorios"); return false; }  
+        if ($("aqui").val() == null) { alert("Todos los campos son obligatorios"); return false; }  
     });
 
     $("#plan").change(function() {
