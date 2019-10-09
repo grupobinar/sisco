@@ -432,7 +432,7 @@ class Reportes extends CI_Controller {
 		}
 	}
 
-	public function produccion_por_coordinador(){
+	/*public function produccion_por_coordinador(){
 
 		$data = $this->reportes_model->listVendedores($_GET['id_vendedor']);
 
@@ -572,7 +572,7 @@ class Reportes extends CI_Controller {
 		$this->fpdf->Cell(68,8,'GERENTE DE VENTAS',0,0,'C');
 
 		$this->fpdf->Output();
-	}
+	}*/
 
 
 	public function metricas(){

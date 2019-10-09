@@ -57,10 +57,10 @@ class Config extends CI_Controller {
 			$usuario
 		);
 
-		echo "<script> alert('".$guser."') </script>";
-
-		
-		redirect('/config/tpoliza', 'refresh');
+		//echo "<script> alert('".$guser."') </script>";
+		$this->session->set_flashdata('message', [ $guser, 'success']);
+		header('Location: '.$_SERVER['HTTP_REFERER']);
+		//redirect('/config/tpoliza', 'refresh');
 
 	}
 
@@ -80,10 +80,10 @@ class Config extends CI_Controller {
 			$usuario
 		);
 
-		echo "<script> alert('".$guser."') </script>";
-
-		
-		redirect('/config/edad', 'refresh');
+		//echo "<script> alert('".$guser."') </script>";
+		$this->session->set_flashdata('message', [ $guser, 'success']);
+		header('Location: '.$_SERVER['HTTP_REFERER']);
+		//redirect('/config/edad', 'refresh');
 
 	}
 
@@ -131,10 +131,10 @@ class Config extends CI_Controller {
 			$usuario
 		);
 
-		echo "<script> alert('".$guser."') </script>";
-
-		
-		redirect('/config/tpagos', 'refresh');
+		//echo "<script> alert('".$guser."') </script>";
+		$this->session->set_flashdata('message', [ $guser, 'success']);
+		header('Location: '.$_SERVER['HTTP_REFERER']);
+		//redirect('/config/tpagos', 'refresh');
 
 	}
 
@@ -144,7 +144,9 @@ class Config extends CI_Controller {
 
 		$guser = $this->config_model->eliminarRegistros($_POST['id'],$_POST['tb'],$_POST['id_name']);
 
-		echo "Registro Eliminado";
+		//$this->session->set_flashdata('message', [ "Registro Eliminado", 'success']);
+		echo "Registro Eliminado con exito";
+		//header('Location: '.$_SERVER['HTTP_REFERER']);
 		//echo $guser;
 	}	
 
@@ -316,6 +318,7 @@ class Config extends CI_Controller {
 		if($evaluar=="si"){
 
 		$guser="Ya existe una comisión similar a la que intente cargar.";
+		$type_message = 'warning';
 
 		}elseif($evaluar=="no"){
 		
@@ -332,11 +335,16 @@ class Config extends CI_Controller {
 
 		);
 
+		$type_message = 'success';
+
 		}
 
-		echo "<script> alert('".$guser."') </script>";
+		$this->session->set_flashdata('message', [$guser, $type_message]);
+		header('Location: '.$_SERVER['HTTP_REFERER']);
+		
+		//echo "<script> alert('".$guser."') </script>";
 
-		redirect('/config/comisiones', 'refresh');
+		//redirect('/config/comisiones', 'refresh');
 
 	}
 
@@ -376,9 +384,10 @@ class Config extends CI_Controller {
 
 		);
 
-		echo "<script> alert('".$guser."') </script>";
-
-		redirect('/config/comisiones', 'refresh');
+		//echo "<script> alert('".$guser."') </script>";
+		$this->session->set_flashdata('message', [ $guser, 'success']);
+		header('Location: '.$_SERVER['HTTP_REFERER']);
+		//redirect('/config/comisiones', 'refresh');
 
 	}
 
@@ -396,9 +405,10 @@ class Config extends CI_Controller {
 			$usuario
 		);
 
-		echo "<script> alert('".$guser."') </script>";
-
-		redirect('/config/comisiones', 'refresh');
+		//echo "<script> alert('".$guser."') </script>";
+		$this->session->set_flashdata('message', ['Comision modificada con exito', 'success']);
+		header('Location: '.$_SERVER['HTTP_REFERER']);
+		//redirect('/config/comisiones', 'refresh');
 
 	}
 
