@@ -12,6 +12,26 @@ class Config extends CI_Controller {
     	$this->load->helper('date');
 	}
 
+
+	public function motivo()
+	{
+		$data = $this->config_model->listmotivo();
+
+		$this->load->view('layout/header');
+		$this->load->view('layout/nav');
+		$this->load->view('config/motivo',$data);
+		$this->load->view('layout/footer');
+	}
+
+	public function parentesco()
+	{
+		$data = $this->config_model->listparentesco();
+
+		$this->load->view('layout/header');
+		$this->load->view('layout/nav');
+		$this->load->view('config/parentesco',$data);
+		$this->load->view('layout/footer');
+	}
 	// Tipo de poliza ---------------------------------------------------------------------------------
 
 	public function tpoliza()
@@ -53,6 +73,52 @@ class Config extends CI_Controller {
 		$guser = $this->config_model->guardar_tpoliza(
 			$tpoliza,
 			$factor,
+			$fecha,
+			$usuario
+		);
+
+		//echo "<script> alert('".$guser."') </script>";
+		$this->session->set_flashdata('message', [ $guser, 'success']);
+		header('Location: '.$_SERVER['HTTP_REFERER']);
+		//redirect('/config/tpoliza', 'refresh');
+
+	}
+
+	public function guardar_motivo()
+	{
+		
+
+		$motivo=$_POST['motivo'];
+		
+
+		$fecha=date("d/m/Y");
+		$usuario=$this->session->userdata('id_usuario');	
+		
+		$guser = $this->config_model->guardar_motivo(
+			$motivo,
+			$fecha,
+			$usuario
+		);
+
+		//echo "<script> alert('".$guser."') </script>";
+		$this->session->set_flashdata('message', [ $guser, 'success']);
+		header('Location: '.$_SERVER['HTTP_REFERER']);
+		//redirect('/config/tpoliza', 'refresh');
+
+	}
+
+	public function guardar_parentesco()
+	{
+		
+
+		$parentesco=$_POST['parentesco'];
+		
+
+		$fecha=date("d/m/Y");
+		$usuario=$this->session->userdata('id_usuario');	
+		
+		$guser = $this->config_model->guardar_parentesco(
+			$parentesco,
 			$fecha,
 			$usuario
 		);
@@ -350,12 +416,6 @@ class Config extends CI_Controller {
 
 	public function modificar_comision()
 	{ // guarda las comisiones
-		/*echo "<pre>";
-		print_r($_POST);
-		echo "</pre>";*/
-
-		//break;
-
 
 		$concepto=$_POST['concepto_e'];
 		$calculo=$_POST['calculo_e'];

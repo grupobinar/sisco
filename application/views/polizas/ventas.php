@@ -284,7 +284,7 @@ $(document).ready(function(){
         if ($("#apellidos").val() == "") { alert("Todos los campos son obligatorios"); return false; }
         if ($("#telefono").val() == "") { alert("Todos los campos son obligatorios"); return false; }
         if ($("#correo").val() == "") { alert("Todos los campos son obligatorios"); return false; }
-        if ($("#nsolicitud").val() == "") { alert("Todos los campos son obligatorios"); return false; }  
+        if (($("#nsolicitud").val() == "") && ($("#tventa").val()==3)) { alert("Todos los campos son obligatorios"); return false; }  
         if ($("aqui").val() == null) { alert("Todos los campos son obligatorios"); return false; }  
     });
 

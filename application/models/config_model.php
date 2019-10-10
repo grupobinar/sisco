@@ -39,6 +39,42 @@ class Config_model extends CI_Model{
 
 	}
 
+	function guardar_motivo($motivo,$fecha,$usuario){
+
+		  	$data = array(
+			'motivo'=>$motivo,
+			'fecha_registro'=>$fecha,
+			'ult_mod'=>$fecha,
+			'id_usuario'=>$usuario,
+			);
+
+
+			$this->db->insert('public.t_motivos',$data);
+
+			$retorno="Motivo extorno creado";
+
+			return $retorno;
+
+	}
+
+	function guardar_parentesco($parentesco,$fecha,$usuario){
+
+		  	$data = array(
+			'parentesco'=>$parentesco,
+			'fecha_registro'=>$fecha,
+			'ult_mod'=>$fecha,
+			'id_usuario'=>$usuario,
+			);
+
+
+			$this->db->insert('public.t_parentesco',$data);
+
+			$retorno="Parentesco creado";
+
+			return $retorno;
+
+	}
+
 	function guardar_edad($edad,$factor,$fecha,$usuario){
 
 		  	$data = array(
@@ -252,6 +288,30 @@ class Config_model extends CI_Model{
 		if($listusuarios->num_rows()>0)
 		{
 			return $listusuarios->result();
+		}
+
+	}
+
+	function listmotivo(){
+
+		$this->db->where('estatus','0');
+		$listusuarios = $this->db->get('public.t_motivos');
+		
+		if($listusuarios->num_rows()>0)
+		{
+			return $listusuarios->result_array();
+		}
+
+	}
+
+	function listparentesco(){
+
+		$this->db->where('estatus','0');
+		$listusuarios = $this->db->get('public.t_parentesco');
+		
+		if($listusuarios->num_rows()>0)
+		{
+			return $listusuarios->result_array();
 		}
 
 	}
