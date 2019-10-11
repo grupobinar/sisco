@@ -25,7 +25,7 @@ echo "</pre>";*/
 		<td><?php echo strtolower($_ci_vars['poliza']['correo']);?></td>
 	</tr>
 </table>
-
+<?php if ($_ci_vars['poliza']['solicitud']==-1) $sol="NO APLICA"; else $sol=$_ci_vars['poliza']['solicitud']; ?>
 <table class="table" style="background-color: white; margin-bottom: 10px;">
 	<tr>
 		<th colspan="4">Datos de la poliza</th>
@@ -38,7 +38,7 @@ echo "</pre>";*/
 	</tr>
 
 	<tr style="font-size: 13px;">
-		<td><?php echo $_ci_vars['poliza']['solicitud'];?></td>
+		<td><?php echo $sol;?></td>
 		<td><?php echo ucwords($tventa);?></td>
 		<td><?php echo ucwords($_ci_vars['poliza']['lastname_vendedor'].' '.$_ci_vars['poliza']['name_vendedor']);?></td>
 		<td><?php echo $_ci_vars['poliza']['nsem'].' ['.$_ci_vars['poliza']['desde'].' / '.$_ci_vars['poliza']['hasta'].']';?></td>
@@ -52,9 +52,9 @@ echo "</pre>";*/
 	</tr>
 
 	<tr style="font-size: 13px;">
-		<td><?php if(isset($_ci_vars['poliza']['tplan'])) echo ucwords($_ci_vars['poliza']['tplan']); else echo "N/A"?></td>
-		<td><?php if(isset($_ci_vars['poliza']['tpoliza'])) echo ucwords($_ci_vars['poliza']['tpoliza']); else echo "N/A"?></td>
-		<td><?php if(isset($_ci_vars['poliza']['num_poliza'])) echo ucwords($_ci_vars['poliza']['num_poliza'].' '.$_ci_vars['poliza']['cobertura']); else echo "N/A"?></td>
+		<td><?php if(isset($_ci_vars['poliza']['tplan'])) echo ucwords($_ci_vars['poliza']['tplan']); else echo "NO APLICA"?></td>
+		<td><?php if(isset($_ci_vars['poliza']['tpoliza'])) echo ucwords($_ci_vars['poliza']['tpoliza']); else echo "NO APLICA"?></td>
+		<td><?php if(isset($_ci_vars['poliza']['num_poliza'])) echo ucwords($_ci_vars['poliza']['num_poliza'].' '.$_ci_vars['poliza']['cobertura']); else echo "NO APLICA"?></td>
 		<td><?php echo number_format($_ci_vars['poliza']['suma'], 2, ',', '.');?></td>
 	</tr>
 

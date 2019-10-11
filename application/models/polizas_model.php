@@ -225,6 +225,7 @@ class Polizas_model extends CI_Model{
 	function listtpago()
 	{
 		$this->db->where('estatus', '0');
+		$this->db->order_by('id_tpago', 'asc');
 		$this->db->select('id_tpago, tpago');
 		$listusuarios = $this->db->get('public.t_tpago');
 
@@ -302,16 +303,25 @@ class Polizas_model extends CI_Model{
 
 	function guardar_venta($nac,$cedula,$rpago,$monto,$ccancelada,$nombres,$apellidos,$tplan,$cobertura,$tpoliza,$tpago,$tedad, $fecha,$usuario,$tventa,$nsolicitud,$correo,$telefono,$cod_vendedor,$adicionales,$ad_nac,$ad_cedula,$ad_name,$ad_edad,$ad_parent){ 
 
+		if ($nsolicitud=="") {
+			$nsolicitud=-1;
+		}
+
+		$identificacion=$nac.'-'.$cedula;
+		
+		if($tpago==2) $estatus = "D";
+		else $estatus = "A";
+
+
 	$q = $this->db->query("SELECT id_tomador FROM t_tomadores WHERE identificacion='".$nac."-".$cedula."'");
 		  $count = $q->num_rows(); 
 
 		 $id_tomador = $q->row()->id_tomador;
 
-	if ($tventa==1) {
+	if (($tventa==1) OR ($tventa==2)) {
 
 		  if($count==0){
 
-		  	$identificacion=$nac.'-'.$cedula;
 
 			$data = array(
 				'nombres'=>$nombres,
@@ -337,6 +347,7 @@ class Polizas_model extends CI_Model{
 			$sem = $this->db->get('public.t_semanas');
 
 	if ($tventa==1) {
+		
 				$data = array(
 				'tventa'=>$tventa,
 				'solicitud'=>$nsolicitud,
@@ -354,6 +365,7 @@ class Polizas_model extends CI_Model{
 				'id_semana'=>$sem->row()->id_semana,
 				'fecha_registro'=>$fecha,
 				'ult_mod'=>$fecha,
+				'estatus_venta'=>$estatus,
 			);
 
 	}
@@ -372,6 +384,8 @@ class Polizas_model extends CI_Model{
 				'id_semana'=>$sem->row()->id_semana,
 				'fecha_registro'=>$fecha,
 				'ult_mod'=>$fecha,
+				'estatus_venta'=>$estatus,
+
 			);
 
 	}elseif ($tventa==3) {
@@ -389,9 +403,24 @@ class Polizas_model extends CI_Model{
 				'usuario'=>$usuario,
 				'ult_mod'=>$fecha,
 			);
+		 if ($id_tomador>0)
+		 {
+		 	$this->db->where('id_tomador', $id_tomador);
+		 	$this->db->update('t_tomadores', $data);
+		 }else{
+		 	$data = array(
+				'identificacion'=>$identificacion,
+				'nombres'=>$nombres,
+				'apellidos'=>$apellidos,
+				'correo'=>$correo,
+				'telefono'=>$telefono,
+				'usuario'=>$usuario,
+				'ult_mod'=>$fecha,
+			);
+			$this->db->insert('public.t_tomadores',$data);	
+		 	$id_tomador =  $this->db->insert_id();
 
-		 $this->db->where('id_tomador', $id_tomador);
-		 $this->db->update('t_tomadores', $data);
+		 }
 
 
 		$data = array(
@@ -405,6 +434,7 @@ class Polizas_model extends CI_Model{
 				'id_semana'=>$sem->row()->id_semana,
 				'fecha_registro'=>$fecha,
 				'ult_mod'=>$fecha,
+				'estatus_venta'=>$estatus,
 			);
 
 	}

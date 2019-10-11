@@ -244,6 +244,44 @@ class Polizas extends CI_Controller {
 		$this->load->view('layout/footer');
 	}
 
+		public function ventasd()
+	{
+
+		$datos['vendedores'] = $this->polizas_model->listvendedores();
+
+		$datos['ventas'] = $this->polizas_model->listventas();
+
+		$datos['tpoliza'] = $this->polizas_model->listtpoliza();
+
+		$datos['plan'] = $this->polizas_model->listplan();
+
+		$datos['parentesco'] = $this->polizas_model->listparent();
+
+		$data = $this->polizas_model->listtpago();
+
+		$i=0;
+
+		if ($data<>"") {
+		foreach($data as $sheet) {	
+
+			$i++;		
+			
+			$lista_w[$i]["id_tpago"]=$sheet->id_tpago;
+			$lista_w[$i]["tpago"]=$sheet->tpago;
+			
+			}
+		}
+
+		$datos['tpago']=$lista_w;
+
+
+
+		$this->load->view('layout/header');
+		$this->load->view('layout/nav');
+		$this->load->view('polizas/ventasd',$datos);
+		$this->load->view('layout/footer');
+	}
+
 	public function ver_ventas(){
 		$data['poliza'] = $this->polizas_model->buscarventa($_GET['id']);
 		

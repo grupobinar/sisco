@@ -20,7 +20,7 @@
       <th>Tipo de Venta</th>
       <th>Tipo Poliza</th>
       <th>Plan</th>
-      <th>cobertura</th>
+     <!--  <th>cobertura</th> -->
       <th>Semana</th>
       <th>Estatus</th>
       <th><i class="fa fa-cogs"></i> Opciones</th>
@@ -34,9 +34,10 @@
 
       if($key['estatus_venta']=="P") {$estatus_venta="Preliquidada"; $clase="";}
       elseif($key['estatus_venta']=="X") {$estatus_venta="Anulada"; $clase="text-red";}
-      if($key['estatus_venta']=="A") {$estatus_venta="Activa"; $clase="text-green";}
-      if($key['estatus_venta']=="L") {$estatus_venta="Liquidada"; $clase="";}
-      if($key['estatus_venta']=="E") {$estatus_venta="Extornada"; $clase="text-blue";}
+      elseif($key['estatus_venta']=="A") {$estatus_venta="Activa"; $clase="text-green";}
+      elseif($key['estatus_venta']=="L") {$estatus_venta="Liquidada"; $clase="";}
+      elseif($key['estatus_venta']=="E") {$estatus_venta="Extornada"; $clase="text-blue";}
+      elseif($key['estatus_venta']=="D") {$estatus_venta="Pendiente de pago"; $clase="text-red";}
     ?>
     <tr class="<?php echo $clase?>">
       <td><?php echo ucwords($key['identificacion']);?></td>
@@ -44,7 +45,7 @@
       <td><?php echo ucwords($tventa);?></td>
       <td><?php if(isset($key['tpoliza'])) echo ucwords($key['tpoliza']); else echo "N/A";?></td>
       <td><?php if(isset($key['tplan'])) echo ucwords($key['tplan']); else echo "N/A";?></td>
-      <td><?php if(isset($key['cobertura'])) echo ucwords($key['cobertura']); else echo "N/A";?></td>
+<!--       <td><?php // if(isset($key['cobertura'])) echo ucwords($key['cobertura']); else echo "N/A";?></td> -->      
       <td><a href="#" title="<?php echo $key['desde'].' | '.$key['hasta'] ?>"><?php echo ucwords($key['nsem']);?></a></td>
       <td><?php echo ucwords($estatus_venta);?></td>
       <td><a href="<?php echo base_url().'index.php/polizas/ver_ventas?id='.$key['id_venta']?>" class="btn btn-default" type="button"><i class="fa fa-eye"></i></a></td>
@@ -213,9 +214,6 @@
 <script type="text/javascript">
 $(document).ready(function(){
 
-    $(".aqui").click(function(){
-      alert($("#cod_vendedor").val());
-    });
     $('.numero').on('input', function () { 
         this.value = this.value.replace(/[^0-9]/g,'');
     });
@@ -273,19 +271,35 @@ $(document).ready(function(){
       }
     });
 
+    $("#tpago").change(function(){
+
+      if ($("#tpago").val()==2) {
+        $("#rpago").prop('disabled', true);
+        $("#monto").prop('disabled', true);
+        $("#ccancelada").prop('disabled', true);
+        $("#rpago").val("");
+        $("#monto").val("");
+        $("#ccancelada").val("");
+
+      }else{
+
+        $("#rpago").prop('disabled', false);
+        $("#monto").prop('disabled', false);
+        $("#ccancelada").prop('disabled', false);
+        
+      }
+    });
+
     $("#guardar").click(function() {
-      if($("#tventa").val()!=3) {
-        if ($("#rpago").val() == "") { alert("Todos los campos son obligatorios"); return false; }
-        if ($("#ccancelada").val() == "") { alert("Todos los campos son obligatorios"); return false; }
-        if ($("#monto").val() == "") { alert("Todos los campos son obligatorios"); return false; }
+      if(($("#tventa").val()!=3)) {
+        if (($("#nsolicitud").val() == "")) { alert("Todos los campos son obligatorios"); return false; }  
+
       }
         if ($("#cedula").val() == "") { alert("Todos los campos son obligatorios"); return false; }
         if ($("#nombres").val() == "") { alert("Todos los campos son obligatorios"); return false; }
         if ($("#apellidos").val() == "") { alert("Todos los campos son obligatorios"); return false; }
         if ($("#telefono").val() == "") { alert("Todos los campos son obligatorios"); return false; }
         if ($("#correo").val() == "") { alert("Todos los campos son obligatorios"); return false; }
-        if (($("#nsolicitud").val() == "") && ($("#tventa").val()==3)) { alert("Todos los campos son obligatorios"); return false; }  
-        if ($("aqui").val() == null) { alert("Todos los campos son obligatorios"); return false; }  
     });
 
     $("#plan").change(function() {
@@ -365,6 +379,9 @@ $(document).ready(function(){
           $("#apellidos").val("");
           $("#nombres").val("");
           $("#correo").val("");
+
+
+        $(".nm").prop('disabled', false);
 
         }else{
 
