@@ -2,7 +2,7 @@
 <div class="col-lg-12"> 
  <div class="col-lg-12"><br></div>
  <div class="col-lg-11"><br></div>
- <div class="col-lg-1"><a href="<?php echo base_url().'index.php/liquidacion/liquidar'?>" class="btn btn-primary btn-xm preliquidar" title="Ejecutar liquidación" ><b><i class="fa fa-flash"></i> Liquidar</b></a></div>
+ <div class="col-lg-1"><a href="<?php echo base_url().'index.php/liquidacion/preliquidar'?>" class="btn btn-primary btn-xm preliquidar" title="Ejecutar Pre-liquidación" ><b><i class="fa fa-flash"></i> Pre-liquidar</b></a></div>
 </div>
 <div class="col-lg-12"><br></div>
 
@@ -43,7 +43,7 @@
 
     $(".preliquidar").click(function(){
 
-       var confirmacion = confirm("Una vez ejecutada la liquidacion, este proceso no se puede revertir, desea anular esta accion?");
+       var confirmacion = confirm("Una vez ejecutada la Pre-liquidacion, este proceso no se puede revertir, desea anular esta accion?");
 
         return confirmacion;
 

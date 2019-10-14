@@ -158,6 +158,32 @@ class Polizas_model extends CI_Model{
 		}
 	}
 
+	function listventasd()
+	{
+		$this->db->select('id_venta, t_tomadores.identificacion, nsem, desde, hasta, referencia_pago, monto, cuotas_canceladas, t_ventas.fecha_registro, t_tomadores.nombres, t_tomadores.apellidos, t_tomadores.telefono, t_tomadores.correo, tplan, cobertura, tpoliza, tpago, tventa, estatus_venta');
+		$this->db->join('t_tomadores','t_tomadores.id_tomador = t_ventas.id_tomador','left');
+		$this->db->join('t_plan','t_plan.id_tplan = t_ventas.id_plan','left');
+		$this->db->join('t_polizas','t_polizas.id_poliza = t_ventas.id_poliza','left');
+		$this->db->join('t_tpoliza','t_tpoliza.id_tpoliza = t_ventas.id_tpoliza','left');
+		$this->db->join('t_tpago','t_tpago.id_tpago = t_ventas.tipo_pago','left');
+		$this->db->join('t_semanas','t_semanas.id_semana = t_ventas.id_semana','left');
+
+		if ($this->session->userdata('rol')<>2) {
+			$this->db->join('t_vendedores','t_ventas.id_vendedor = t_vendedores.id_vendedor');
+			$this->db->where('t_vendedores.id_coordinador', $this->session->userdata('id_usuario'));
+		}
+
+			$this->db->where('t_ventas.estatus_venta', 'D');
+
+
+		$listusuarios = $this->db->get('public.t_ventas');
+
+		if($listusuarios->num_rows()>0)
+		{
+			 return $listusuarios->result_array();
+		}
+	}
+
 	function buscarventa($id)
 	{
 		$this->db->select('id_venta, tipo_pago, referencia_pago, monto, cuotas_canceladas, solicitud, t_tomadores.identificacion, t_tomadores.nombres, t_tomadores.apellidos, t_tomadores.telefono, t_tomadores.correo, usuario, tplan, cobertura, suma, num_poliza, tpoliza, factor, tpago, desde, hasta, observaciones, nsem, t_vendedores.nombres as name_vendedor, t_vendedores.apellidos as lastname_vendedor, cod_vendedor, tventa, tedad');
@@ -472,6 +498,17 @@ class Polizas_model extends CI_Model{
 
 			return $retorno;
 
+	}
+
+	function procesar($id,$estatus){
+		$data = array(
+				'estatus_venta'=>$estatus,
+			);
+
+		 	$this->db->where('id_venta', $id);
+		 	$this->db->update('t_ventas', $data);
+
+		 	return "Operacion realizada con exito";
 	}
 
 	public function getVendedoresVentasPolizas($semana, $vendedor = 'vendedores', $estatus_venta = 'A'){
@@ -811,7 +848,6 @@ class Polizas_model extends CI_Model{
 			$this->db->where('t_extornos.id_estatus =', 0);
 			$get_extornos = $this->db->get('public.t_extornos')->result_array();
 			
-
 			$data = array(
 				'estatus_venta' => 'L'
 			);

@@ -1,31 +1,52 @@
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
 
-<div class="col-lg-12"><br></div>
+<?php // print_r($_ci_vars['conceptos']); ?>
+<div class="col-lg-12"> <br> </div>
+<div class="col-lg-3"></div> 
+<div class="col-lg-6"> 
+  <div class="box box-primary">
+   <div class="box-header with-border">
+     <h3 class="box-title">Generar Reporte por coordinador</h3>
+   </div>
+   <?=form_open_multipart(base_url().'index.php/reportes/porcoordinador')?>
 
-<div class="col-lg-12 box"> 
-    <div class="col-lg-12"><br></div>
-    <table id="example1" class="table table-bordered table-striped" style="padding: 10px;">
-        <thead>
-            <tr>
-                <th>Semana</th>
-                <th>Desde</th>
-                <th>Hasta</th>
-                <th><i class="fa fa-cogs"></i>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php if ($_ci_vars <>"") { foreach ($_ci_vars as $key) { ?>
-                <tr>
-                    <td><?php echo ucwords($key['nsem']);?></td>
-                    <td><?php echo ucwords($key['desde'].' '.$key['nombres']);?></td>
-                    <td><?php echo ucwords($key['hasta']);?></td>
-                    <td>
-                        <center>
-                            <input type="button" value="Generar Reporte" onclick="window.open('<?php echo base_url() ?>/index.php/reportes/estado_general?id_semana=<?php echo $key['id_semana'] ?>')" />    
-                        </center>
-                    </td>
-                </tr>
-            <?php }} ?>
-        </tbody>
-    </table>
-</div>
+   <div class="box-body">
+     <div class="row">
+       <div class="col-xs-6"><b>cod. vendedor</b></div>
+       <div class="col-xs-6"><b>num. semana</b></div>
+       
+       <div class="col-xs-6">
+              <select class="selectpicker form-control" data-show-subtext="true" data-live-search="true" id="cod_vendedor" name="cod_vendedor">
+                  <?php foreach ($_ci_vars[coordinadores] as $key) {
+                    echo "<option value='".$key[id_persona]."' data-subtext='".$key[username]."'>".$key[apellidos].' '.$key[nombres]."</option>";
+                  } ?>
+              </select> 
+       </div>
+       <div class="col-xs-6">
+              <select class="selectpicker form-control" data-show-subtext="true" data-live-search="true" id="sem" name="sem">
+                  <?php foreach ($_ci_vars[sem] as $key) {
+                    echo "<option value='".$key[nsem]."' data-subtext='".$key[nsem]."'>".$key[desde].' - '.$key[hasta]."</option>";
+                  } ?>
+              </select> 
+       </div>
+
+       
+       <div class="col-lg-12"> <br> </div>
+       
+       <div class="col-lg-12">      
+         <button type="submit" class="btn btn-primary" id="ver">Generar</button>
+      </div>   
+     </div>
+   </div>
+ </form>
+ </div>
+ </div>
+
+
+
+
+ 
+ <script type="text/javascript">
+  $(document).ready(function(){
+
+  });
+</script>

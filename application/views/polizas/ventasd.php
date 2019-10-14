@@ -44,8 +44,8 @@
       <td><a href="#" title="<?php echo $key['desde'].' | '.$key['hasta'] ?>"><?php echo ucwords($key['nsem']);?></a></td>
       <td><?php echo ucwords($estatus_venta);?></td>
       <td>
-        <a href="<?php echo base_url().'index.php/polizas/ver_ventas?id='.$key['id_venta']?>" class="btn btn-default" type="button"><i class="fa fa-check"></i></a>
-        <a href="<?php echo base_url().'index.php/polizas/ver_ventas?id='.$key['id_venta']?>" class="btn btn-default" type="button"><i class="fa fa-close"></i></a>
+        <a href="<?php echo base_url().'index.php/polizas/procesar?id='.$key['id_venta'].'&op=A'?>" title="APROBAR" class="btn btn-default" type="button" id="aprobar"><i class="fa fa-check"></i></a>
+        <a href="<?php echo base_url().'index.php/polizas/procesar?id='.$key['id_venta'].'&op=X'?>" title="ANULAR" class="btn btn-default" type="button" id="anular"><i class="fa fa-close"></i></a>
       </td>
     </tr>
     <?php }} ?>
@@ -54,14 +54,27 @@
 
 
 <!-- #Editar Usuario ############################################################################-->
-<?=form_open_multipart(base_url().'index.php/polizas/editar')?>
-
-
 
 <script type="text/javascript">
-$(document).ready(function(){
+  $(document).ready(function(){
 
-    
+    $("#aprobar").click(function(){
+
+       var confirmacion = confirm("Una vez aprobada la venta, este proceso no se puede revertir, desea aprobar esta venta?");
+
+        return confirmacion;
+
+    });
+
+    $("#anular").click(function(){
+
+       var confirmacion = confirm("Una vez anulada la venta, este proceso no se puede revertir, desea anular esta venta?");
+
+        return confirmacion;
+
+    });
+
+  });    
 </script>
 
 

@@ -249,7 +249,7 @@ class Polizas extends CI_Controller {
 
 		$datos['vendedores'] = $this->polizas_model->listvendedores();
 
-		$datos['ventas'] = $this->polizas_model->listventas();
+		$datos['ventas'] = $this->polizas_model->listventasd();
 
 		$datos['tpoliza'] = $this->polizas_model->listtpoliza();
 
@@ -280,6 +280,19 @@ class Polizas extends CI_Controller {
 		$this->load->view('layout/nav');
 		$this->load->view('polizas/ventasd',$datos);
 		$this->load->view('layout/footer');
+	}
+
+	public function procesar()
+	{
+
+		$guser = $this->polizas_model->procesar($_GET['id'],$_GET['op']);
+
+		echo "<script> alert('".$guser."') </script>";
+
+		redirect('/polizas/ventasd', 'refresh');
+
+
+
 	}
 
 	public function ver_ventas(){

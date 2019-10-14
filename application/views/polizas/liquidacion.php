@@ -4,7 +4,7 @@
     <div class="col-lg-12"><br></div>
     <div class="col-lg-10"><br></div>
     <div class="col-lg-2"><a href="#" class="btn btn-primary btn-xm" onclick="liquidacion()">
-        <b><i class="fa fa-user"></i> Ejecutar Liquidacion</b>
+        <b><i class="fa fa-userflash"></i> Ejecutar Liquidacion</b>
     </a></div>
 </div>
 
