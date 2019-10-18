@@ -69,6 +69,7 @@
                 </select>
               </div>
               <div class="col-lg-4"><input type="text" name="cedula" id="cedula" class="form-control numero"></div>
+              <div class="col-lg-6 _mensaje"></div>
               <div class="col-lg-12"></div>
 
               <div class="col-lg-6"><b>Apellidos</b></div>
@@ -224,6 +225,12 @@ $(document).ready(function(){
 
         result="";
 
+      });
+    });
+
+    $("#username").blur(function(){
+      $.post("<?php echo base_url() ?>/index.php/usuarios/disponibilidad", { username:$(this).val() }, function(data){
+        console.log(data);
       });
     });
 });

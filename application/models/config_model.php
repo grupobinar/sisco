@@ -514,6 +514,13 @@ class Config_model extends CI_Model{
 	
 	
 			$this->db->insert('public.t_semanas',$data);
+
+			$data = array(
+				'id_estatus'=>'0'
+			);
+
+			$this->db->where('t_extornos.id_estatus','-1');
+			$this->db->update('public.t_extornos', $data);
 		}
 	}
 
@@ -650,6 +657,14 @@ class Config_model extends CI_Model{
 		$this->db->where('t_semanas.estatus','1');
 		$this->db->where('t_semanas.id_semana', $semana_id);
 		$this->db->update('public.t_semanas', $data);
+
+		
+			$data = array(
+				'id_estatus'=>'0'
+			);
+
+			$this->db->where('t_extornos.id_estatus','-1');
+			$this->db->update('public.t_extornos', $data);
 
 		return "Semana Reabierta";
 

@@ -335,6 +335,11 @@ class Usuarios extends CI_Controller {
 			echo json_encode('Error, el rol no existe.', 'error');
 		}
 	}	
+
+	public function disponibilidad(){
+
+		
+	}
 }
 
 /* End of file welcome.php */

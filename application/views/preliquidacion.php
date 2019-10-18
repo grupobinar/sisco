@@ -32,7 +32,7 @@
       <td><a href="#" title="<?php echo $key['desde'].' | '.$key['hasta'] ?>"><?php echo ucwords($key['nsem']);?></a></td>
       <td><?php echo number_format($key['comision'], 2, ',', '.');?></td>
       <td><?php echo number_format($key['comision_c'], 2, ',', '.');?></td>
-      <td><a href="<?php echo base_url().'index.php/liquidacion/ver?id='.$key['id_vendedor'].'&sem='.$key['id_semana']?>" class="btn btn-default" type="button"><i class="fa fa-eye"></i></a></td>
+      <td><a href="<?php echo base_url().'index.php/liquidacion/ver?id='.$key['id_vendedor'].'&sem='.$key['id_semana'].'&x=P'?>" class="btn btn-default" type="button"><i class="fa fa-eye"></i></a></td>
     </tr>
     <?php }} ?>
     </tfoot>

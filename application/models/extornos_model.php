@@ -9,7 +9,7 @@ class Extornos_model extends CI_Model{
 
 	function listventas($id,$sem)
 	{
-		$this->db->select('t_vendedores.id_vendedor, t_ventas.id_venta, t_tomadores.identificacion, t_tomadores.apellidos, t_tomadores.nombres, tventa, cuotas_canceladas, suma, tpoliza, comision_liquidada, comision_coordinador');
+		$this->db->select('t_vendedores.id_vendedor, t_ventas.id_venta, t_tomadores.identificacion, t_tomadores.apellidos, t_tomadores.nombres, tventa, cuotas_canceladas, t_polizas.suma, tpoliza, comision_liquidada, comision_c');
 		$this->db->join('t_polizas','t_polizas.id_poliza = t_ventas.id_poliza','left');
 		$this->db->join('t_tpoliza','t_tpoliza.id_tpoliza = t_ventas.id_tpoliza','left');
 		$this->db->join('t_tomadores','t_tomadores.id_tomador = t_ventas.id_tomador','left');
@@ -56,12 +56,16 @@ class Extornos_model extends CI_Model{
 		
 	}
 
-	function guardar($c_extornar, $m_extornar, $motivo, $id_venta, $id_vendedor, $fecha, $usuario){
+	function guardar($c_extornar, $m_extornar, $m_extornar_c, $motivo, $id_venta, $id_vendedor, $fecha, $usuario){
 
 		  	$data = array(
 				'id_venta'=>$id_venta,
 				'id_vendedor'=>$id_vendedor,
 				'monto_extornable'=>$m_extornar,	
+				'monto_fraccionado'=>$m_extornar,	
+				'monto_fraccionado_c'=>$m_extornar_c,	
+				'monto_extornable_c'=>$m_extornar_c,	
+				'cuotas_fraccionar'=>'1',	
 				'cuotas_extornadas'=>$c_extornar,	
 				'id_usuario'=>$usuario,	
 				'motivo'=>$motivo,	
@@ -89,7 +93,7 @@ class Extornos_model extends CI_Model{
 
 	function buscarExtornos(){
 
-		$this->db->select('solicitud, cuotas_extornadas, monto_extornable, motivo, cod_vendedor, apellidos, nombres, telefono');
+		$this->db->select('solicitud, monto_fraccionado, motivo, cod_vendedor, apellidos, nombres, telefono');
 		$this->db->join('t_ventas','t_ventas.id_venta = t_extornos.id_venta','left');
 		$this->db->join('t_vendedores','t_vendedores.id_vendedor = t_extornos.id_vendedor','left');
 		$extornos = $this->db->get('public.t_extornos');
@@ -97,6 +101,17 @@ class Extornos_model extends CI_Model{
 		if($extornos->num_rows()>0)
 		{
 			 return $extornos->result_array();
+		}
+	}
+
+	function motivos(){
+
+		$this->db->select('id_motivo, motivo');
+		$motivos = $this->db->get('public.t_motivos');
+
+		if($motivos->num_rows()>0)
+		{
+			 return $motivos->result_array();
 		}
 	}
 

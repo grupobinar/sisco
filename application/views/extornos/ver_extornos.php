@@ -9,9 +9,8 @@
     <thead>
      <tr>
       <th>N° Solicitud</th>
-      <th>Cuotas Extornadas</th>
       <th>Monto</th>
-      <th>Motivo</th>
+      <th>Observación</th>
       <th>Cod. Vendedor</th>
       <th>Apellidos y Nombres</th>
       <th>Telefono</th>
@@ -21,8 +20,7 @@
     <?php if ($_ci_vars<>"") { foreach ($_ci_vars as $key) { ?>
     <tr>
       <td><?php echo ($key['solicitud']);?></td>
-      <td><?php echo ($key['cuotas_extornadas']);?></td>
-      <td><?php echo ($key['monto_extornable']);?></td>
+      <td><?php echo ($key['monto_fraccionado']);?></td>
       <td><?php echo ($key['motivo']);?></td>
       <td><?php echo ($key['cod_vendedor']);?></td>
       <td><?php echo ($key['apellidos'].' '.$key['nombres']);?></td>

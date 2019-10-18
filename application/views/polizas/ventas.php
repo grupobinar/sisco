@@ -36,6 +36,7 @@
       elseif($key['estatus_venta']=="X") {$estatus_venta="Anulada"; $clase="text-red";}
       elseif($key['estatus_venta']=="A") {$estatus_venta="Activa"; $clase="text-green";}
       elseif($key['estatus_venta']=="L") {$estatus_venta="Liquidada"; $clase="";}
+      elseif($key['estatus_venta']=="O") {$estatus_venta="Liquidada"; $clase="";}
       elseif($key['estatus_venta']=="E") {$estatus_venta="Extornada"; $clase="text-blue";}
       elseif($key['estatus_venta']=="D") {$estatus_venta="Pendiente de pago"; $clase="text-red";}
     ?>
@@ -115,7 +116,7 @@
               <div class="col-lg-12"></div>
 
               
-              <div class="col-lg-3"><input type="text" name="tedad" id="tedad" class="form-control numero nm"></div>
+              <div class="col-lg-3"><input type="text" name="tedad" id="tedad" class="form-control numero nm" maxlength="3"></div>
               <div class="col-lg-3"><input type="text" name="correo" id="correo" class="form-control mail nm"></div>
               <div class="col-lg-3"><input type="text" name="telefono" id="telefono" class="form-control numero nm"></div>
 
@@ -290,6 +291,7 @@ $(document).ready(function(){
       }
     });
 
+
     $("#guardar").click(function() {
       if(($("#tventa").val()!=3)) {
         if (($("#nsolicitud").val() == "")) { alert("Todos los campos son obligatorios"); return false; }  
@@ -300,6 +302,7 @@ $(document).ready(function(){
         if ($("#apellidos").val() == "") { alert("Todos los campos son obligatorios"); return false; }
         if ($("#telefono").val() == "") { alert("Todos los campos son obligatorios"); return false; }
         if ($("#correo").val() == "") { alert("Todos los campos son obligatorios"); return false; }
+        if ($(".aqui").val() == null) { alert("Todos los campos son obligatorios"); return false; }
     });
 
     $("#plan").change(function() {

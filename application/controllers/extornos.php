@@ -17,12 +17,6 @@ class Extornos extends CI_Controller {
 		$data['vendedores'] = $this->extornos_model->e_listvendedores();
 		$data['sem'] = $this->extornos_model->e_listsemana();
 
-		/*echo "<pre>";
-		print_r($data);
-		echo "</pre>";
-
-		break;*/
-
 		$this->load->view('layout/header');
 		$this->load->view('layout/nav');
 		$this->load->view('extornos/extornos',$data);
@@ -31,10 +25,9 @@ class Extornos extends CI_Controller {
 
 	public function vextornos()
 	{
-		$data = $this->extornos_model->listventas($_POST['cod_vendedor'],$_POST['sem']);
+		$data['v'] = $this->extornos_model->listventas($_POST['cod_vendedor'],$_POST['sem']);
 
-		/*print_r($_POST);
-		break;*/
+		$data['m'] = $this->extornos_model->motivos();
 
 		$this->load->view('layout/header');
 		$this->load->view('layout/nav');
@@ -46,6 +39,7 @@ class Extornos extends CI_Controller {
 
 		$c_extornar = $_POST['c_extornar'];
 		$m_extornar = $_POST['m_extornar'];
+		$m_extornar_c = $_POST['comision_c'];
 		$motivo = $_POST['motivo'];
 		$id_venta = $_POST['id_venta'];
 		$id_vendedor = $_POST['id_vendedor'];
@@ -53,7 +47,7 @@ class Extornos extends CI_Controller {
 		$fecha=date("d/m/Y");
 		$usuario = $this->session->userdata('id_usuario');	
 		
-		$extorno = $this->extornos_model->guardar($c_extornar, $m_extornar, $motivo, $id_venta, $id_vendedor, $fecha, $usuario);
+		$extorno = $this->extornos_model->guardar($c_extornar, $m_extornar, $m_extornar_c, $motivo, $id_venta, $id_vendedor, $fecha, $usuario);
 
 		echo "<script> alert('".$extorno."') </script>";
 

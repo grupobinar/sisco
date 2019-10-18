@@ -408,4 +408,15 @@ class Usuarios_model extends CI_Model{
 			return array('Se encuentran usuarios asociados al rol, por favor cambielos e intente eliminar el rol nuevamente','error');
 		}
 	}
+
+	function verificar_username($uname){
+
+		$this->db->where('t_usuarios.username',$uname);
+		$rol_usuario = $this->db->get('public.t_usuarios');
+
+		if ($rol_usuario->num_rows() > 0) {
+			return "Este nombre de usuario ya esta reservado";
+		}
+
+	}
 }

@@ -20,7 +20,7 @@
           </tr>
           </thead>
           <tbody>
-          <?php if ($_ci_vars<>"") { foreach ($_ci_vars as $key) { 
+          <?php if ($_ci_vars<>"") { foreach ($_ci_vars['v'] as $key) { 
             if($key['tventa']==1) $tventa = "Venta de poliza";
             elseif($key['tventa']==2) $tventa = "Adicionales";
             elseif($key['tventa']==3) $tventa = "Actualización de Datos";
@@ -34,12 +34,10 @@
               <td><?php if(isset($key['suma'])) echo ucwords($key['suma']); else echo "N/A";?></td>
               <td><?php echo $key['cuotas_canceladas']?></td>
               <td><?php echo $key['comision_liquidada']?></td>
-              <td><?php echo $key['comision_coordinador']?></td>
+              <td><?php echo $key['comision_c']?></td>
               <td>
               <center>
-
-                <a class="btn btn-sm btn-default ventana" id="<?php echo $key['id_venta'].'|'.$key['id_vendedor'].'|'.$key['comision_liquidada'].'|'.$key['cuotas_canceladas']?>" data-toggle="modal" data-target="#Extornar" href="#" title="Extornar"><i class="fa fa-undo"></i></a>
-
+                <a class="btn btn-sm btn-default ventana" id="<?php echo $key['id_venta'].'|'.$key['id_vendedor'].'|'.$key['comision_liquidada'].'|'.$key['cuotas_canceladas'].'|'.$key['comision_c']?>" data-toggle="modal" data-target="#Extornar" href="#" title="Extornar"><i class="fa fa-undo"></i></a>
               </center>
             </td>
             </tr>
@@ -77,6 +75,7 @@
               <div class="col-lg-3"><input type="text" name="cuota_comision" id="cuota_comision" class="form-control" readonly=""></div>
               <div class="col-lg-3"><input type="text" name="cuota_cancel" id="cuota_cancel" class="form-control" readonly=""></div>
               <div class="col-lg-3"><input type="text" name="comision_noex" id="comision_noex" class="form-control" readonly=""></div>
+              <input type="hidden" name="comision_c" id="comision_c" >
 
               <div class="col-lg-3"><b>Cuotas a extornar</b></div>
               <div class="col-lg-3"><b>Monto a extornar</b></div>
@@ -89,7 +88,11 @@
               <div class="col-lg-6 _mensaje"></div>
 
               <div class="col-lg-12"><b>Motivo</b></div>
-              <div class="col-lg-12"><textarea class="form-control" name="motivo" id="motivo"></textarea></div>
+              <div class="col-lg-12"><select class="form-control" name="motivo" id="motivo">
+                <?php foreach ($_ci_vars['m'] as $key) {
+                  echo '<option value="'.$key['id_motivo'].'">'.$key['motivo'].'</option>';
+                } ?>
+              </select></div>
               <input type="hidden" name="id_desactivar" id="id_desactivar">
             </div>
           </div>
@@ -119,6 +122,7 @@
 
       cc = data[2]/12;
       ccn = (data[2]/12)*data[3];
+      ccnc = (data[4]/12);
 
       $("#id_vendedor").val(data[1]);
       $("#id_venta").val(data[0]);
@@ -132,6 +136,7 @@
     $("#c_extornar").keyup(function () {
 
         var monto = $(this).val() * cc;
+        var monto_c = $(this).val() * ccnc;
 
         var dif_cuota = 12 - $("#cuota_cancel").val();
 
@@ -152,6 +157,7 @@
         }
 
         $("#m_extornar").val(monto.toFixed(2));
+        $("#comision_c").val(monto_c.toFixed(2));
     });
 
     $('.numero').on('input', function () { 

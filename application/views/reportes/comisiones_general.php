@@ -11,8 +11,8 @@
 
    <div class="box-body">
      <div class="row">
-       <div class="col-xs-6"><b>cod. vendedor</b></div>
-       <div class="col-xs-6"><b>num. semana</b></div>
+       <div class="col-xs-6"><b>Coordinador</b></div>
+       <div class="col-xs-6"><b>Num. semana</b></div>
        
        <div class="col-xs-6">
               <select class="selectpicker form-control" data-show-subtext="true" data-live-search="true" id="cod_vendedor" name="cod_vendedor">
@@ -41,12 +41,3 @@
  </div>
  </div>
 
-
-
-
- 
- <script type="text/javascript">
-  $(document).ready(function(){
-
-  });
-</script>
