@@ -116,7 +116,7 @@
               <div class="col-lg-12"></div>
 
               
-              <div class="col-lg-3"><input type="date" name="tedad" id="tedad" class="form-control nm" maxlength="3"></div>
+              <div class="col-lg-3"><input type="text" name="tedad" id="tedad" class="form-control nm" maxlength="3"></div>
               <div class="col-lg-3"><input type="text" name="correo" id="correo" class="form-control mail nm"></div>
               <div class="col-lg-3"><input type="text" name="telefono" id="telefono" class="form-control numero nm"></div>
 
@@ -349,7 +349,7 @@ $(document).ready(function(){
           adicional += '<input type="text" name="ad_cedula[]" id="cedula" class="form-control numero">';
           adicional += '</td></tr></table></div>';
           adicional += '<div class="col-lg-3"><input type="text" name="ad_name[]" id="ad_name" class="form-control"></div>';
-          adicional += '<div class="col-lg-3"><input type="date" name="adicional_edad[]" id="adicional_edad" class="form-control"></div>';
+          adicional += '<div class="col-lg-3"><input type="text" name="adicional_edad[]" id="adicional_edad" class="form-control"></div>';
           adicional += '<div class="col-lg-3"><select id="adicional_parent" name="adicional_parent[]" class="form-control">';
           $.each(parentesco, function (index, value) {
               //console.log(value['parentesco']);
