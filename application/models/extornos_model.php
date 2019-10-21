@@ -68,9 +68,7 @@ class Extornos_model extends CI_Model{
 				'cuotas_fraccionar'=>'1',	
 				'cuotas_extornadas'=>$c_extornar,	
 				'id_usuario'=>$usuario,	
-				'motivo'=>$motivo,	
-				'fecha_registro'=>$fecha,
-				'ult_mod'=>$fecha
+				'motivo'=>$motivo	
 			);
 
 
@@ -93,8 +91,11 @@ class Extornos_model extends CI_Model{
 
 	function buscarExtornos(){
 
-		$this->db->select('solicitud, monto_fraccionado, motivo, cod_vendedor, apellidos, nombres, telefono');
+		$this->db->select('solicitud, monto_fraccionado, comision_liquidada, t_motivos.motivo, cod_vendedor, apellidos, nombres, telefono, nsem, id_estatus, cuotas_fraccionar');
+		$this->db->join('t_semanas','t_semanas.id_semana = t_extornos.id_semana','left');
+		$this->db->join('t_motivos','t_motivos.id_motivo = t_extornos.motivo','left');
 		$this->db->join('t_ventas','t_ventas.id_venta = t_extornos.id_venta','left');
+		$this->db->join('t_liquidacion','t_liquidacion.id_venta = t_extornos.id_venta','left');
 		$this->db->join('t_vendedores','t_vendedores.id_vendedor = t_extornos.id_vendedor','left');
 		$extornos = $this->db->get('public.t_extornos');
 

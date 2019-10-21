@@ -25,8 +25,6 @@ class Config_model extends CI_Model{
 
 		  	$data = array(
 			'tpago'=>$tpago,
-			'fecha_registro'=>$fecha,
-			'ult_mod'=>$fecha,
 			'id_usuario'=>$usuario,
 			);
 
@@ -43,8 +41,6 @@ class Config_model extends CI_Model{
 
 		  	$data = array(
 			'motivo'=>$motivo,
-			'fecha_registro'=>$fecha,
-			'ult_mod'=>$fecha,
 			'id_usuario'=>$usuario,
 			);
 
@@ -61,8 +57,6 @@ class Config_model extends CI_Model{
 
 		  	$data = array(
 			'parentesco'=>$parentesco,
-			'fecha_registro'=>$fecha,
-			'ult_mod'=>$fecha,
 			'id_usuario'=>$usuario,
 			);
 
@@ -77,20 +71,34 @@ class Config_model extends CI_Model{
 
 	function guardar_edad($edad,$factor,$fecha,$usuario){
 
-		  	$data = array(
+			$this->db->select("edad");
+			$this->db->where("estatus",'0');
+			$this->db->where("edad",$edad);
+			$sedad = $this->db->get('public.t_factor_edad');
+
+			if($sedad->num_rows()>0)
+			 {
+
+			 	return "Esta edad ya esta registrada";
+			 	
+			 }else{			 	
+
+			 	$data = array(
 				'edad'=>$edad,
 				'factor'=>$factor,
-				'fecha_registro'=>$fecha,
-				'ult_mod'=>$fecha,
 				'id_usuario'=>$usuario,
-			);
+				);
 
 
-			$this->db->insert('public.t_factor_edad',$data);
+				$this->db->insert('public.t_factor_edad',$data);
 
-			$retorno="Guardado con exito";
+				$retorno="Guardado con exito";
 
-			return $retorno;
+				return $retorno;
+			 }
+
+
+		  	
 
 	}
 
@@ -109,8 +117,6 @@ class Config_model extends CI_Model{
 			'cuota'=>$cuota,
 			'min'=>$min,
 			'max'=>$max,
-			'fecha_registro'=>$fecha,
-			'ult_mod'=>$fecha,
 			'id_usuario'=>$usuario,
 			'id_plan'=>$planc,
 			'id_basec'=>$id_basec,
@@ -136,8 +142,6 @@ class Config_model extends CI_Model{
 			'cuota'=>$cuota,
 			'min'=>$min,
 			'max'=>$max,
-			'fecha_registro'=>$fecha,
-			'ult_mod'=>$fecha,
 			'id_usuario'=>$usuario,
 			'id_plan'=>$planc,
 			'id_basec'=>$id_basec,
@@ -202,8 +206,6 @@ class Config_model extends CI_Model{
 		  	$data = array(
 			'tpoliza'=>$tpoliza,
 			'factor'=>$factor,
-			'fecha_registro'=>$fecha,
-			'ult_mod'=>$fecha,
 			'id_usuario'=>$usuario,
 			);
 
@@ -220,8 +222,6 @@ class Config_model extends CI_Model{
 
 		  	$data = array(
 			'tplan'=>$plan,
-			'fecha_registro'=>$fecha,
-			'ult_mod'=>$fecha,
 			'id_usuario'=>$usuario,
 			);
 
@@ -617,8 +617,6 @@ class Config_model extends CI_Model{
 				'hasta'=> $fecha2,
 				'estatus'=> 0,
 				'observaciones'=> 'REGISTRO DE NUEVA SEMANA',
-				'fecha_registro'=> date("d/m/Y"),
-				'ult_mod'=> date("d/m/Y"),
 				'nsem' => $numerosemana
 			);
 

@@ -17,7 +17,6 @@ class Servicio_model extends CI_Model{
 			'identificacion'=>$cedula,
 			'apellidos_nombres'=>$fullname,
 			'colaborador'=>$colaborador,	
-			'fecha_registro'=>$fecha,
 			'ult_mod'=>$fecha,
 			'ult_pago'=>$fecha,
 			'id_usuario'=>$usuario,
@@ -50,8 +49,6 @@ class Servicio_model extends CI_Model{
 			'id_persona'=>$id_persona,
 			'monto'=>$importe,
 			'ruta_comprobante'=>$ruta,	
-			'fecha_registro'=>$fecha,
-			'ult_mod'=>$fecha,
 			'usuario'=>$usuario
 			);
 

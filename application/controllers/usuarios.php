@@ -215,30 +215,9 @@ class Usuarios extends CI_Controller {
 	public function vendedores(){
 		$data = $this->usuarios_model->listvendedores();
 
-		$i=0;
-
-		if ($data<>"") {
-		foreach($data as $sheet) {	
-
-			$i++;		
-			
-			$lista[$i]["id_vendedor"]=$sheet->id_vendedor;
-			$lista[$i]["cod_vendedor"]=$sheet->cod_vendedor;
-			$lista[$i]["identificacion"]=$sheet->identificacion;
-			$lista[$i]["apellidos"]=$sheet->apellidos;
-			$lista[$i]["nombres"]=$sheet->nombres;
-			$lista[$i]["correo"]=$sheet->correo;
-			$lista[$i]["telefono"]=$sheet->telefono;
-			$lista[$i]["estatus"]=$sheet->estatus;
-			
-			}
-		}
-
-		$datos['usuarios']=$lista;
-
 		$this->load->view('layout/header');
 		$this->load->view('layout/nav');
-		$this->load->view('usuarios/vendedores',$datos);
+		$this->load->view('usuarios/vendedores',$data);
 		$this->load->view('layout/footer');
 	}
 
@@ -338,7 +317,8 @@ class Usuarios extends CI_Controller {
 
 	public function disponibilidad(){
 
-		
+		echo $this->usuarios_model->verificar_username($_POST['username']);
+
 	}
 }
 

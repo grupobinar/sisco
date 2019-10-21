@@ -1,4 +1,4 @@
-<?php //print_r($_ci_vars);?>
+<?php //echo "<pre>"; print_r($_ci_vars); echo "</pre>"; ?>
 
 <!-- #lista de usuarios ############################################################################-->
 <div class="col-lg-12"> 
@@ -16,14 +16,15 @@
      <tr>
       <th>Cedula</th>
       <th>Cod. Vendedor</th>
-      <th>Apellidos y Nombres</th>
+      <th>Vendedor</th>
       <th>Correo</th>
       <th>Telefono</th>
+      <th>Coordinador</th>
       <th><center><i class="fa fa-cog"></i> Opciones</center></th>
     </tr>
     </thead>
     <tbody>
-    <?php if ($_ci_vars<>"") { foreach ($_ci_vars[usuarios] as $key) { 
+    <?php if ($_ci_vars<>"") { foreach ($_ci_vars as $key) { 
       if($key[estatus]==0) {$clase="fa fa-unlock"; $titulo="Bloquear";}
       elseif($key[estatus]==1) {$clase="fa fa-lock"; $titulo="Desbloquear";}
       ?>
@@ -33,6 +34,7 @@
       <td><?php echo ucwords($key['apellidos'].' '.$key['nombres']);?></td>
       <td><?php echo strtolower($key['correo']);?></td>
       <td><?php echo strtoupper($key['telefono']);?></td>
+      <td><?php echo ucwords($key['namec'].' '.$key['fnamec']);?></td>
       <td>
         <center>
           <a class="btn btn-sm btn-default editUsuario" id="<?php echo $key['id_vendedor']?>" data-toggle="modal" data-target="#editarUsuario" title="Editar"><i class="fa fa-pencil"></i></a>
@@ -167,6 +169,7 @@ $(document).ready(function(){
     });
 
     $(".editUsuario").click(function() {
+      console.log("aqui");
       $.post("<?php echo base_url() ?>/index.php/usuarios/buscarVendedor", { id:$(this).attr("id") }, function(data){
         
         var result=data.split(':');

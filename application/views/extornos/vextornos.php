@@ -31,10 +31,10 @@
               <td><?php echo $key['identificacion']?></td>
               <td><?php echo $tventa?></td>
               <td><?php if(isset($key['tpoliza'])) echo ucwords($key['tpoliza']); else echo "N/A";?></td>
-              <td><?php if(isset($key['suma'])) echo ucwords($key['suma']); else echo "N/A";?></td>
-              <td><?php echo $key['cuotas_canceladas']?></td>
-              <td><?php echo $key['comision_liquidada']?></td>
-              <td><?php echo $key['comision_c']?></td>
+              <td><?php if(isset($key['suma'])) echo number_format($key['suma'], 2, ',', '.'); else echo "N/A";?></td>
+              <td><?php echo $key['cuotas_canceladas']; ?></td>
+              <td><?php echo number_format($key['comision_liquidada'], 2, ',', '.');?></td>
+              <td><?php echo number_format($key['comision_c'], 2, ',', '.');?></td>
               <td>
               <center>
                 <a class="btn btn-sm btn-default ventana" id="<?php echo $key['id_venta'].'|'.$key['id_vendedor'].'|'.$key['comision_liquidada'].'|'.$key['cuotas_canceladas'].'|'.$key['comision_c']?>" data-toggle="modal" data-target="#Extornar" href="#" title="Extornar"><i class="fa fa-undo"></i></a>
@@ -126,7 +126,7 @@
 
       $("#id_vendedor").val(data[1]);
       $("#id_venta").val(data[0]);
-      $("#comision_cancelada").val(data[2]);
+      $("#comision_cancelada").val(data[2])
       $("#cuota_cancel").val(data[3]);
       $("#cuota_comision").val(cc.toFixed(2));
       $("#comision_noex").val(ccn.toFixed(2));

@@ -63,7 +63,7 @@ class Liquidacion extends CI_Controller {
 			$this->mail->Host       = 'smtp.gmail.com';                    // Set the SMTP server to send through
 			$this->mail->SMTPAuth   = true;                                   // Enable SMTP authentication
 			$this->mail->Username   = 'grupobinar@gmail.com';                     // SMTP username
-			$this->mail->Password   = 'Cotufas#85';                               // SMTP password
+			$this->mail->Password   = 'Guitarrita86!';                               // SMTP password
 			//$this->mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;         // Enable TLS encryption; `PHPMailer::ENCRYPTION_SMTPS` also accepted
 			$this->mail->Port       = 587;                                    // TCP port to connect to
 		
@@ -76,12 +76,17 @@ class Liquidacion extends CI_Controller {
 			$html.='<div style="background: #cecece">';
 			$html.='<br>';
 			$html.='<table width="60%" style="margin:0 auto; background: white;">';
+				/*$html.='<tr>';
+					$html.='<td>';
+					$html.='';
+					$html.='</td>';
+				$html.='</tr>';*/
 				$html.='<tr>';
 					$html.='<td colspan="2">';
 						$html.='<table width="100%" style="background: #044767; height: 100px; color: white; font-size: 25px; font-weight: bold; ">';
 							$html.='<tr>';
 								$html.='<td style="padding: 5px; padding-left: 25px;">ESTADO DE CUENTA<p style="font-size: 13px;">SEM:'.$v['s']['nsem'].' | '.$v['s']['desde'].' - '.$v['s']['hasta'].'</p></td>';
-								$html.='<td style="padding: 5px; padding-right: 25px; text-align: right;">:::</td>';
+								$html.='<td style="padding: 5px; padding-right: 25px; text-align: right;"><img src="http://grupobinar.com/wp-content/uploads/2019/10/leonardo_right_white.png" alt="Leonardo Tirado" width="200" height="50"></td>';
 							$html.='</tr>';
 						$html.='</table>';
 					$html.='</td>';
@@ -131,7 +136,7 @@ class Liquidacion extends CI_Controller {
 				$html.='</tr>';
 			$html.='</table>';
 			$html.='<br>';
-			$html.='<b>Este correo es generado automaticamente a travez SISCO V1.0, no responder<b>';
+			//$html.='<b>Este correo es generado automaticamente a travez SISCO V1.0, no responder<b>';
 			$html.='</div>';
 
 //*************************************************************************************************************

@@ -109,14 +109,14 @@
               <div class="col-lg-3"><input type="text" name="nombres" id="nombres" class="form-control letras nm"></div>
               <div class="col-lg-12"></div>
 
-              <div class="col-lg-3"><b>Edad</b></div>
+              <div class="col-lg-3"><b>F. Nacimiento</b></div>
               <div class="col-lg-3"><b>Correo</b></div>
               <div class="col-lg-3"><b>Telefono</b></div>
 
               <div class="col-lg-12"></div>
 
               
-              <div class="col-lg-3"><input type="text" name="tedad" id="tedad" class="form-control numero nm" maxlength="3"></div>
+              <div class="col-lg-3"><input type="date" name="tedad" id="tedad" class="form-control nm" maxlength="3"></div>
               <div class="col-lg-3"><input type="text" name="correo" id="correo" class="form-control mail nm"></div>
               <div class="col-lg-3"><input type="text" name="telefono" id="telefono" class="form-control numero nm"></div>
 
@@ -125,7 +125,7 @@
               <div class="col-lg-3 esconder ac_datos"><b>Tipo de Poliza</b></div>
               <div class="col-lg-3 esconder ac_datos"><b>Plan</b></div>
               <div class="col-lg-3 esconder ac_datos"><b>Cobertura</b></div>
-              <div class="col-lg-3 ac_datos"><b>Ref de pago</b></div>
+              <div class="col-lg-3 ac_datos"><b>Tipo de pago</b></div>
 
               <div class="_rpago"></div>
 
@@ -147,17 +147,6 @@
               <div class="col-lg-3 esconder ac_datos">
                 <select class="form-control" name="cobertura" id="cobertura"></select>
               </div>
-              <div class="col-lg-3 ac_datos"><input type="text" name="rpago" id="rpago" class="form-control"></div>
-
-              <div class="_rpago"></div>
-
-              <div class="col-lg-3 ac_datos"><b>Monto</b></div>
-              <div class="col-lg-3 ac_datos"><b>Cuotas Canceladas</b></div>
-              <div class="col-lg-3 ac_datos"><b>Tipo de pago</b></div>
-              <div class="col-lg-3 "><b>Cod. Vendedor</b></div>
-
-              <div class="col-lg-3 ac_datos"><input type="text" name="monto" id="monto" class="form-control decimales"></div>
-              <div class="col-lg-3 ac_datos"><input type="text" name="ccancelada" id="ccancelada" class="form-control numero"></div>
               <div class="col-lg-3 ac_datos">
                 <select class="form-control" name="tpago" id="tpago">
                   <?php foreach ($_ci_vars[tpago] as $key) {
@@ -165,6 +154,17 @@
                   } ?>
                 </select>
               </div>
+
+              <div class="_rpago"></div>
+
+              <div class="col-lg-3 ac_datos"><b>Monto</b></div>
+              <div class="col-lg-3 ac_datos"><b>Cuotas Canceladas</b></div>
+              <div class="col-lg-3 ac_datos"><b>Ref de pago</b></div>
+              <div class="col-lg-3 "><b>Cod. Vendedor</b></div>
+
+              <div class="col-lg-3 ac_datos"><input type="text" name="monto" id="monto" class="form-control decimales"></div>
+              <div class="col-lg-3 ac_datos"><input type="text" name="ccancelada" id="ccancelada" class="form-control numero"></div>
+              <div class="col-lg-3 ac_datos"><input type="text" name="rpago" id="rpago" class="form-control"></div>
               <div class="col-lg-3 ">
                  <select class="selectpicker form-control aqui" data-show-subtext="true" data-live-search="true" id="cod_vendedor" name="cod_vendedor">
                   <?php foreach ($_ci_vars[vendedores] as $key) {
@@ -172,6 +172,7 @@
                   } ?>
                </select> 
             </div>
+
             <div class="col-lg-12"><br></div>
             <div class="col-lg-10">
               <div class="checkbox">
@@ -186,7 +187,7 @@
             <div class="head_adicionales" style="display: none;">
               <div class="col-lg-3"><b>Cedula</b></div>
               <div class="col-lg-3"><b>Apellidos y nombres</b></div>
-              <div class="col-lg-1"><b>Edad</b></div>
+              <div class="col-lg-3"><b>F. nacimiento</b></div>
               <div class="col-lg-3"><b>Parentesco</b></div>
             </div>
             <div class="add_adicionales">
@@ -348,15 +349,14 @@ $(document).ready(function(){
           adicional += '<input type="text" name="ad_cedula[]" id="cedula" class="form-control numero">';
           adicional += '</td></tr></table></div>';
           adicional += '<div class="col-lg-3"><input type="text" name="ad_name[]" id="ad_name" class="form-control"></div>';
-          adicional += '<div class="col-lg-1"><input type="text" name="adicional_edad[]" id="adicional_edad" class="form-control"></div>';
+          adicional += '<div class="col-lg-3"><input type="date" name="adicional_edad[]" id="adicional_edad" class="form-control"></div>';
           adicional += '<div class="col-lg-3"><select id="adicional_parent" name="adicional_parent[]" class="form-control">';
           $.each(parentesco, function (index, value) {
               //console.log(value['parentesco']);
               adicional +='<option value="'+value['id_parentesco']+'">'+value['parentesco']+'</option>';
           });
 
-          adicional += '</select></div><div class="col-lg-2">';
-          adicional += '<input type="button" name="del_ad" id="del_ad" class="btn btn-default" value="x"></div>';
+          adicional += '</select></div>';
           adicional += '<div class="col-lg-12"><br></div></div>';
 
     $("#adicionales").click(function(){

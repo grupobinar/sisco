@@ -8,14 +8,12 @@ class Reportes extends CI_Controller {
 		parent::__construct();
 		$this->load->helper('url');
     	$this->load->helper('form');
-    	$this->load->model('polizas_model');
+    	//$this->load->model('polizas_model');
 		//$this->load->model('config_model');
 		$this->load->model('reportes_model');
         $this->load->library('session');
 		$this->load->library('fpdf_master');
     }
-	
-	
 
 	public function rpt_por_coordinador(){
 		
@@ -131,7 +129,7 @@ class Reportes extends CI_Controller {
 		$this->fpdf->SetFont('Arial','B',8);
 
 		$this->fpdf->Cell(127,6,utf8_decode('Total asignaciones'), 0, 0, 'R');
-		$this->fpdf->Cell(25,6,$total,1,0,'C');
+		$this->fpdf->Cell(25,6,number_format($total, 2, ',', '.'),1,0,'C');
 		$this->fpdf->Cell(20,6,number_format($cvendedor, 2, ',', '.'),1,0,'C');
 		$this->fpdf->Cell(23,6,number_format($ccoordinador, 2, ',', '.'),1,0,'C');
 
@@ -183,8 +181,8 @@ class Reportes extends CI_Controller {
 		$this->fpdf->SetFont('Arial','B',8);
 
 		$this->fpdf->Cell(152,6,utf8_decode('Total deducciones'), 0, 0, 'R');
-		$this->fpdf->Cell(20,6,$evendedor,1,0,'C');
-		$this->fpdf->Cell(23,6,$ecoordinador,1,0,'C');
+		$this->fpdf->Cell(20,6,number_format($evendedor, 2, ',', '.'),1,0,'C');
+		$this->fpdf->Cell(23,6,number_format($ecoordinador, 2, ',', '.'),1,0,'C');
 
 		}else{
 		$this->fpdf->Cell(195,6,utf8_decode('No hay nada que deducir'), 1, 0, 'C');
@@ -261,9 +259,9 @@ class Reportes extends CI_Controller {
 		$this->fpdf->Cell(20,6,$key['identificacion'],1,0,'C');
 		$this->fpdf->Cell(40,6,strtoupper(utf8_decode($key['concepto'])),1,0,'C');
 		$this->fpdf->Cell(30,6,$key['tplan'],1,0,'C');
-		$this->fpdf->Cell(20,6,$key['suma'],1,0,'C');
-		$this->fpdf->Cell(20,6,$key['cuotas_canceladas'],1,0,'C');
-		$this->fpdf->Cell(20,6,$key['comision_liquidada'],1,0,'C');
+		$this->fpdf->Cell(20,6,number_format($key['suma'], 2, ',', '.'),1,0,'C');
+		$this->fpdf->Cell(20,6,number_format($key['cuotas_canceladas'], 2, ',', '.'),1,0,'C');
+		$this->fpdf->Cell(20,6,number_format($key['comision_liquidada'], 2, ',', '.'),1,0,'C');
 	
 		$this->fpdf->Ln(6);
 	}
@@ -300,16 +298,16 @@ class Reportes extends CI_Controller {
 		$this->fpdf->Cell(20,6,$key['identificacion'],1,0,'C');
 		$this->fpdf->Cell(40,6,strtoupper(utf8_decode($key['concepto'])),1,0,'C');
 		$this->fpdf->Cell(30,6,$key['tpoliza'],1,0,'C');
-		$this->fpdf->Cell(20,6,$key['suma'],1,0,'C');
-		$this->fpdf->Cell(20,6,$key['cuotas_canceladas'],1,0,'C');
-		$this->fpdf->Cell(20,6,$key['monto_fraccionado'],1,0,'C');
+		$this->fpdf->Cell(20,6,number_format($key['suma'], 2, ',', '.'),1,0,'C');
+		$this->fpdf->Cell(20,6,number_format($key['cuotas_canceladas'], 2, ',', '.'),1,0,'C');
+		$this->fpdf->Cell(20,6,number_format($key['monto_fraccionado'], 2, ',', '.'),1,0,'C');
 		$this->fpdf->Ln(6);
 
 	}
-	$this->fpdf->Ln(10);
+/*	$this->fpdf->Ln(10);
 
 	$this->fpdf->Cell(240,8,utf8_decode('Total a pagar'), 0, 0, 'R');
-	$this->fpdf->Cell(35,8,'asig - deduc',1,0,'C');
+	$this->fpdf->Cell(35,8,'asig - deduc',1,0,'C');*/
 
 	
 	$this->fpdf->Output();
@@ -319,27 +317,28 @@ class Reportes extends CI_Controller {
 
 	public function metricas(){	
 
-		$sem = $this->reportes_model->semana($_POST['sem']);
+		$s_desde = $this->reportes_model->semana($_POST['desde']);
+		$s_hasta = $this->reportes_model->semana($_POST['hasta']);
 
 		//print_r($sem);
 
 
 		$this->fpdf->AddPage();
-		$this->fpdf->Image(base_url().'assets/0.fw_.png',115,10,80);
+		$this->fpdf->Image(base_url().'assets/0.fw_.png',8,10,60);
 
 		$this->fpdf->SetFont('Arial','B',16);
-		$this->fpdf->Cell(200,10,utf8_decode('METRICAS SEMANALES'),0,0,'L');
+		$this->fpdf->Ln(10);
+		$this->fpdf->Cell(180,10,utf8_decode('ESTADISTICAS'),0,0,'C');
 		$this->fpdf->SetFont('Arial','',10);
 		$this->fpdf->Ln(5);
-		$this->fpdf->Cell(200,8,'SEM '.$sem[nsem].' DEL '.$sem[desde].' AL '.$sem[hasta],0,0,'L');
-
+		$this->fpdf->Cell(180,8,'Desde '.$s_desde[desde].' hasta '.$s_hasta[hasta],0,0,'C');
 		
 		$this->fpdf->Ln(15);
 		$this->fpdf->SetFont('Arial','B',10);
 
 		// METRICAS POR TIPO DE PAGO *****************************************************************
 
-		$data = $this->reportes_model->metrica_tpago($sem['id_semana']);
+		$data = $this->reportes_model->metrica_tpago($s_hasta['id_semana']);
 
 
 
@@ -356,7 +355,7 @@ class Reportes extends CI_Controller {
 		foreach ($data as $key) {
 			$this->fpdf->Cell(60,6,$key['tpago'],1,0,'L');
 			$this->fpdf->Cell(60,6,$key['total'],1,0,'L');
-			$this->fpdf->Cell(60,6,$key['suma'],1,0,'L');
+			$this->fpdf->Cell(60,6,number_format($key['suma'], 2, ',', '.'),1,0,'L');
 			$this->fpdf->Ln(6);
 		}
 		
@@ -365,7 +364,7 @@ class Reportes extends CI_Controller {
 
 		// METRICAS POR TIPO DE VENTA *****************************************************************
 
-		$data = $this->reportes_model->metrica_tventa($sem['id_semana']);
+		$data = $this->reportes_model->metrica_tventa($s_hasta['id_semana']);
 
 		$this->fpdf->SetFillColor(148, 196, 241); 
 		$this->fpdf->Cell(180,8,'Metricas por tipo de venta',1,0,'L', true);
@@ -384,7 +383,7 @@ class Reportes extends CI_Controller {
 
 		// METRICAS POR TIPO DE POLIZA *****************************************************************
 
-		$data = $this->reportes_model->metrica_tpoliza($sem['id_semana']);
+		$data = $this->reportes_model->metrica_tpoliza($s_hasta['id_semana']);
 
 		$this->fpdf->SetFillColor(148, 196, 241); 
 		$this->fpdf->Cell(180,8,'Metricas por tipo de poliza',1,0,'L', true);
@@ -403,7 +402,7 @@ class Reportes extends CI_Controller {
 
 		// METRICAS POR TIPO DE POLIZA Y MODULO ********************************************************
 
-		$data = $this->reportes_model->metrica_tpolizam($sem['id_semana']);
+		$data = $this->reportes_model->metrica_tpolizam($s_hasta['id_semana']);
 
 		$this->fpdf->SetFillColor(148, 196, 241); 
 		$this->fpdf->Cell(180,8,'Metricas por tipo de poliza',1,0,'L', true);

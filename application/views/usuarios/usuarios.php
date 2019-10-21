@@ -230,7 +230,15 @@ $(document).ready(function(){
 
     $("#username").blur(function(){
       $.post("<?php echo base_url() ?>/index.php/usuarios/disponibilidad", { username:$(this).val() }, function(data){
-        console.log(data);
+        if(data!="") {
+          document.getElementById("username").focus();
+          $("._mensaje").html("<p class='text-red'>"+data+"</p>");
+          $("#username").css("color","red");
+        } 
+        else {
+          $("._mensaje").html("");
+          $("#username").css("color","");
+        } 
       });
     });
 });

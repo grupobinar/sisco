@@ -21,8 +21,6 @@ class Usuarios_model extends CI_Model{
 			'nombres'=>$nombres,	
 			'correo'=>$correo,	
 			'telefono'=>$telefono,	
-			'fecha_registro'=>$fecha,
-			'ult_mod'=>$fecha,
 			'id_usuario'=>$usuario,
 			);
 
@@ -35,8 +33,6 @@ class Usuarios_model extends CI_Model{
 			'id_rol'=>$rol,	
 			'clave'=>$clave,	
 			'id_persona'=>$id_persona,	
-			'fecha_registro'=>$fecha,
-			'ult_mod'=>$fecha,
 			'id_usuario'=>$usuario,
 			);
 
@@ -74,8 +70,6 @@ class Usuarios_model extends CI_Model{
 			'nombres'=>$nombres,	
 			'correo'=>$correo,	
 			'telefono'=>$telefono,	
-			'fecha_registro'=>$fecha,
-			'ult_mod'=>$fecha,
 			'id_coordinador'=>$usuario,
 			'id_usuario'=>$usuario,
 			'cod_vendedor'=>$codvendedor,
@@ -239,16 +233,20 @@ class Usuarios_model extends CI_Model{
 
 	function listvendedores()
 	{
-		if ($this->session->userdata('rol')<>2) {
+		
+		$this->db->select("t_vendedores.apellidos, t_vendedores.nombres, t_vendedores.identificacion, t_vendedores.correo, t_vendedores.telefono, cod_vendedor, t_personas.apellidos as namec, t_personas.nombres as fnamec, t_vendedores.id_vendedor, t_vendedores.estatus");
+		$this->db->join('t_usuarios','t_usuarios.id_user = t_vendedores.id_coordinador');
+		$this->db->join('t_personas','t_personas.id_persona = t_usuarios.id_persona');
+
+		if ($this->session->userdata('rol')==3) {
 			$this->db->where('id_coordinador',$this->session->userdata('id_usuario'));
 		}
-
 		$listusuarios = $this->db->get('public.t_vendedores');
 
 		
 		if($listusuarios->num_rows()>0)
 		{
-			return $listusuarios->result();
+			return $listusuarios->result_array();
 		}
 
 	}
@@ -413,6 +411,8 @@ class Usuarios_model extends CI_Model{
 
 		$this->db->where('t_usuarios.username',$uname);
 		$rol_usuario = $this->db->get('public.t_usuarios');
+
+		//echo $this->db->last_query();
 
 		if ($rol_usuario->num_rows() > 0) {
 			return "Este nombre de usuario ya esta reservado";

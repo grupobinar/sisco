@@ -273,8 +273,6 @@ class Liquidacion_model extends CI_Model{
 					'comision_liquidada'=>$c,
 					'comision_c'=>$cco,
 					'id_venta'=>$key['id_venta'],
-					'fecha_registro'=>date("d/m/Y"),
-					'ult_mod'=>date("d/m/Y"),
 					'usuario'=>$this->session->userdata('id_usuario')
 				);
 
@@ -326,9 +324,7 @@ class Liquidacion_model extends CI_Model{
 							'id_usuario'=> '0',
 							'fraccionar'=> $key['id_extorno'],
 							'observacion'=> 'fraccion de extorno anterior',
-							'fecha_registro'=> date("d/m/Y"),
-							'id_estatus'=> '-1',
-							'ult_mod'=> date("d/m/Y")
+							'id_estatus'=> '-1'
 
 						);
 

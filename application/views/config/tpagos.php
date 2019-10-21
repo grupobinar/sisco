@@ -63,11 +63,11 @@
         <td><?php echo $key['id_tpago']?></td>
         <td><?php echo ucwords($key['tpago'])?></td>
         <td>
-        <center>
-
-          <a class="btn btn-sm btn-default desactivar" id="<?php echo $key['id_tpago']?>" data-toggle="modal" data-target="#Desactivar" href="<?php echo base_url();?>index.php/usuarios/desactivar" title="Eliminar"><i class="fa fa-close"></i></a>
-
-        </center>
+          <?php if ($key['id_tpago']!=2) { ?>
+            <center>
+              <a class="btn btn-sm btn-default desactivar" id="<?php echo $key['id_tpago']?>" data-toggle="modal" data-target="#Desactivar" href="<?php echo base_url();?>index.php/usuarios/desactivar" title="Eliminar"><i class="fa fa-close"></i></a>
+            </center>
+          <?php } ?>
       </td>
       </tr>
     <?php }} ?>

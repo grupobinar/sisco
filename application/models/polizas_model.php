@@ -356,8 +356,6 @@ class Polizas_model extends CI_Model{
 				'correo'=>$correo,
 				'telefono'=>$telefono,
 				'usuario'=>$usuario,
-				'fecha_registro'=>$fecha,
-				'ult_mod'=>$fecha,
 				'tedad'=>$tedad,
 			);
 
@@ -380,7 +378,6 @@ class Polizas_model extends CI_Model{
 				'referencia_pago'=>$rpago,
 				'monto'=>$monto,
 				'cuotas_canceladas'=>$ccancelada,
-				'fecha_registro'=>$fecha,
 				'id_plan'=>$tplan,
 				'id_poliza'=>$cobertura,
 				'id_tpoliza'=>$tpoliza,
@@ -389,8 +386,6 @@ class Polizas_model extends CI_Model{
 				'id_vendedor'=>$cod_vendedor,
 				'id_usuario'=>$usuario,
 				'id_semana'=>$sem->row()->id_semana,
-				'fecha_registro'=>$fecha,
-				'ult_mod'=>$fecha,
 				'estatus_venta'=>$estatus,
 			);
 
@@ -402,14 +397,11 @@ class Polizas_model extends CI_Model{
 				'referencia_pago'=>$rpago,
 				'monto'=>$monto,
 				'cuotas_canceladas'=>$ccancelada,
-				'fecha_registro'=>$fecha,
 				'id_tomador'=>$id_tomador,
 				'tipo_pago'=>$tpago,
 				'id_vendedor'=>$cod_vendedor,
 				'id_usuario'=>$usuario,
 				'id_semana'=>$sem->row()->id_semana,
-				'fecha_registro'=>$fecha,
-				'ult_mod'=>$fecha,
 				'estatus_venta'=>$estatus,
 
 			);
@@ -452,14 +444,11 @@ class Polizas_model extends CI_Model{
 		$data = array(
 				'tventa'=>$tventa,
 				'solicitud'=>$nsolicitud,
-				'fecha_registro'=>$fecha,
 				'id_tomador'=>$id_tomador,
 				'tipo_pago'=>$tpago,
 				'id_vendedor'=>$cod_vendedor,
 				'id_usuario'=>$usuario,
 				'id_semana'=>$sem->row()->id_semana,
-				'fecha_registro'=>$fecha,
-				'ult_mod'=>$fecha,
 				'estatus_venta'=>$estatus,
 			);
 
@@ -481,9 +470,7 @@ class Polizas_model extends CI_Model{
 				'tomador'=>$identificacion,
 				'id_venta'=>$id_venta,
 				'id_parentesco'=>$ad_parent[$i],
-				'usuario'=>$usuario,
-				'fecha_registro'=>$fecha,
-				'ult_mod'=>$fecha,
+				'usuario'=>$usuario
 			);
 
 			$this->db->insert('public.t_adicionales',$data);
