@@ -179,8 +179,13 @@ class Liquidacion_model extends CI_Model{
 						if ($val['id_basec']==1) {
 							if ($key['id_tpoliza']==5) {
 
+								$tiempo = strtotime($key['tedad']); 
+							    $ahora = time(); 
+							    $edad = ($ahora-$tiempo)/(60*60*24*365.25); 
+							    $edad = floor($edad); 
+
 								$this->db->select('factor');
-								$this->db->where('edad',$key['tedad']);
+								$this->db->where('edad',$edad);
 								$edadf = $this->db->get('public.t_factor_edad');
 								$factor = $edadf->row()->factor;
 

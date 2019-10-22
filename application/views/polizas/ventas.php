@@ -49,7 +49,11 @@
 <!--       <td><?php // if(isset($key['cobertura'])) echo ucwords($key['cobertura']); else echo "N/A";?></td> -->      
       <td><a href="#" title="<?php echo $key['desde'].' | '.$key['hasta'] ?>"><?php echo ucwords($key['nsem']);?></a></td>
       <td><?php echo ucwords($estatus_venta);?></td>
-      <td><a href="<?php echo base_url().'index.php/polizas/ver_ventas?id='.$key['id_venta']?>" class="btn btn-default" type="button"><i class="fa fa-eye"></i></a></td>
+      <td><a href="<?php echo base_url().'index.php/polizas/ver_ventas?id='.$key['id_venta']?>" class="btn btn-default" type="button"><i class="fa fa-eye"></i></a>
+        <?php if ($key['estatus_venta']!="X") {  ?>
+          <a href="<?php echo base_url().'index.php/polizas/anular?id_2='.$key['id_venta']?>" class="btn btn-default anular" type="button" title="Anular"><i class="fa fa-close"></i></a>
+        <?php } ?>
+      </td>
     </tr>
     <?php }} ?>
     </tfoot>
@@ -116,7 +120,7 @@
               <div class="col-lg-12"></div>
 
               
-              <div class="col-lg-3"><input type="text" name="tedad" id="tedad" class="form-control nm" maxlength="3"></div>
+              <div class="col-lg-3"><input type="date" name="tedad" id="tedad" class="form-control nm"></div>
               <div class="col-lg-3"><input type="text" name="correo" id="correo" class="form-control mail nm"></div>
               <div class="col-lg-3"><input type="text" name="telefono" id="telefono" class="form-control numero nm"></div>
 
@@ -215,6 +219,14 @@
 
 <script type="text/javascript">
 $(document).ready(function(){
+
+  $(".anular").click(function(){
+
+       var confirmacion = confirm("Una vez anulada la venta, este proceso no se puede revertir, desea anular esta venta?");
+
+        return confirmacion;
+
+    });
 
     $('.numero').on('input', function () { 
         this.value = this.value.replace(/[^0-9]/g,'');
@@ -349,7 +361,7 @@ $(document).ready(function(){
           adicional += '<input type="text" name="ad_cedula[]" id="cedula" class="form-control numero">';
           adicional += '</td></tr></table></div>';
           adicional += '<div class="col-lg-3"><input type="text" name="ad_name[]" id="ad_name" class="form-control"></div>';
-          adicional += '<div class="col-lg-3"><input type="text" name="adicional_edad[]" id="adicional_edad" class="form-control"></div>';
+          adicional += '<div class="col-lg-3"><input type="date" name="adicional_edad[]" id="adicional_edad" class="form-control"></div>';
           adicional += '<div class="col-lg-3"><select id="adicional_parent" name="adicional_parent[]" class="form-control">';
           $.each(parentesco, function (index, value) {
               //console.log(value['parentesco']);

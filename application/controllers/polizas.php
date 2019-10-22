@@ -11,6 +11,17 @@ class Polizas extends CI_Controller {
     	$this->load->model('config_model');
     	$this->load->library('session');
 	}
+
+	public function anular(){
+
+		$guser = $this->polizas_model->anular($_GET['id_2']);
+
+		echo "<script> alert('".$guser."') </script>";
+
+		redirect('polizas/ventas' , 'refresh');
+
+	}
+
 	public function index()
 	{
 		$data = $this->polizas_model->listpoliza();

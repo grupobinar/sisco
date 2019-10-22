@@ -6,6 +6,19 @@ class Polizas_model extends CI_Model{
         $this->load->database();
     }    
 
+    function anular($id){
+
+		$data = array(
+				'estatus_venta'=>'X'
+			);
+
+			$this->db->where('id_venta', $id);
+			$this->db->update('t_ventas', $data);
+
+			return "Venta Anulada";
+
+	}
+
     function listvendedores() {
 
     	if ($this->session->userdata('rol')<>2) {

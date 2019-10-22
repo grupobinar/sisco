@@ -5,6 +5,11 @@ echo "</pre>";*/
 	  if($_ci_vars['poliza']['tventa']==1) $tventa = "Venta de poliza";
       elseif($_ci_vars['poliza']['tventa']==2) $tventa = "Adicionales";
       elseif($_ci_vars['poliza']['tventa']==3) $tventa = "Actualización de Datos";
+
+	    $tiempo = strtotime($_ci_vars['poliza']['tedad']); 
+	    $ahora = time(); 
+	    $edad = ($ahora-$tiempo)/(60*60*24*365.25); 
+	    $edad = floor($edad); 
 ?>
 <table class="table" style="background-color: white; margin-bottom: 10px;">
 	<tr>
@@ -20,7 +25,7 @@ echo "</pre>";*/
 	<tr style="font-size: 13px;">
 		<td><?php echo $_ci_vars['poliza']['identificacion'];?></td>
 		<td><?php echo ucwords($_ci_vars['poliza']['apellidos'].' '.$_ci_vars['poliza']['nombres']);?></td>
-		<td><?php echo ucwords($_ci_vars['poliza']['tedad']);?></td>
+		<td><?php echo ucwords($edad);?></td>
 		<td><?php echo $_ci_vars['poliza']['telefono'];?></td>
 		<td><?php echo strtolower($_ci_vars['poliza']['correo']);?></td>
 	</tr>
