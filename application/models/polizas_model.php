@@ -81,7 +81,6 @@ class Polizas_model extends CI_Model{
 			'id_plan'=>$plan,	
 			'cobertura'=>$cobertura,	
 			'suma'=>$suma,	
-			'ult_mod'=>$fecha,
 			'id_usuario'=>$usuario,
 			);
 
@@ -325,7 +324,6 @@ class Polizas_model extends CI_Model{
 			'id_plan'=>$plan,	
 			'cobertura'=>$cobertura,	
 			'suma'=>$suma,	
-			'ult_mod'=>$fecha,
 			'id_usuario'=>$usuario,
 			);
 
@@ -432,7 +430,6 @@ class Polizas_model extends CI_Model{
 				'correo'=>$correo,
 				'telefono'=>$telefono,
 				'usuario'=>$usuario,
-				'ult_mod'=>$fecha,
 			);
 		 if ($id_tomador>0)
 		 {
@@ -446,7 +443,6 @@ class Polizas_model extends CI_Model{
 				'correo'=>$correo,
 				'telefono'=>$telefono,
 				'usuario'=>$usuario,
-				'ult_mod'=>$fecha,
 			);
 			$this->db->insert('public.t_tomadores',$data);	
 		 	$id_tomador =  $this->db->insert_id();

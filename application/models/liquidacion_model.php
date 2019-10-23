@@ -311,7 +311,6 @@ class Liquidacion_model extends CI_Model{
 							'monto_fraccionado_c'=>$cex_c,
 							'cuotas_fraccionar'=> $cf,
 							'observacion'=> 'fraccionado',
-							'ult_mod'=> date("d/m/Y"),
 							'id_semana'=> $sem,
 						);
 

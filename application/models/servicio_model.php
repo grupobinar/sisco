@@ -17,7 +17,6 @@ class Servicio_model extends CI_Model{
 			'identificacion'=>$cedula,
 			'apellidos_nombres'=>$fullname,
 			'colaborador'=>$colaborador,	
-			'ult_mod'=>$fecha,
 			'ult_pago'=>$fecha,
 			'id_usuario'=>$usuario,
 			'codigo_postal'=>$postal,

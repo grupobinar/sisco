@@ -59,16 +59,17 @@ class Reportes extends CI_Controller {
 
 
 		$this->fpdf->AddPage();
-		$this->fpdf->Image(base_url().'assets/0.fw_.png',125,10,80);
+		$this->fpdf->Image(base_url().'assets/0.fw_.png',10,10,60);
 		$this->fpdf->SetFont('Arial','B',14);
-		$this->fpdf->Cell(200,10,'Estado de cuenta General de Comisiones',0,0,'L');
+		$this->fpdf->Ln(8);
+		$this->fpdf->Cell(200,10,'Estado de cuenta General de Comisiones',0,0,'C');
 		
 		$this->fpdf->Ln(5);
 		$this->fpdf->SetFont('Arial','',9);
 
-		$this->fpdf->Cell(200,10,'SEM '.$sem['nsem'].' desde: '.$sem['desde'].' hasta: '.$sem['hasta'] ,0,0,'L');
+		$this->fpdf->Cell(200,10,'SEM '.$sem['nsem'].' desde: '.$sem['desde'].' hasta: '.$sem['hasta'] ,0,0,'C');
 		$this->fpdf->Ln(5);
-		$this->fpdf->Cell(200,10,'Coordinador: '.$coordinador['apellidos'].' '.$coordinador['nombres'] ,0,0,'L');
+		$this->fpdf->Cell(200,10,'Coordinador: '.$coordinador['apellidos'].' '.$coordinador['nombres'] ,0,0,'C');
 
 		$this->fpdf->SetFont('Arial','',12);
 		
@@ -165,7 +166,7 @@ class Reportes extends CI_Controller {
 			$this->fpdf->Cell(20,6,$value['identificacion'],1,0,'C');
 			$this->fpdf->Cell(37,6,$value['motivo'],1,0,'C');
 			$this->fpdf->Cell(25,6,number_format($value['suma'], 2, ',', '.'),1,0,'C');
-			$this->fpdf->Cell(15,6,'Cuotas',1,0,'C');
+			$this->fpdf->Cell(15,6,'',1,0,'C');
 			$this->fpdf->Cell(20,6,number_format($value['monto_fraccionado']),1,0,'C');
 			$this->fpdf->Cell(23,6,number_format($value['monto_fraccionado_c']),1,0,'C');
 		$this->fpdf->Ln(6);
@@ -207,7 +208,9 @@ class Reportes extends CI_Controller {
 
 	$this->fpdf->AddPage();
 	$this->fpdf->SetFont('Arial','B',14);
-	$this->fpdf->Cell(200,10,'Estado de cuenta de Comisiones',0,0,'L');
+	$this->fpdf->Ln(6);
+
+	$this->fpdf->Cell(200,10,'Estado de cuenta de Comisiones',0,0,'C');
 	
 	$this->fpdf->Ln(6);
 
@@ -225,11 +228,11 @@ class Reportes extends CI_Controller {
 
 	$this->fpdf->SetFont('Arial','',9);
 	$this->fpdf->SetFillColor(148, 196, 241); 
-	$this->fpdf->Cell(60,8,'SEM '.$vendedor['nsem'].' '.$vendedor['desde'].' AL '.$vendedor['hasta'],0,0,'L');
+	$this->fpdf->Cell(200,8,'SEM '.$vendedor['nsem'].' '.$vendedor['desde'].' AL '.$vendedor['hasta'],0,0,'C');
 	$this->fpdf->Ln(4);
-	$this->fpdf->Cell(200,8,utf8_decode('Vendedor: ['.$vendedor['cod_vendedor'].'] '.$vendedor['apellidos'].' '.$vendedor['nombres']), 0, 0, 'L');
+	$this->fpdf->Cell(200,8,utf8_decode('Vendedor: ['.$vendedor['cod_vendedor'].'] '.$vendedor['apellidos'].' '.$vendedor['nombres']), 0, 0, 'C');
 	$this->fpdf->Ln(4);
-	$this->fpdf->Cell(50,8,utf8_decode('Coordinador: '.$coordinador['apellidos'].' '.$coordinador['nombres']),0,0,'L');
+	$this->fpdf->Cell(200,8,utf8_decode('Coordinador: '.$coordinador['apellidos'].' '.$coordinador['nombres']),0,0,'C');
 
 	// ASIGNACIONES **************************************************************************Image('logo.png',10,10,-300);
 
@@ -237,7 +240,7 @@ class Reportes extends CI_Controller {
 	$this->fpdf->SetFont('Arial','',12);
 
 	$this->fpdf->Cell(275,10,'Asignaciones',0,0,'L');
-	$this->fpdf->Image(base_url().'assets/0.fw_.png',125,10,80);
+	$this->fpdf->Image(base_url().'assets/0.fw_.png',10,10,60);
 
 	$this->fpdf->Ln(15);
 
@@ -262,6 +265,8 @@ class Reportes extends CI_Controller {
 		$this->fpdf->Cell(20,6,number_format($key['suma'], 2, ',', '.'),1,0,'C');
 		$this->fpdf->Cell(20,6,number_format($key['cuotas_canceladas'], 2, ',', '.'),1,0,'C');
 		$this->fpdf->Cell(20,6,number_format($key['comision_liquidada'], 2, ',', '.'),1,0,'C');
+
+		$comision_l=$comision_l+$key['comision_liquidada'];
 	
 		$this->fpdf->Ln(6);
 	}
@@ -320,9 +325,6 @@ class Reportes extends CI_Controller {
 		$s_desde = $this->reportes_model->semana($_POST['desde']);
 		$s_hasta = $this->reportes_model->semana($_POST['hasta']);
 
-		//print_r($sem);
-
-
 		$this->fpdf->AddPage();
 		$this->fpdf->Image(base_url().'assets/0.fw_.png',8,10,60);
 
@@ -338,7 +340,7 @@ class Reportes extends CI_Controller {
 
 		// METRICAS POR TIPO DE PAGO *****************************************************************
 
-		$data = $this->reportes_model->metrica_tpago($s_hasta['id_semana']);
+		$data = $this->reportes_model->metrica_tpago($s_desde['id_semana'], $s_hasta['id_semana'], $_POST['coo']);
 
 
 
@@ -364,7 +366,7 @@ class Reportes extends CI_Controller {
 
 		// METRICAS POR TIPO DE VENTA *****************************************************************
 
-		$data = $this->reportes_model->metrica_tventa($s_hasta['id_semana']);
+		$data = $this->reportes_model->metrica_tventa($s_desde['id_semana'], $s_hasta['id_semana'], $_POST['coo']);
 
 		$this->fpdf->SetFillColor(148, 196, 241); 
 		$this->fpdf->Cell(180,8,'Metricas por tipo de venta',1,0,'L', true);
@@ -383,7 +385,7 @@ class Reportes extends CI_Controller {
 
 		// METRICAS POR TIPO DE POLIZA *****************************************************************
 
-		$data = $this->reportes_model->metrica_tpoliza($s_hasta['id_semana']);
+		$data = $this->reportes_model->metrica_tpoliza($s_desde['id_semana'], $s_hasta['id_semana'], $_POST['coo']);
 
 		$this->fpdf->SetFillColor(148, 196, 241); 
 		$this->fpdf->Cell(180,8,'Metricas por tipo de poliza',1,0,'L', true);
@@ -402,7 +404,7 @@ class Reportes extends CI_Controller {
 
 		// METRICAS POR TIPO DE POLIZA Y MODULO ********************************************************
 
-		$data = $this->reportes_model->metrica_tpolizam($s_hasta['id_semana']);
+		$data = $this->reportes_model->metrica_tpolizam($s_desde['id_semana'], $s_hasta['id_semana'], $_POST['coo']);
 
 		$this->fpdf->SetFillColor(148, 196, 241); 
 		$this->fpdf->Cell(180,8,'Metricas por tipo de poliza',1,0,'L', true);

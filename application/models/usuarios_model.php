@@ -106,7 +106,6 @@ class Usuarios_model extends CI_Model{
 			'nombres'=>$nombres,	
 			'correo'=>$correo,	
 			'telefono'=>$telefono,	
-			'ult_mod'=>$fecha,
 			'id_usuario'=>$usuario,
 			);
 
@@ -116,7 +115,6 @@ class Usuarios_model extends CI_Model{
 
 			$data = array(
 			'id_rol'=>$rol,	
-			'ult_mod'=>$fecha,
 			'id_usuario'=>$usuario,
 			'estatus'=>$estatus
 			);
@@ -161,7 +159,6 @@ class Usuarios_model extends CI_Model{
 			'correo'=>$correo,	
 			'telefono'=>$telefono,
 			'cod_vendedor'=>$cod_vendedor,	
-			'ult_mod'=>$fecha,
 			'id_usuario'=>$usuario,
 			);
 

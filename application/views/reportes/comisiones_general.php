@@ -33,7 +33,8 @@
        <div class="col-lg-12"> <br> </div>
        
        <div class="col-lg-12">      
-         <button type="submit" class="btn btn-primary" id="ver">Generar</button>
+         <button type="submit" id="pdf" name="pdf" class="btn btn-primary" >Generar en PDF</button>
+         <button type="submit" id="excel" name="excel" class="btn btn-primary" >Generar en Excel</button>
       </div>   
      </div>
    </div>
@@ -41,3 +42,24 @@
  </div>
  </div>
 
+
+
+<input type="hidden" name="ruta_e" id="ruta_e" value="<?php echo base_url().'index.php/rpt_excel/porcoordinador';?>">
+<input type="hidden" name="ruta_p" id="ruta_p" value="<?php echo base_url().'index.php/reportes/porcoordinador';?>">
+
+ 
+ <script type="text/javascript">
+
+    $("#excel").click(function(){
+     // alert("aqui");
+        $('form').attr("action", $("#ruta_e").val());
+        $('form').attr("target", '_blanck');
+    });
+
+    $("#pdf").click(function(){
+     // alert("aqui");
+        $('form').attr("action", $("#ruta_p").val());
+        $('form').attr("target", '_blanck');
+    });
+
+</script>

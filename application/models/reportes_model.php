@@ -7,25 +7,34 @@ class Reportes_model extends CI_Model{
     }    
 
 
-	function metrica_tpago($sem)
+	function metrica_tpago($d_sem, $h_sem, $coo)
 	{
 		$this->db->select('tpago, count(*) as total, sum(monto) as suma');
 		$this->db->join('t_tpago','t_tpago.id_tpago = t_ventas.tipo_pago','left');
-		$this->db->where('id_semana',$sem);
+		$this->db->join('t_vendedores','t_vendedores.id_vendedor = t_ventas.id_vendedor','left');
+		$this->db->where('id_semana >=',$d_sem);
+		$this->db->where('id_semana <=',$h_sem);
+		$this->db->where('id_coordinador',$coo);
 		$this->db->group_by('tpago');
 
 		$data = $this->db->get('public.t_ventas'); 
+
+		//echo $this->db->last_query();
+
 
 		return $data->result_array();
 
 
 	}
 
-	function metrica_tventa($sem)
+	function metrica_tventa($d_sem, $h_sem, $coo)
 	{
 		$this->db->select('concepto, count(*) as total');
 		$this->db->join('t_concepto','t_concepto.id_concepto = t_ventas.tventa','left');
-		$this->db->where('id_semana',$sem);
+		$this->db->join('t_vendedores','t_vendedores.id_vendedor = t_ventas.id_vendedor','left');
+		$this->db->where('id_semana >=',$d_sem);
+		$this->db->where('id_semana <=',$h_sem);
+		$this->db->where('id_coordinador',$coo);
 		$this->db->group_by('concepto');
 
 		$data = $this->db->get('public.t_ventas'); 
@@ -35,11 +44,14 @@ class Reportes_model extends CI_Model{
 
 	}
 
-	function metrica_tpoliza($sem)
+	function metrica_tpoliza($d_sem, $h_sem, $coo)
 	{
 		$this->db->select('tpoliza, count(*) as total');
 		$this->db->join('t_tpoliza','t_tpoliza.id_tpoliza = t_ventas.id_tpoliza','left');
-		$this->db->where('id_semana',$sem);
+		$this->db->join('t_vendedores','t_vendedores.id_vendedor = t_ventas.id_vendedor','left');
+		$this->db->where('id_semana >=',$d_sem);
+		$this->db->where('id_semana <=',$h_sem);
+		$this->db->where('id_coordinador',$coo);
 		$this->db->group_by('tpoliza');
 
 		$data = $this->db->get('public.t_ventas'); 
@@ -49,12 +61,15 @@ class Reportes_model extends CI_Model{
 
 	}
 
-	function metrica_tpolizam($sem)
+	function metrica_tpolizam($d_sem, $h_sem, $coo)
 	{
 		$this->db->select('tpoliza, num_poliza, count(*) as total');
 		$this->db->join('t_polizas','t_polizas.id_poliza = t_ventas.id_poliza','left');
 		$this->db->join('t_tpoliza','t_tpoliza.id_tpoliza = t_ventas.id_tpoliza','left');
-		$this->db->where('id_semana',$sem);
+		$this->db->join('t_vendedores','t_vendedores.id_vendedor = t_ventas.id_vendedor','left');
+		$this->db->where('id_semana >=',$d_sem);
+		$this->db->where('id_semana <=',$h_sem);
+		$this->db->where('id_coordinador',$coo);
 		$this->db->group_by('tpoliza, num_poliza');
 
 		$data = $this->db->get('public.t_ventas'); 

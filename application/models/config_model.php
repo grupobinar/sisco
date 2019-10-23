@@ -247,7 +247,6 @@ class Config_model extends CI_Model{
 			'nombres'=>$nombres,	
 			'correo'=>$correo,	
 			'telefono'=>$telefono,	
-			'ult_mod'=>$fecha,
 			'id_usuario'=>$usuario,
 			);
 
@@ -257,7 +256,6 @@ class Config_model extends CI_Model{
 
 			$data = array(
 			'id_rol'=>$rol,	
-			'ult_mod'=>$fecha,
 			'id_usuario'=>$usuario,
 			'estatus'=>$estatus
 			);
@@ -548,7 +546,6 @@ class Config_model extends CI_Model{
 
 		$data = array(
 			'estatus'=>'1',
-			'ult_mod'=>date("d/m/Y")
 		);
 
 		$this->db->where('t_semanas.id_semana', $semana_id);
@@ -564,7 +561,6 @@ class Config_model extends CI_Model{
 
 	    $data = array(
 			'estatus'=>'0',
-			'ult_mod'=>date("d/m/Y")
 		);
 
 		$this->db->where('t_semanas.nsem', $rsem->row()->nsem);
@@ -639,7 +635,6 @@ class Config_model extends CI_Model{
 
 		$data = array(
 			'estatus'=>'1',
-			'ult_mod'=>date("d/m/Y")
 		);
 
 		$this->db->where('t_semanas.estatus !=','1');
@@ -649,7 +644,6 @@ class Config_model extends CI_Model{
 
 		$data = array(
 			'estatus'=>'2',
-			'ult_mod'=>date("d/m/Y")
 		);
 
 		$this->db->where('t_semanas.estatus','1');
