@@ -8,7 +8,7 @@ class Reportes extends CI_Controller {
 		parent::__construct();
 		$this->load->helper('url');
     	$this->load->helper('form');
-    	//$this->load->model('polizas_model');
+    	$this->load->model('polizas_model');
 		//$this->load->model('config_model');
 		$this->load->model('reportes_model');
         $this->load->library('session');
@@ -34,6 +34,14 @@ class Reportes extends CI_Controller {
 		$this->load->view('layout/header');
 		$this->load->view('layout/nav');
 		$this->load->view('reportes/metricas', $data);
+		$this->load->view('layout/footer');
+	}
+
+	public function rpt_diario(){
+		
+		$this->load->view('layout/header');
+		$this->load->view('layout/nav');
+		$this->load->view('reportes/diario');
 		$this->load->view('layout/footer');
 	}
 
@@ -422,6 +430,77 @@ class Reportes extends CI_Controller {
 		}
 
 		// CUADRO RESUMEN *****************************************************************************
+
+		$this->fpdf->Output();
+	}
+
+	public function diario(){	
+
+		$this->fpdf->AddPage();
+		$this->fpdf->Image(base_url().'assets/0.fw_.png',8,10,60);
+
+		$this->fpdf->SetFont('Arial','B',16);
+		$this->fpdf->Ln(10);
+		$this->fpdf->Cell(200,10,utf8_decode('REPORTE DIARIO'),0,0,'C');
+		$this->fpdf->SetFont('Arial','',10);
+		$this->fpdf->Ln(5);
+		$this->fpdf->Cell(200,8,'De '.$_POST[fecha],0,0,'C');
+		
+		$this->fpdf->Ln(15);
+		$this->fpdf->SetFont('Arial','B',10);
+
+		// DIARIO *****************************************************************
+
+		$this->fpdf->Ln(8);
+		$this->fpdf->Cell(5,8,'',0,0,'C');
+		$this->fpdf->Cell(15,8,'Solicitud',0,0,'C');
+		$this->fpdf->Cell(20,8,'Cedula',0,0,'C');
+		$this->fpdf->Cell(40,8,'Tomador',0,0,'C');
+		$this->fpdf->Cell(30,8,'Tipo de venta',0,0,'C');
+		$this->fpdf->Cell(15,8,'Poliza',0,0,'C');
+		$this->fpdf->Cell(15,8,'Plan',0,0,'C');
+		$this->fpdf->Cell(10,8,'Ad.',0,0,'C');
+		$this->fpdf->Cell(15,8,'Sem.',0,0,'C');
+		$this->fpdf->Cell(25,8,'Estatus',0,0,'C');
+		$this->fpdf->Ln(8);
+
+		$datos = $this->polizas_model->listventas2($_POST['fecha']);
+
+		$this->fpdf->SetFont('Arial','',6);
+
+		//contar_adicionales
+
+		$i=0;
+		if (count($datos)>0) {
+			foreach ($datos as $key) {
+				  $i++;
+				  $adicionales = $this->polizas_model->contar_adicionales($key['id_venta']);
+				  if($key['estatus_venta']=="P") $estatus_venta="Preliquidada";
+			      elseif($key['estatus_venta']=="X") $estatus_venta="Anulada";
+			      elseif($key['estatus_venta']=="A") $estatus_venta="Activa";
+			      elseif($key['estatus_venta']=="L") $estatus_venta="Liquidada";
+			      elseif($key['estatus_venta']=="O") $estatus_venta="Liquidada";
+			      elseif($key['estatus_venta']=="E") $estatus_venta="Extornada";
+			      elseif($key['estatus_venta']=="D") $estatus_venta="Pendiente de pago";
+
+				$this->fpdf->Cell(5,6,$i,0,0,'L');
+				$this->fpdf->Cell(15,6,$key['solicitud'],1,0,'L');
+				$this->fpdf->Cell(20,6,$key['identificacion'],1,0,'L');
+				$this->fpdf->Cell(40,6,strtoupper(utf8_decode($key['apellidos'].' '.$key['nombres'])),1,0,'L');
+				$this->fpdf->Cell(30,6,utf8_decode($key['concepto']),1,0,'L');
+				$this->fpdf->Cell(15,6,utf8_decode($key['tpoliza']),1,0,'L');
+				$this->fpdf->Cell(15,6,utf8_decode($key['tplan']),1,0,'L');
+				$this->fpdf->Cell(10,6,utf8_decode($adicionales),1,0,'L');
+				$this->fpdf->Cell(15,6,utf8_decode($key['nsem']),1,0,'L');
+				$this->fpdf->Cell(25,6,$estatus_venta,1,0,'L');
+				$this->fpdf->Ln(6);
+			}
+		}else{
+		$this->fpdf->Cell(190,10,utf8_decode('NO HAY NADA QUE REPORTAR'),1,0,'C');
+
+		}
+
+		
 
 		$this->fpdf->Output();
 	}

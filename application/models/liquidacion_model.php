@@ -10,7 +10,7 @@ class Liquidacion_model extends CI_Model{
 	function listventas($estatus)
 	{
 		$this->db->distinct();
-		$this->db->select('t_vendedores.id_vendedor,identificacion, nsem, desde, hasta, nombres, apellidos, telefono, t_semanas.id_semana');
+		$this->db->select('t_vendedores.id_vendedor,identificacion, nsem, desde, hasta, nombres, apellidos, telefono, t_semanas.id_semana, solicitud');
 		$this->db->join('t_vendedores','t_vendedores.id_vendedor = t_ventas.id_vendedor','left');
 		$this->db->join('t_semanas','t_semanas.id_semana = t_ventas.id_semana','left');
 		$this->db->where('t_semanas.estatus','1');

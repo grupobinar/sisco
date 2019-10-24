@@ -15,6 +15,7 @@
  <table id="example1" class="table table-bordered table-striped" style="padding: 10px;">
     <thead>
      <tr>
+      <th>Solicitud</th>
       <th>Cedula</th>
       <th>Tomador</th>
       <th>Tipo de Venta</th>
@@ -41,6 +42,7 @@
       elseif($key['estatus_venta']=="D") {$estatus_venta="Pendiente de pago"; $clase="text-red";}
     ?>
     <tr class="<?php echo $clase?>">
+      <td><?php echo ucwords($key['solicitud']);?></td>
       <td><?php echo ucwords($key['identificacion']);?></td>
       <td><?php echo ucwords($key['apellidos'].' '.$key['nombres']);?></td>
       <td><?php echo ucwords($tventa);?></td>

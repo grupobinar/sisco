@@ -21,7 +21,7 @@ class Polizas_model extends CI_Model{
 
     function listvendedores() {
 
-    	if ($this->session->userdata('rol')<>2) {
+    	if ($this->session->userdata('rol')==3) {
 		$this->db->where('id_coordinador',$this->session->userdata('id_usuario'));
 		}
 
@@ -146,7 +146,7 @@ class Polizas_model extends CI_Model{
 
 	function listventas()
 	{
-		$this->db->select('id_venta, t_tomadores.identificacion, nsem, desde, hasta, referencia_pago, monto, cuotas_canceladas, t_ventas.fecha_registro, t_tomadores.nombres, t_tomadores.apellidos, t_tomadores.telefono, t_tomadores.correo, tplan, cobertura, tpoliza, tpago, tventa, estatus_venta');
+		$this->db->select('id_venta, t_tomadores.identificacion, nsem, desde, hasta, referencia_pago, monto, cuotas_canceladas, t_ventas.fecha_registro, t_tomadores.nombres, t_tomadores.apellidos, t_tomadores.telefono, t_tomadores.correo, tplan, cobertura, tpoliza, tpago, tventa, estatus_venta, solicitud');
 		$this->db->join('t_tomadores','t_tomadores.id_tomador = t_ventas.id_tomador','left');
 		$this->db->join('t_plan','t_plan.id_tplan = t_ventas.id_plan','left');
 		$this->db->join('t_polizas','t_polizas.id_poliza = t_ventas.id_poliza','left');
@@ -154,7 +154,7 @@ class Polizas_model extends CI_Model{
 		$this->db->join('t_tpago','t_tpago.id_tpago = t_ventas.tipo_pago','left');
 		$this->db->join('t_semanas','t_semanas.id_semana = t_ventas.id_semana','left');
 
-		if ($this->session->userdata('rol')<>2) {
+		if ($this->session->userdata('rol')==3) {
 			$this->db->join('t_vendedores','t_ventas.id_vendedor = t_vendedores.id_vendedor');
 			$this->db->where('t_vendedores.id_coordinador', $this->session->userdata('id_usuario'));
 		}
@@ -163,6 +163,40 @@ class Polizas_model extends CI_Model{
 
 
 		$listusuarios = $this->db->get('public.t_ventas');
+
+		if($listusuarios->num_rows()>0)
+		{
+			 return $listusuarios->result_array();
+		}
+	}
+
+	function contar_adicionales($id){
+
+		$this->db->select('COUNT(*) as total');
+		$this->db->where('id_venta',$id);
+		$adicionales_count = $this->db->get('public.t_adicionales');
+
+		//echo $this->db->last_query().";";
+
+		return $adicionales_count->row()->total;
+	}
+
+	function listventas2($f)
+	{
+		$this->db->select('id_venta, t_tomadores.identificacion, nsem, desde, hasta, referencia_pago, monto, cuotas_canceladas, t_ventas.fecha_registro, t_tomadores.nombres, t_tomadores.apellidos, t_tomadores.telefono, t_tomadores.correo, tplan, cobertura, tpoliza, tpago, tventa, estatus_venta, concepto, solicitud');
+		$this->db->join('t_tomadores','t_tomadores.id_tomador = t_ventas.id_tomador','left');
+		$this->db->join('t_plan','t_plan.id_tplan = t_ventas.id_plan','left');
+		$this->db->join('t_polizas','t_polizas.id_poliza = t_ventas.id_poliza','left');
+		$this->db->join('t_tpoliza','t_tpoliza.id_tpoliza = t_ventas.id_tpoliza','left');
+		$this->db->join('t_tpago','t_tpago.id_tpago = t_ventas.tipo_pago','left');
+		$this->db->join('t_semanas','t_semanas.id_semana = t_ventas.id_semana','left');
+		$this->db->join('t_concepto','t_concepto.id_concepto = t_ventas.tventa','left');
+		$this->db->where('t_ventas.fecha_registro', $f);
+
+
+		$listusuarios = $this->db->get('public.t_ventas');
+
+		//echo $this->db->last_query();
 
 		if($listusuarios->num_rows()>0)
 		{
@@ -180,7 +214,7 @@ class Polizas_model extends CI_Model{
 		$this->db->join('t_tpago','t_tpago.id_tpago = t_ventas.tipo_pago','left');
 		$this->db->join('t_semanas','t_semanas.id_semana = t_ventas.id_semana','left');
 
-		if ($this->session->userdata('rol')<>2) {
+		if ($this->session->userdata('rol')==3) {
 			$this->db->join('t_vendedores','t_ventas.id_vendedor = t_vendedores.id_vendedor');
 			$this->db->where('t_vendedores.id_coordinador', $this->session->userdata('id_usuario'));
 		}
@@ -516,7 +550,7 @@ class Polizas_model extends CI_Model{
 			$this->db->where('vendedores_ventas_detalles.cod_vendedor', $vendedor);
 			$this->db->where('estatus_venta', $estatus_venta);
 			
-			if ($this->session->userdata('rol')<>2) {
+			if ($this->session->userdata('rol')==3) {
 				$this->db->where('id_coordinador',$this->session->userdata('id_usuario'));
 			}
 
@@ -526,7 +560,7 @@ class Polizas_model extends CI_Model{
 			$this->db->where('id_semana',$semana);
 			$this->db->where('estatus_venta', $estatus_venta);
 			
-			if ($this->session->userdata('rol')<>2) {
+			if ($this->session->userdata('rol')==3) {
 				$this->db->where('id_coordinador',$this->session->userdata('id_usuario'));
 			}
 

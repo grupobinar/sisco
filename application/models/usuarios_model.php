@@ -236,7 +236,7 @@ class Usuarios_model extends CI_Model{
 		$this->db->join('t_personas','t_personas.id_persona = t_usuarios.id_persona');
 
 		if ($this->session->userdata('rol')==3) {
-			$this->db->where('id_coordinador',$this->session->userdata('id_usuario'));
+			$this->db->where('t_vendedores.id_coordinador',$this->session->userdata('id_usuario'));
 		}
 		$listusuarios = $this->db->get('public.t_vendedores');
 
