@@ -114,11 +114,16 @@ class Reportes_model extends CI_Model{
 
 	}
 
+	function cierre($estatus){
+		$this->db->select('')
+	}
+
 	function hcell($vendedor,$sem){
 
 		$this->db->select('tventa, count(*) as total');
 		$this->db->where('id_vendedor',$vendedor); 
 		$this->db->where('id_semana',$sem); 
+		$this->db->where('estatus_venta','L'); 
 		$this->db->group_by('tventa');
 
 		$data = $this->db->get('public.t_ventas'); 
@@ -132,9 +137,11 @@ class Reportes_model extends CI_Model{
 		$this->db->select('t_vendedores.id_vendedor, apellidos, nombres, cod_vendedor, concepto');
 		$this->db->where('id_coordinador',$coordinador); 
 		$this->db->where('t_ventas.id_semana',$sem); 
+		$this->db->where('t_ventas.estatus_venta','L'); 
 		$this->db->join('t_ventas','t_ventas.id_vendedor = t_vendedores.id_vendedor','left');
 		$this->db->join('t_concepto','t_concepto.id_concepto = t_ventas.tventa','left');
 		$this->db->group_by('t_vendedores.id_vendedor, apellidos, nombres, cod_vendedor, concepto');
+		$this->db->order_by('t_vendedores.id_vendedor');
 
 		$data = $this->db->get('public.t_vendedores'); 
 
@@ -203,14 +210,37 @@ class Reportes_model extends CI_Model{
 
 	function ventas($vendedor,$sem){
 
-		$this->db->select('apellidos, nombres, concepto, tplan, suma, cuotas_canceladas, identificacion, comision_liquidada, t_liquidacion.ult_mod');
+		$this->db->select('apellidos, nombres, concepto, tpoliza, t_liquidacion.suma, cuotas_canceladas, identificacion, comision_liquidada, t_liquidacion.ult_mod , num_poliza');
 		$this->db->join('t_tomadores','t_tomadores.id_tomador = t_ventas.id_tomador','left');
 		$this->db->join('t_concepto','t_concepto.id_concepto = t_ventas.tventa','left');
-		$this->db->join('t_plan','t_plan.id_tplan = t_ventas.id_plan','left');
+		$this->db->join('t_tpoliza','t_tpoliza.id_tpoliza = t_ventas.id_tpoliza','left');
 		$this->db->join('t_liquidacion','t_liquidacion.id_venta = t_ventas.id_venta','left');
+		$this->db->join('t_polizas','t_polizas.id_poliza = t_ventas.id_poliza','left');
+
 
 		$this->db->where('id_vendedor',$vendedor); 
 		$this->db->where('id_semana',$sem); 
+		$this->db->where('estatus_venta !=','X'); 
+		$this->db->where('estatus_venta !=','D'); 
+
+		$data = $this->db->get('public.t_ventas'); 
+
+		return $data->result_array();
+
+
+	}
+
+	function ventasd($vendedor,$sem){
+
+		$this->db->select('apellidos, nombres, concepto, tpoliza, suma, cuotas_canceladas, identificacion, num_poliza');
+		$this->db->join('t_tomadores','t_tomadores.id_tomador = t_ventas.id_tomador','left');
+		$this->db->join('t_concepto','t_concepto.id_concepto = t_ventas.tventa','left');
+		$this->db->join('t_tpoliza','t_tpoliza.id_tpoliza = t_ventas.id_tpoliza','left');
+		$this->db->join('t_polizas','t_polizas.id_poliza = t_ventas.id_poliza','left');
+
+		$this->db->where('id_vendedor',$vendedor); 
+		$this->db->where('id_semana',$sem); 
+		$this->db->where('estatus_venta =','D'); 
 
 		$data = $this->db->get('public.t_ventas'); 
 

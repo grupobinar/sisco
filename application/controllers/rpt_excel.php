@@ -8,7 +8,7 @@ class Rpt_excel extends CI_Controller {
 		parent::__construct();
 		$this->load->helper('url');
     	$this->load->helper('form');
-    	$this->load->model('rpt_excel_model');
+    	$this->load->model('reportes_model');
     	$this->load->library('session');
     	$this->load->library('excel');
 
@@ -22,11 +22,11 @@ class Rpt_excel extends CI_Controller {
         $this->excel->getActiveSheet()->getDefaultRowDimension()->setRowHeight(15); 
 
 
-        $vendedor = $this->rpt_excel_model->vendedores_rpt_i($_POST['cod_vendedor'],$_POST['sem']);
+        $vendedor = $this->reportes_model->vendedores_rpt_i($_POST['cod_vendedor'],$_POST['sem']);
 
-	    $coordinador = $this->rpt_excel_model->coordinador_($vendedor['id_coordinador']);
+	    $coordinador = $this->reportes_model->coordinador_($vendedor['id_coordinador']);
 
-	    $ventas = $this->rpt_excel_model->ventas($vendedor['id_vendedor'],$vendedor['id_semana']);
+	    $ventas = $this->reportes_model->ventas($vendedor['id_vendedor'],$vendedor['id_semana']);
 
         $style = array(
 	        'alignment' => array('horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER, ),
@@ -39,7 +39,7 @@ class Rpt_excel extends CI_Controller {
 	        'font'  => array(
 	            'bold'  => true,
 	            'color' => array('rgb' => '000000'),
-	            'size'  => 11
+	            'size'  => 7
         	),
 	    );
 	    $style2 = array(
@@ -47,25 +47,37 @@ class Rpt_excel extends CI_Controller {
 	        'font'  => array(
 	            'bold'  => true,
 	            'color' => array('rgb' => '000000'),
-	            'size'  => 11
+	            'size'  => 7
         	),
 	    );
 
-        $this->excel->getDefaultStyle()->applyFromArray($style2);
+        $style3 = array(
+            'alignment' => array('horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER, ),
+            'font'  => array(
+                'bold'  => false,
+                'color' => array('rgb' => '000000'),
+                'size'  => 7
+            ),
+        );
+
+        $this->excel->getDefaultStyle()->applyFromArray($style3);
         $this->excel->getActiveSheet()->setCellValue('A2', 'Estado de Cuenta de Comisiones');
         $this->excel->getActiveSheet()->mergeCells('A2:G2');
 
         $this->excel->getActiveSheet()->setCellValue('A3', 'SEM '.$vendedor['nsem'].' '.$vendedor['desde'].' AL '.$vendedor['hasta']);
         $this->excel->getActiveSheet()->mergeCells('A3:G3');
 
-        $this->excel->getActiveSheet()->setCellValue('A4', utf8_decode('Vendedor: ['.$vendedor['cod_vendedor'].'] '.$vendedor['apellidos'].' '.$vendedor['nombres']));
+        $this->excel->getActiveSheet()->setCellValue('A4', 'Vendedor: ['.$vendedor['cod_vendedor'].'] '.$vendedor['apellidos'].' '.$vendedor['nombres']);
         $this->excel->getActiveSheet()->mergeCells('A4:G4');
 
-        $this->excel->getActiveSheet()->setCellValue('A5', utf8_decode('Coordinador: '.$coordinador['apellidos'].' '.$coordinador['nombres']));
+        $this->excel->getActiveSheet()->setCellValue('A5', 'Coordinador: '.$coordinador['apellidos'].' '.$coordinador['nombres']);
         $this->excel->getActiveSheet()->mergeCells('A5:G5');
 
         $this->excel->getActiveSheet()->setCellValue('A7', 'ASIGNACIONES');
         $this->excel->getActiveSheet()->mergeCells('A7:B7');
+        $this->excel->getActiveSheet()->getStyle('A2:G5')->applyFromArray($style2);
+        $this->excel->getActiveSheet()->getStyle('A7:B7')->applyFromArray($style2);
+
 
         $this->excel->getActiveSheet()->setCellValue('A9', 'Asegurado');
         $this->excel->getActiveSheet()->setCellValue('B9', 'Cedula');
@@ -80,10 +92,12 @@ class Rpt_excel extends CI_Controller {
         $i=10;
         if(count($ventas)>0){
         foreach ($ventas as $key) {
-        	$this->excel->getActiveSheet()->setCellValue('A'.$i, strtoupper(utf8_decode($key['apellidos'].' '.$key['nombres'])));
+            if(isset($key['tpoliza'])) $tpoliza = $key['tpoliza']; else  $tpoliza = 'NO APLICA';
+
+        	$this->excel->getActiveSheet()->setCellValue('A'.$i, strtoupper($key['apellidos'].' '.$key['nombres']));
 	        $this->excel->getActiveSheet()->setCellValue('B'.$i, $key['identificacion']);
-	        $this->excel->getActiveSheet()->setCellValue('C'.$i, strtoupper(utf8_decode($key['concepto'])));
-	        $this->excel->getActiveSheet()->setCellValue('D'.$i, $key['tplan']);
+	        $this->excel->getActiveSheet()->setCellValue('C'.$i, strtoupper($key['concepto']));
+	        $this->excel->getActiveSheet()->setCellValue('D'.$i, $tpoliza);
 	        $this->excel->getActiveSheet()->setCellValue('E'.$i, number_format($key['suma'], 2, ',', '.'));
 	        $this->excel->getActiveSheet()->setCellValue('F'.$i, number_format($key['cuotas_canceladas'], 2, ',', '.'));
 	        $this->excel->getActiveSheet()->setCellValue('G'.$i, number_format($key['comision_liquidada'], 2, ',', '.'));
@@ -101,6 +115,8 @@ class Rpt_excel extends CI_Controller {
 
         $this->excel->getActiveSheet()->setCellValue('A'.$i, 'DEDUCCIONES');
         $this->excel->getActiveSheet()->mergeCells('A'.$i.':B'.$i);
+        $this->excel->getActiveSheet()->getStyle('A'.$i.':B'.$i)->applyFromArray($style2);
+
 
         $i=$i+2;
 
@@ -115,16 +131,19 @@ class Rpt_excel extends CI_Controller {
 
         $extornos_l=0;
 
-    	$extornos = $this->rpt_excel_model->extornos_rpt_i($vendedor['id_vendedor'],$vendedor['id_semana']);
+    	$extornos = $this->reportes_model->extornos_rpt_i($vendedor['id_vendedor'],$vendedor['id_semana']);
 
     	$i++;
     	if(count($extornos)>0){
 
     	foreach ($extornos as $key) {
-        	$this->excel->getActiveSheet()->setCellValue('A'.$i, strtoupper(utf8_decode($key['apellidos'].' '.$key['nombres'])));
+
+            if(isset($key['tpoliza'])) $tpoliza = $key['tpoliza']; else  $tpoliza = 'NO APLICA';
+
+        	$this->excel->getActiveSheet()->setCellValue('A'.$i, strtoupper($key['apellidos'].' '.$key['nombres']));
 	        $this->excel->getActiveSheet()->setCellValue('B'.$i, $key['identificacion']);
-	        $this->excel->getActiveSheet()->setCellValue('C'.$i, strtoupper(utf8_decode($key['concepto'])));
-	        $this->excel->getActiveSheet()->setCellValue('D'.$i, $key['tpoliza']);
+	        $this->excel->getActiveSheet()->setCellValue('C'.$i, strtoupper($key['concepto']));
+	        $this->excel->getActiveSheet()->setCellValue('D'.$i, $tpoliza);
 	        $this->excel->getActiveSheet()->setCellValue('E'.$i, number_format($key['suma'], 2, ',', '.'));
 	        $this->excel->getActiveSheet()->setCellValue('F'.$i, number_format($key['cuotas_canceladas'], 2, ',', '.'));
 	        $this->excel->getActiveSheet()->setCellValue('G'.$i, number_format($key['monto_fraccionar'], 2, ',', '.'));
@@ -147,6 +166,49 @@ class Rpt_excel extends CI_Controller {
         $this->excel->getActiveSheet()->setCellValue('F'.$i, 'TOTAL');
         $this->excel->getActiveSheet()->setCellValue('G'.$i, number_format($total, 2, ',', '.'));
         $this->excel->getActiveSheet()->getStyle('F'.$i.':G'.$i)->applyFromArray($style);
+
+        $i=$i+2;
+
+
+        $ventasd = $this->reportes_model->ventasd($vendedor['id_vendedor'],$vendedor['id_semana']);
+        $this->excel->getActiveSheet()->setCellValue('A'.$i, 'VENTAS CON DOMICILIACION DE PAGO');
+        $this->excel->getActiveSheet()->mergeCells('A'.$i.':D'.$i);
+        $this->excel->getActiveSheet()->getStyle('A'.$i.':D'.$i)->applyFromArray($style2);
+
+
+        $i=$i+2;
+
+        $this->excel->getActiveSheet()->setCellValue('A'.$i, 'Asegurado');
+        $this->excel->getActiveSheet()->mergeCells('A'.$i.':B'.$i);
+        $this->excel->getActiveSheet()->setCellValue('C'.$i, 'Cedula');
+        $this->excel->getActiveSheet()->setCellValue('D'.$i, 'Tipo de Venta');
+        $this->excel->getActiveSheet()->setCellValue('E'.$i, 'Plan');
+        $this->excel->getActiveSheet()->setCellValue('F'.$i, 'S.A');
+        $this->excel->getActiveSheet()->setCellValue('G'.$i, 'Cuotas');
+        $this->excel->getActiveSheet()->getStyle('A'.$i.':G'.$i)->applyFromArray($style);
+
+        $i++;
+
+if(count($ventasd)>0){
+        foreach ($ventasd as $key) {
+            if(isset($key['tpoliza'])) $tpoliza = $key['tpoliza']; else  $tpoliza = 'NO APLICA';
+
+            $this->excel->getActiveSheet()->setCellValue('A'.$i, strtoupper($key['apellidos'].' '.$key['nombres']));
+            $this->excel->getActiveSheet()->mergeCells('A'.$i.':B'.$i);
+            $this->excel->getActiveSheet()->setCellValue('C'.$i, $key['identificacion']);
+            $this->excel->getActiveSheet()->setCellValue('D'.$i, strtoupper($key['concepto']));
+            $this->excel->getActiveSheet()->setCellValue('E'.$i, $tpoliza);
+            $this->excel->getActiveSheet()->setCellValue('F'.$i, number_format($key['suma'], 2, ',', '.'));
+            $this->excel->getActiveSheet()->setCellValue('G'.$i, number_format($key['cuotas_canceladas'], 2, ',', '.'));
+            $i++;
+
+        }
+
+        }else{
+            $this->excel->getActiveSheet()->setCellValue('A'.$i, 'No hay nada que reportar');
+            $this->excel->getActiveSheet()->mergeCells('A'.$i.':G'.$i);
+            $this->excel->getActiveSheet()->getStyle('A'.$i.':G'.$i)->applyFromArray($style);
+        }
 
 
 
@@ -179,10 +241,10 @@ class Rpt_excel extends CI_Controller {
         $this->excel->getActiveSheet()->getDefaultRowDimension()->setRowHeight(15); 
 
 
-        $sem = $this->rpt_excel_model->semana($_POST['sem']);
-    	$coordinador = $this->rpt_excel_model->coordinador($_POST['cod_vendedor']);
+        $sem = $this->reportes_model->semana($_POST['sem']);
+    	$coordinador = $this->reportes_model->coordinador($_POST['cod_vendedor']);
 
-    	$vendedores = $this->rpt_excel_model->vendedores_rpt_general($coordinador['id_user'],$sem['id_semana']);
+    	$vendedores = $this->reportes_model->vendedores_rpt_general($coordinador['id_user'],$sem['id_semana']);
 
     	/*print_r($vendedores);
     	echo count($vendedores);
@@ -199,7 +261,7 @@ class Rpt_excel extends CI_Controller {
 	        'font'  => array(
 	            'bold'  => true,
 	            'color' => array('rgb' => '000000'),
-	            'size'  => 11
+	            'size'  => 7
         	),
 	    );
 	    $style2 = array(
@@ -208,7 +270,7 @@ class Rpt_excel extends CI_Controller {
 	        'font'  => array(
 	            'bold'  => true,
 	            'color' => array('rgb' => '000000'),
-	            'size'  => 11
+	            'size'  => 7
         	),
 	    );
 
@@ -219,7 +281,7 @@ class Rpt_excel extends CI_Controller {
         $this->excel->getActiveSheet()->setCellValue('A3', 'SEM '.$sem['nsem'].' '.$sem['desde'].' AL '.$sem['hasta']);
         $this->excel->getActiveSheet()->mergeCells('A3:G3');
 
-        $this->excel->getActiveSheet()->setCellValue('A4', utf8_decode('Coordinador: '.$coordinador['apellidos'].' '.$coordinador['nombres']));
+        $this->excel->getActiveSheet()->setCellValue('A4', 'Coordinador: '.$coordinador['apellidos'].' '.$coordinador['nombres']);
         $this->excel->getActiveSheet()->mergeCells('A4:G4');
 
         $this->excel->getActiveSheet()->setCellValue('A7', 'ASIGNACIONES');
@@ -237,31 +299,35 @@ class Rpt_excel extends CI_Controller {
 
         $i=10;
         $x=0;
+        $n=0;
         if(count($vendedores)>0){
         foreach ($vendedores as $value) {
 
-        	if($x==0){
+            if(($x==0) or ($n!=$value['id_vendedor'])){
 
-    			$cel = $this->rpt_excel_model->hcell($value['id_vendedor'],$sem['id_semana']);
-    			$comision = $this->rpt_excel_model->comisiones($value['id_vendedor'],$sem['id_semana']);
+    			$cel = $this->reportes_model->hcell($value['id_vendedor'],$sem['id_semana']);
+    			$comision = $this->reportes_model->comisiones($value['id_vendedor'],$sem['id_semana']);
 
     			//print_r($comision);
     			if (count($cel)>1) $cell=count($cel)+$i;
     			else $cell=$i;
 
-    			$this->excel->getActiveSheet()->setCellValue('A'.$i, utf8_decode($value['apellidos'].' '.$value['nombres']));
+    			$this->excel->getActiveSheet()->setCellValue('A'.$i, $value['apellidos'].' '.$value['nombres']);
 	        	$this->excel->getActiveSheet()->mergeCells('A'.$i.':B'.$cell);
 	        	$this->excel->getActiveSheet()->setCellValue('C'.$i, $value['cod_vendedor']);
 	        	$this->excel->getActiveSheet()->mergeCells('C'.$i.':C'.$cell);
+
+                $x=0;
 				
 			} 
 
+            $n=$value['id_vendedor'];
 			$total=$total+$cel[$x]['total'];
 			$cvendedor=$cvendedor+$comision[$x]['comision'];
 			$ccoordinador=$ccoordinador+($comision[$x]['comision_c']);
 
         	
-	        $this->excel->getActiveSheet()->setCellValue('D'.$i, utf8_decode($value['concepto']));
+	        $this->excel->getActiveSheet()->setCellValue('D'.$i, $value['concepto']);
 	        $this->excel->getActiveSheet()->setCellValue('E'.$i, $cel[$x]['total']);
 	        $this->excel->getActiveSheet()->setCellValue('F'.$i, number_format($comision[$x]['comision'], 2, ',', '.'));
 	        $this->excel->getActiveSheet()->setCellValue('G'.$i, number_format($comision[$x]['comision_c'], 2, ',', '.'));
@@ -302,14 +368,14 @@ class Rpt_excel extends CI_Controller {
         $this->excel->getActiveSheet()->getStyle('A'.$i.':G'.$i)->applyFromArray($style);
 
 
-    	$extornos = $this->rpt_excel_model->extornos_rpt_g($coordinador['id_user'],$sem['id_semana']);
+    	$extornos = $this->reportes_model->extornos_rpt_g($coordinador['id_user'],$sem['id_semana']);
 
 
     	$i++;
     	if(count($extornos)>0){
 
     	foreach ($extornos as $value) {
-        	$this->excel->getActiveSheet()->setCellValue('A'.$i, utf8_decode($value['apellidos'].' '.$value['nombres']));
+        	$this->excel->getActiveSheet()->setCellValue('A'.$i, $value['apellidos'].' '.$value['nombres']);
 	        $this->excel->getActiveSheet()->setCellValue('B'.$i, $value['identificacion']);
 	        $this->excel->getActiveSheet()->setCellValue('C'.$i, $value['motivo']);
 	        $this->excel->getActiveSheet()->setCellValue('D'.$i, number_format($value['suma'], 2, ',', '.'));

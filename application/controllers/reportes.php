@@ -102,17 +102,26 @@ class Reportes extends CI_Controller {
 		$this->fpdf->Ln(8);
 		$this->fpdf->SetFont('Arial','',8);
 		$i=0;
+		$n=1;
+
+		/*echo "<pre>";
+		print_r($vendedores);
+		echo "</pre>";*/
+
 
 		foreach ($vendedores as $value) {
-			if($i==0){
 
+			if(($i==0) or ($n!=$value['id_vendedor'])){
     			$cel = $this->reportes_model->hcell($value['id_vendedor'],$sem['id_semana']);
+
     			$comision = $this->reportes_model->comisiones($value['id_vendedor'],$sem['id_semana']);
 
     			//print_r($comision);
     			$cell=count($cel)*6;
     			$this->fpdf->Cell(67,$cell,utf8_decode($value['apellidos'].' '.$value['nombres']), 1, 0, 'C');
 				$this->fpdf->Cell(20,$cell,$value['cod_vendedor'] ,1,0,'C');
+
+				$i=0;	
 				
 			} else {
 
@@ -120,6 +129,8 @@ class Reportes extends CI_Controller {
 				$this->fpdf->Cell(20,6,'',0,0,'C');
 
 			}
+
+			$n=$value['id_vendedor'];
 			$total=$total+$cel[$i]['total'];
 			$cvendedor=$cvendedor+$comision[$i]['comision'];
 			$ccoordinador=$ccoordinador+($comision[$i]['comision_c']);
@@ -256,20 +267,23 @@ class Reportes extends CI_Controller {
 	$this->fpdf->Cell(40,8,'Asegurado', 0, 0, 'C', True);
 	$this->fpdf->Cell(20,8,'Cedula',0,0,'C', True);
 	$this->fpdf->Cell(40,8,'Tipo Venta',0,0,'C', True);
-	$this->fpdf->Cell(30,8,'Plan',0,0,'C', True);
+	$this->fpdf->Cell(30,8,'Poliza',0,0,'C', True);
 	$this->fpdf->Cell(20,8,'Suma',0,0,'C', True);
 	$this->fpdf->Cell(20,8,'Cuotas',0,0,'C', True);
 	$this->fpdf->Cell(20,8,'Comision',0,0,'C', True);
 
 	$this->fpdf->Ln(8);
 	$this->fpdf->SetFont('Arial','',6);
+	$comision_l=0;
 
 	foreach ($ventas as $key) {
+
+		if(isset($key['tpoliza'])) $tpoliza = $key['tpoliza'].' '.$key['num_poliza']; else  $tpoliza = 'NO APLICA';
 		
 		$this->fpdf->Cell(40,6,strtoupper(utf8_decode($key['apellidos'].' '.$key['nombres'])),1,0, 'C');
 		$this->fpdf->Cell(20,6,$key['identificacion'],1,0,'C');
 		$this->fpdf->Cell(40,6,strtoupper(utf8_decode($key['concepto'])),1,0,'C');
-		$this->fpdf->Cell(30,6,$key['tplan'],1,0,'C');
+		$this->fpdf->Cell(30,6, $tpoliza,1,0,'C');
 		$this->fpdf->Cell(20,6,number_format($key['suma'], 2, ',', '.'),1,0,'C');
 		$this->fpdf->Cell(20,6,number_format($key['cuotas_canceladas'], 2, ',', '.'),1,0,'C');
 		$this->fpdf->Cell(20,6,number_format($key['comision_liquidada'], 2, ',', '.'),1,0,'C');
@@ -305,22 +319,81 @@ class Reportes extends CI_Controller {
 	$this->fpdf->Ln(8);
 	$this->fpdf->SetFont('Arial','',6);
 
+	$extornos_l = 0;
+
+	if (count($extornos)>0) {
 	foreach ($extornos as $key) {
+
+		if(isset($key['tpoliza'])) $tpoliza = $key['tpoliza'].' '.$key['num_poliza']; else  $tpoliza = 'NO APLICA';
+
 
 		$this->fpdf->Cell(40,6,strtoupper(utf8_decode($key['apellidos'].' '.$key['nombres'])),1,0, 'C');
 		$this->fpdf->Cell(20,6,$key['identificacion'],1,0,'C');
 		$this->fpdf->Cell(40,6,strtoupper(utf8_decode($key['concepto'])),1,0,'C');
-		$this->fpdf->Cell(30,6,$key['tpoliza'],1,0,'C');
+		$this->fpdf->Cell(30,6,$tpoliza,1,0,'C');
 		$this->fpdf->Cell(20,6,number_format($key['suma'], 2, ',', '.'),1,0,'C');
 		$this->fpdf->Cell(20,6,number_format($key['cuotas_canceladas'], 2, ',', '.'),1,0,'C');
 		$this->fpdf->Cell(20,6,number_format($key['monto_fraccionado'], 2, ',', '.'),1,0,'C');
 		$this->fpdf->Ln(6);
+		$extornos_l=$extornos_l+$key['monto_fraccionado'];
+	}
+	}else{
+		$this->fpdf->Cell(190,6,'NO HAY NADA QUE REPORTAR',1,0,'C');
 
 	}
-/*	$this->fpdf->Ln(10);
+	$this->fpdf->Ln(15);
 
-	$this->fpdf->Cell(240,8,utf8_decode('Total a pagar'), 0, 0, 'R');
-	$this->fpdf->Cell(35,8,'asig - deduc',1,0,'C');*/
+	$this->fpdf->SetFont('Arial','B',8);
+
+	$total = $comision_l - $extornos_l;
+
+	$this->fpdf->Cell(170,8,utf8_decode('Total a pagar'), 0, 0, 'R');
+	$this->fpdf->Cell(20,8,number_format($total, 2, ',', '.'),1,0,'C');
+
+	$this->fpdf->Ln(8);
+	$this->fpdf->SetFont('Arial','',12);
+
+	$this->fpdf->Cell(275,10,'Ventas con domiciliacion de pago',0,0,'L');
+
+	$this->fpdf->Ln(15);
+
+	$this->fpdf->SetFont('Arial','B',8);
+	$this->fpdf->Cell(50,8,'Asegurado', 0, 0, 'C', True);
+	$this->fpdf->Cell(20,8,'Cedula',0,0,'C', True);
+	$this->fpdf->Cell(40,8,'Tipo Venta',0,0,'C', True);
+	$this->fpdf->Cell(30,8,'Poliza',0,0,'C', True);
+	$this->fpdf->Cell(30,8,'Suma',0,0,'C', True);
+	$this->fpdf->Cell(20,8,'Cuotas',0,0,'C', True);
+
+	$this->fpdf->Ln(8);
+	$this->fpdf->SetFont('Arial','',6);
+
+
+	$ventas = $this->reportes_model->ventasd($vendedor['id_vendedor'],$vendedor['id_semana']);
+	if (count($ventas)>0) {
+	foreach ($ventas as $key) {
+
+		if(isset($key['tpoliza'])) $tpoliza = $key['tpoliza'].' '.$key['num_poliza']; else  $tpoliza = 'NO APLICA';
+		
+		$this->fpdf->Cell(50,6,strtoupper(utf8_decode($key['apellidos'].' '.$key['nombres'])),1,0, 'C');
+		$this->fpdf->Cell(20,6,$key['identificacion'],1,0,'C');
+		$this->fpdf->Cell(40,6,strtoupper(utf8_decode($key['concepto'])),1,0,'C');
+		$this->fpdf->Cell(30,6, $tpoliza,1,0,'C');
+		$this->fpdf->Cell(30,6,number_format($key['suma'], 2, ',', '.'),1,0,'C');
+		$this->fpdf->Cell(20,6,number_format($key['cuotas_canceladas'], 2, ',', '.'),1,0,'C');
+	
+		$this->fpdf->Ln(6);
+	}}else{
+		$this->fpdf->Cell(190,6,'NO HAY NADA QUE REPORTAR',1,0,'C');
+		$this->fpdf->Ln(6);
+
+
+	}
+
+	$this->fpdf->SetFont('Arial','B',8);
+
+	$this->fpdf->Cell(275,10,':: La comision de las ventas con domiciliacion de pago sera calculada una vez comprobado el pago',0,0,'L');
+
 
 	
 	$this->fpdf->Output();
@@ -499,6 +572,41 @@ class Reportes extends CI_Controller {
 		$this->fpdf->Cell(190,10,utf8_decode('NO HAY NADA QUE REPORTAR'),1,0,'C');
 
 		}
+
+		
+
+		$this->fpdf->Output();
+	}
+
+	public function cierre(){	
+
+		$this->fpdf->AddPage('L');
+		$this->fpdf->Image(base_url().'assets/0.fw_.png',8,10,60);
+
+		$this->fpdf->SetFont('Arial','B',14);
+		$this->fpdf->Ln(10);
+		$this->fpdf->Cell(280,10,utf8_decode('REPORTE DE CIERRE'),0,0,'C');
+		$this->fpdf->SetFont('Arial','',10);
+		$this->fpdf->Ln(6);
+		$this->fpdf->Cell(280,8,'SEM: '.$_POST[fecha],0,0,'C');
+		
+		$this->fpdf->Ln(15);
+		$this->fpdf->SetFont('Arial','B',10);
+
+		$this->fpdf->Cell(42,8,'coordinador',1,0,'L');
+		$this->fpdf->Cell(42,8,'vendedor',1,0,'L');
+		$this->fpdf->Cell(13,8,'Sol.',1,0,'L');
+		$this->fpdf->Cell(20,8,'Cedula',1,0,'L');
+		$this->fpdf->Cell(42,8,'Tomador',1,0,'L');
+		$this->fpdf->Cell(20,8,'T. venta',1,0,'L');
+		$this->fpdf->Cell(15,8,'Poliza',1,0,'L');
+		$this->fpdf->Cell(10,8,'Ad.',1,0,'L');
+		$this->fpdf->Cell(15,8,'Cuotas',1,0,'L');
+		$this->fpdf->Cell(15,8,'Estatus',1,0,'L');
+		$this->fpdf->Cell(23,8,'com vend.',1,0,'L');
+		$this->fpdf->Cell(23,8,'com coord.',1,0,'L');
+
+
 
 		
 

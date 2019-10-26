@@ -374,9 +374,9 @@ class Polizas_model extends CI_Model{
 
 	function guardar_venta($nac,$cedula,$rpago,$monto,$ccancelada,$nombres,$apellidos,$tplan,$cobertura,$tpoliza,$tpago,$tedad, $fecha,$usuario,$tventa,$nsolicitud,$correo,$telefono,$cod_vendedor,$adicionales,$ad_nac,$ad_cedula,$ad_name,$ad_edad,$ad_parent){ 
 
-		if ($nsolicitud=="") {
-			$nsolicitud=-1;
-		}
+		if ($rpago=="") $rpago="0";
+		if ($ccancelada=="") $ccancelada="0";
+		if ($monto=="") $monto="0";
 
 		$identificacion=$nac.'-'.$cedula;
 		

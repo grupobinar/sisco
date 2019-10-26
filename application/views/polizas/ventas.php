@@ -334,6 +334,20 @@ $(document).ready(function(){
 
     });
 
+    $("#tpoliza").change(function() {
+      $("#cobertura").html("");
+        $.post("<?php echo base_url() ?>/index.php/polizas/buscarCobertura", { plan:$("#plan").val(), tpoliza:$("#tpoliza").val()}, function(data){
+            var r=data.split('|');
+            $.each(r, function (index, value) {
+              var v=value.split(':');
+              if (v!="") {
+                $("#cobertura").html($("#cobertura").html()+'<option value="'+v[0]+'">'+v[2]+'-'+v[1]+'</option>');
+              }
+            });
+        });
+
+    });
+
     $(".editUsuario").click(function() {
 
 

@@ -12,7 +12,6 @@
  <table id="example1" class="table table-bordered table-striped" style="padding: 10px;">
     <thead>
      <tr>
-      <th>Solicitud</th>
       <th>Cedula</th>
       <th>Vendedor</th>
       <th>Telefono</th>
@@ -26,7 +25,6 @@
     <tbody>
     <?php if ($_ci_vars[ventas]<>"") { foreach ($_ci_vars[ventas] as $key) { ?>
     <tr>
-      <td><?php echo ucwords($key['solicitud']);?></td>
       <td><?php echo ucwords($key['identificacion']);?></td>
       <td><?php echo ucwords($key['apellidos'].' '.$key['nombres']);?></td>
       <td><?php echo ucwords($key['telefono']);?></td>
