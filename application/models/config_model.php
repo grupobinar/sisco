@@ -633,6 +633,13 @@ class Config_model extends CI_Model{
 
 	public function reabrirSemana($semana_id){
 
+			$this->db->select("COUNT(*) as total");
+			$this->db->where("id_semana",$id_semana);
+			$this->db->where("estatus_venta",'L');
+			$nvl = $this->db->get('public.t_factor_edad');
+
+		if ($nvl->row()->total>0){
+
 		$data = array(
 			'estatus'=>'1',
 		);
@@ -659,6 +666,9 @@ class Config_model extends CI_Model{
 			$this->db->update('public.t_extornos', $data);
 
 		return "Semana Reabierta";
-
+	}else{
+		return "La semana ya se encuentra Liquidada, no se puede reabrir";
 	}
+	//}
+}
 }
