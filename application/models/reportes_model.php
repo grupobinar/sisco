@@ -114,8 +114,37 @@ class Reportes_model extends CI_Model{
 
 	}
 
+	function contar_adicionales($id){
+
+		$this->db->select('COUNT(*) as total');
+		$this->db->where('id_venta',$id);
+		$adicionales_count = $this->db->get('public.t_adicionales');
+
+		return $adicionales_count->row()->total;
+	}
+
 	function cierre($estatus){
-		$this->db->select('')
+		$this->db->select("t_ventas.id_venta, t_vendedores.id_vendedor, t_usuarios.id_user, t_personas.apellidos as ap_c, t_personas.nombres as name_c, t_vendedores.apellidos as ap_v, t_vendedores.nombres as name_v, solicitud, t_tomadores.identificacion, t_tomadores.apellidos as ap_t, t_tomadores.nombres as name_t, concepto, tpoliza, num_poliza, cuotas_canceladas,estatus_venta,comision_liquidada, comision_c");
+
+		$this->db->join('t_vendedores','t_vendedores.id_vendedor = t_ventas.id_vendedor','left');
+		$this->db->join('t_usuarios','t_usuarios.id_user = t_vendedores.id_coordinador','left');
+		$this->db->join('t_personas','t_personas.id_persona = t_usuarios.id_persona','left');
+		$this->db->join('t_tomadores','t_tomadores.id_tomador = t_ventas.id_tomador','left');
+		$this->db->join('t_concepto','t_concepto.id_concepto = t_ventas.tventa','left');
+		$this->db->join('t_tpoliza','t_tpoliza.id_tpoliza = t_ventas.id_tpoliza','left');
+		$this->db->join('t_polizas','t_polizas.id_poliza = t_ventas.id_poliza','left');
+		$this->db->join('t_liquidacion','t_liquidacion.id_venta = t_ventas.id_venta','left');
+
+		$this->db->order_by('id_user, t_vendedores.id_vendedor, t_tomadores.id_tomador');
+		$this->db->where('estatus_venta', $estatus);
+		$this->db->or_where('estatus_venta', 'D');
+
+
+		$data = $this->db->get('public.t_ventas'); 
+
+		return $data->result_array();
+
+		//echo $this->db->last_query();
 	}
 
 	function hcell($vendedor,$sem){
