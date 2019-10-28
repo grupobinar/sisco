@@ -134,9 +134,10 @@ class Reportes_model extends CI_Model{
 		$this->db->join('t_tpoliza','t_tpoliza.id_tpoliza = t_ventas.id_tpoliza','left');
 		$this->db->join('t_polizas','t_polizas.id_poliza = t_ventas.id_poliza','left');
 		$this->db->join('t_liquidacion','t_liquidacion.id_venta = t_ventas.id_venta','left');
+		$this->db->join('t_semanas','t_semanas.id_semana = t_ventas.id_semana','left');
 
 		$this->db->order_by('id_user, t_vendedores.id_vendedor, t_tomadores.id_tomador');
-		$this->db->where('estatus_venta', $estatus);
+		$this->db->where('estatus_venta', 'L');
 		$this->db->or_where('estatus_venta', 'D');
 
 

@@ -634,11 +634,11 @@ class Config_model extends CI_Model{
 	public function reabrirSemana($semana_id){
 
 			$this->db->select("COUNT(*) as total");
-			$this->db->where("id_semana",$id_semana);
+			$this->db->where("id_semana",$semana_id);
 			$this->db->where("estatus_venta",'L');
-			$nvl = $this->db->get('public.t_factor_edad');
+			$nvl = $this->db->get('public.t_ventas');
 
-		if ($nvl->row()->total>0){
+		if ($nvl->row()->total == 0){
 
 		$data = array(
 			'estatus'=>'1',

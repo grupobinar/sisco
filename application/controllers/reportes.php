@@ -580,7 +580,7 @@ class Reportes extends CI_Controller {
 
 	public function cierre(){	
 
-		$cierre = $this->reportes_model->cierre('L');
+		$cierre = $this->reportes_model->cierre($_GET['estatus']);
 
 
 		$this->fpdf->AddPage('L');
@@ -687,7 +687,6 @@ class Reportes extends CI_Controller {
 		$this->fpdf->SetFont('Arial','B',9);
 		$this->fpdf->Cell(280,6,'NO HAY NADA QUE REPORTAR',1,0,'C');
 	}
-
 		$this->fpdf->Output();
 	}
 

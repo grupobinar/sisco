@@ -106,9 +106,10 @@
             cancelButtonColor: '#d33',
             confirmButtonText: 'Si, CERRAR SEMANA'
         }).then((result) => {
-            $.post("<?php echo base_url() ?>/index.php/config/reabrirSemana", { semana: semana }, function(data){      
+            $.post("<?php echo base_url() ?>/index.php/config/reabrirSemana", { semana: semana }, function(data){    
+                console.log(data);
                 Swal.fire({
-                    title: 'Recuerde que solo puede tener una semana abierta, al ejecutar esta accion se cerrara la semana que se encuentre abierta.',
+                    title: data,
                     text:  'Desea continuar?',
                     type:  'mensaje.tipo',
                     confirmButtonText: 'Cerrar'

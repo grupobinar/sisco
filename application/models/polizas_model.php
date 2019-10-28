@@ -61,6 +61,7 @@ class Polizas_model extends CI_Model{
     {
     	$this->db->select('solicitud');
 		$this->db->where('solicitud',$nsol);
+		$this->db->where('estatus_venta !=','X');
 
 		$var = $this->db->get('public.t_ventas');
 
