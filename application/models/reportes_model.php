@@ -123,7 +123,7 @@ class Reportes_model extends CI_Model{
 		return $adicionales_count->row()->total;
 	}
 
-	function cierre($estatus){
+	function cierre($estatus,$sem){
 		$this->db->select("t_ventas.id_venta, t_vendedores.id_vendedor, t_usuarios.id_user, t_personas.apellidos as ap_c, t_personas.nombres as name_c, t_vendedores.apellidos as ap_v, t_vendedores.nombres as name_v, solicitud, t_tomadores.identificacion, t_tomadores.apellidos as ap_t, t_tomadores.nombres as name_t, concepto, tpoliza, num_poliza, cuotas_canceladas,estatus_venta,comision_liquidada, comision_c");
 
 		$this->db->join('t_vendedores','t_vendedores.id_vendedor = t_ventas.id_vendedor','left');
@@ -137,8 +137,10 @@ class Reportes_model extends CI_Model{
 		$this->db->join('t_semanas','t_semanas.id_semana = t_ventas.id_semana','left');
 
 		$this->db->order_by('id_user, t_vendedores.id_vendedor, t_tomadores.id_tomador');
-		$this->db->where('estatus_venta', 'L');
-		$this->db->or_where('estatus_venta', 'D');
+		$this->db->where("(estatus_venta = 'L' OR estatus_venta = 'D')");
+		//$this->db->or_where('estatus_venta', 'D');
+		$this->db->where('t_semanas.nsem', $sem);
+
 
 
 		$data = $this->db->get('public.t_ventas'); 

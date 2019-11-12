@@ -433,6 +433,7 @@ class Polizas_model extends CI_Model{
 				'id_usuario'=>$usuario,
 				'id_semana'=>$sem->row()->id_semana,
 				'estatus_venta'=>$estatus,
+				'fecha_registro'=>date('Y-m-d'),
 			);
 
 	}

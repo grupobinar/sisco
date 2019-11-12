@@ -45,6 +45,16 @@ class Reportes extends CI_Controller {
 		$this->load->view('layout/footer');
 	}
 
+	public function rpt_cierre(){
+
+		$data['sem'] = $this->reportes_model->e_listsemana();
+		
+		$this->load->view('layout/header');
+		$this->load->view('layout/nav');
+		$this->load->view('reportes/cierre',$data);
+		$this->load->view('layout/footer');
+	}
+
 
 	public function rpt_por_vendedor(){
 		
@@ -580,7 +590,7 @@ class Reportes extends CI_Controller {
 
 	public function cierre(){	
 
-		$cierre = $this->reportes_model->cierre($_GET['estatus']);
+		$cierre = $this->reportes_model->cierre('L',$_POST['sem']);
 
 
 		$this->fpdf->AddPage('L');
