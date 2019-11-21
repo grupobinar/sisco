@@ -90,6 +90,17 @@ class Reportes_model extends CI_Model{
 
 	}
 
+	function semana2($sem)
+	{
+
+		$this->db->where('id_semana',$sem); 
+		$data = $this->db->get('public.t_semanas'); 
+
+		return $data->row_array();
+
+
+	}
+
 	function coordinador($id)
 	{
 

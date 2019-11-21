@@ -607,7 +607,10 @@ class Reportes extends CI_Controller {
 
 		$this->fpdf->SetFont('Arial','B',16);
 		$this->fpdf->Ln(15);
-		$this->fpdf->Cell(180,10,utf8_decode('VENTAS SEMANA XX DEL XX/XX/XX AL XX/XX/XX'),0,0,'C');
+    	$sem = $this->reportes_model->semana2($_POST['sem']);
+
+		$this->fpdf->Cell(180,10,'VENTAS SEM '.$sem['nsem'].' desde: '.$sem['desde'].' hasta: '.$sem['hasta'] ,0,0,'C');
+
 		$this->fpdf->Ln(8);
 
 		
