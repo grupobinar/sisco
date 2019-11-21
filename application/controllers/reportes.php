@@ -55,6 +55,16 @@ class Reportes extends CI_Controller {
 		$this->load->view('layout/footer');
 	}
 
+	public function rpt(){
+
+		$data['sem'] = $this->reportes_model->e_listsemana();
+		
+		$this->load->view('layout/header');
+		$this->load->view('layout/nav');
+		$this->load->view('reportes/reporte',$data);
+		$this->load->view('layout/footer');
+	}
+
 
 	public function rpt_por_vendedor(){
 		
@@ -584,6 +594,92 @@ class Reportes extends CI_Controller {
 		}
 
 		
+
+		$this->fpdf->Output();
+	}
+
+	public function reporte(){	
+
+		//print_r($_POST);
+
+		$this->fpdf->AddPage();
+		$this->fpdf->Image(base_url().'assets/0.fw_.png',8,10,60);
+
+		$this->fpdf->SetFont('Arial','B',16);
+		$this->fpdf->Ln(15);
+		$this->fpdf->Cell(180,10,utf8_decode('VENTAS SEMANA XX DEL XX/XX/XX AL XX/XX/XX'),0,0,'C');
+		$this->fpdf->Ln(8);
+
+		
+		$coo = $this->reportes_model->e_listcoord();
+
+		foreach ($coo as $key) {
+
+			$this->fpdf->SetFont('Arial','',10);
+			$this->fpdf->Ln(8);
+			$this->fpdf->Cell(5,5,'',0,0,'C');
+			$this->fpdf->Cell(180,5,'COORDINADOR: '.$key['apellidos'].' '.$key['nombres'],1,0,'L');
+
+			$this->fpdf->SetFont('Arial','B',6);
+
+			$this->fpdf->Ln(8);
+			$this->fpdf->Cell(5,8,'',0,0,'C');
+			$this->fpdf->Cell(60,8,'ASESOR',0,0,'C');
+			$this->fpdf->Cell(30,8,'FUN.',0,0,'C');
+			$this->fpdf->Cell(30,8,'AD.',0,0,'C');
+			$this->fpdf->Cell(30,8,'VIDA',0,0,'C');
+			$this->fpdf->Cell(30,8,'ACT.',0,0,'C');
+			$this->fpdf->Ln(8);
+
+			$datos = $this->reportes_model->e_listvendedores2($key['id_user'],$_POST['sem']);
+
+			//print_r($datos);
+
+			$this->fpdf->SetFont('Arial','',6);
+
+			$i=0;
+			if (count($datos)>0) {
+				foreach ($datos as $v) {
+			//print_r($v);
+
+					$this->fpdf->SetFont('Arial','',6);
+					$planes = $this->reportes_model->rpt($v['id_vendedor'],$_POST['sem']);
+					if (count($planes)>0) {
+					$i++;
+					$this->fpdf->Cell(5,6,$i,0,0,'L');
+					$this->fpdf->Cell(60,6,utf8_decode($v['apellidos'].' '.$v['nombres']),1,0,'L');
+					$this->fpdf->Ln(6);
+
+						foreach ($planes as $p) {
+
+							$this->fpdf->Cell(5,6,'',0,0,'L');
+							$this->fpdf->Cell(60,6,$p['tplan'],1,0,'L');
+							$this->fpdf->Cell(30,6,$p['total'],1,0,'L');
+							$this->fpdf->Cell(30,6,'N/A',1,0,'L');
+							$this->fpdf->Cell(30,6,'N/A',1,0,'L');
+							$this->fpdf->Cell(30,6,'N/A',1,0,'L');
+							$this->fpdf->Ln(6);
+							$sum = $sum + $p['total'];
+						}
+					    $ad = $this->reportes_model->contar_adicionales2($v['id_vendedor'],$_POST['sem']);
+					    $vi = $this->reportes_model->contar_vida($v['id_vendedor'],$_POST['sem']);
+					    $ac = $this->reportes_model->contar_act($v['id_vendedor'],$_POST['sem']);
+						$this->fpdf->SetFont('Arial','B',6);
+
+
+						$this->fpdf->Cell(5,6,'',0,0,'L');
+						$this->fpdf->Cell(60,6,'TOTAL',1,0,'L');
+						$this->fpdf->Cell(30,6,$sum,1,0,'L');
+						$this->fpdf->Cell(30,6,$ad,1,0,'L');
+						$this->fpdf->Cell(30,6,$vi,1,0,'L');
+						$this->fpdf->Cell(30,6,$ac,1,0,'L');
+						$this->fpdf->Ln(7);
+						$sum = 0;
+					}
+
+				}
+			}
+		}
 
 		$this->fpdf->Output();
 	}

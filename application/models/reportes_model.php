@@ -123,6 +123,44 @@ class Reportes_model extends CI_Model{
 		return $adicionales_count->row()->total;
 	}
 
+	function contar_adicionales2($id,$sem){
+
+		$this->db->select('COUNT(*) as total');
+		$this->db->join('t_ventas','t_ventas.id_venta = t_adicionales.id_venta','left');
+		$this->db->where('id_vendedor',$id);
+		$this->db->where('id_semana',$sem);
+		$adicionales_count = $this->db->get('public.t_adicionales');
+
+		return $adicionales_count->row()->total;
+	}
+
+	function contar_vida($id,$sem){
+
+		$this->db->select('COUNT(*) as total');
+		$this->db->where('id_vendedor',$id);
+		$this->db->where('id_tpoliza','5');
+		$this->db->where('id_semana',$sem);
+
+		$adicionales_count = $this->db->get('public.t_ventas');
+
+		return $adicionales_count->row()->total;
+	}
+
+	function contar_act($id,$sem){
+
+		$this->db->select('COUNT(*) as total');
+		$this->db->where('id_vendedor',$id);
+		$this->db->where('id_venta','3');
+		$this->db->where('id_semana',$sem);
+
+		$adicionales_count = $this->db->get('public.t_ventas');
+
+		//echo $this->db->last_query();
+
+
+		return $adicionales_count->row()->total;
+	}
+
 	function cierre($estatus,$sem){
 		$this->db->select("t_ventas.id_venta, t_vendedores.id_vendedor, t_usuarios.id_user, t_personas.apellidos as ap_c, t_personas.nombres as name_c, t_vendedores.apellidos as ap_v, t_vendedores.nombres as name_v, solicitud, t_tomadores.identificacion, t_tomadores.apellidos as ap_t, t_tomadores.nombres as name_t, concepto, tpoliza, num_poliza, cuotas_canceladas,estatus_venta,comision_liquidada, comision_c");
 
@@ -335,4 +373,39 @@ class Reportes_model extends CI_Model{
 		
 	}
 
+	function e_listvendedores2($coo,$sem)
+	{
+
+		$this->db->where('id_coordinador',$coo);
+		//$this->db->where('id_semana',$sem);
+		$data = $this->db->get('public.t_vendedores'); 
+
+		
+		if($data->num_rows()>0)
+		{
+			 return $data->result_array();
+		}
+		
+	}
+
+	function rpt($v,$s){
+
+		$this->db->select('COUNT(*) as total, tplan');
+		$this->db->join('t_plan','t_plan.id_tplan = t_ventas.id_plan','left');
+		$this->db->group_by('t_plan.tplan');
+		$this->db->where('id_vendedor',$v);
+		$this->db->where('id_semana',$s);
+		$this->db->where('tventa','1');
+		$this->db->where('t_ventas.id_tpoliza !=','5');
+
+		$data1 = $this->db->get('public.t_ventas'); 
+
+		//echo $this->db->last_query();
+
+		if($data1->num_rows()>0)
+		{
+			 return $data1->result_array();
+		}
+
+	}
 }
