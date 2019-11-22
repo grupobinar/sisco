@@ -336,21 +336,32 @@ class Liquidacion_model extends CI_Model{
 
 						$this->db->insert('public.t_extornos',$data);
 
-						$cex=0;
 						
 
 					}elseif($cex==0){
 
 						$data = array(
-							'id_estatus'=>'-1'
+							'id_semana'=> $sem,
+							'id_estatus'=>'1'
 						);
 
 						$this->db->where('id_extorno', $key['id_extorno']);
 						$this->db->update('t_extornos', $data);
 
 					}else{
+
+						$data = array(
+							'id_semana'=> $sem,
+							'id_estatus'=>'1'
+						);
+
+						$this->db->where('id_extorno', $key['id_extorno']);
+						$this->db->update('t_extornos', $data);
+
 						$cex = $cex - $key['extorno'];
 					}
+						$cex=0;
+
 				}
 				}
 				
