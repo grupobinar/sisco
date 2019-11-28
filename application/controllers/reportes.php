@@ -443,7 +443,7 @@ class Reportes extends CI_Controller {
 
 		$data = $this->reportes_model->metrica_tpago($s_desde['id_semana'], $s_hasta['id_semana'], $_POST['coo']);
 
-
+		//echo $data;
 
 		//print_r($data);
 
@@ -477,7 +477,7 @@ class Reportes extends CI_Controller {
 		$this->fpdf->Ln(8);
 
 		foreach ($data as $key) {
-			$this->fpdf->Cell(90,6,$key['concepto'],1,0,'L');
+			$this->fpdf->Cell(90,6,utf8_decode($key['concepto']),1,0,'L');
 			$this->fpdf->Cell(90,6,$key['total'],1,0,'L');
 			$this->fpdf->Ln(6);
 		}
@@ -496,6 +496,8 @@ class Reportes extends CI_Controller {
 		$this->fpdf->Ln(8);
 
 		foreach ($data as $key) {
+			if ($key['tpoliza']=="") $key['tpoliza']="Act de datos / Adicionales";
+
 			$this->fpdf->Cell(90,6,$key['tpoliza'],1,0,'L');
 			$this->fpdf->Cell(90,6,$key['total'],1,0,'L');
 			$this->fpdf->Ln(6);
@@ -516,6 +518,8 @@ class Reportes extends CI_Controller {
 		$this->fpdf->Ln(8);
 
 		foreach ($data as $key) {
+			if ($key['tpoliza']=="") $key['tpoliza']="Act de datos / Adicionales";
+
 			$this->fpdf->Cell(60,6,$key['tpoliza'],1,0,'L');
 			$this->fpdf->Cell(60,6,$key['num_poliza'],1,0,'L');
 			$this->fpdf->Cell(60,6,$key['total'],1,0,'L');
@@ -529,15 +533,15 @@ class Reportes extends CI_Controller {
 
 	public function diario(){	
 
-		$this->fpdf->AddPage();
+		$this->fpdf->AddPage('L');
 		$this->fpdf->Image(base_url().'assets/0.fw_.png',8,10,60);
 
 		$this->fpdf->SetFont('Arial','B',16);
 		$this->fpdf->Ln(10);
-		$this->fpdf->Cell(200,10,utf8_decode('REPORTE DIARIO'),0,0,'C');
+		$this->fpdf->Cell(280,10,utf8_decode('REPORTE DIARIO'),0,0,'C');
 		$this->fpdf->SetFont('Arial','',10);
 		$this->fpdf->Ln(5);
-		$this->fpdf->Cell(200,8,'De '.$_POST[fecha],0,0,'C');
+		$this->fpdf->Cell(280,8,'De '.$_POST[fecha],0,0,'C');
 		
 		$this->fpdf->Ln(15);
 		$this->fpdf->SetFont('Arial','B',10);
@@ -546,26 +550,41 @@ class Reportes extends CI_Controller {
 
 		$this->fpdf->Ln(8);
 		$this->fpdf->Cell(5,8,'',0,0,'C');
+		$this->fpdf->Cell(70,8,'Vendedor',0,0,'C');
 		$this->fpdf->Cell(15,8,'Solicitud',0,0,'C');
 		$this->fpdf->Cell(20,8,'Cedula',0,0,'C');
-		$this->fpdf->Cell(40,8,'Tomador',0,0,'C');
+		$this->fpdf->Cell(50,8,'Tomador',0,0,'C');
 		$this->fpdf->Cell(30,8,'Tipo de venta',0,0,'C');
 		$this->fpdf->Cell(15,8,'Poliza',0,0,'C');
 		$this->fpdf->Cell(15,8,'Plan',0,0,'C');
 		$this->fpdf->Cell(10,8,'Ad.',0,0,'C');
 		$this->fpdf->Cell(15,8,'Sem.',0,0,'C');
-		$this->fpdf->Cell(25,8,'Estatus',0,0,'C');
+		$this->fpdf->Cell(30,8,'Estatus',0,0,'C');
 		$this->fpdf->Ln(8);
 
 		$datos = $this->polizas_model->listventas2($_POST['fecha']);
 
-		$this->fpdf->SetFont('Arial','',6);
+		$this->fpdf->SetFont('Arial','',8);
 
 		//contar_adicionales
 
 		$i=0;
 		if (count($datos)>0) {
+			$id = 0; $tventas = 0;
 			foreach ($datos as $key) {
+				  if (($key['id_vendedor']!=$id) && ($id!=0)) {
+					$this->fpdf->SetFont('Arial','B',10);
+					$this->fpdf->Ln(6);
+					$this->fpdf->Cell(5,6,'',0,0,'L');
+					$this->fpdf->Cell(270,6,'Total de ventas: '.$tventas,1,0,'R');
+					$this->fpdf->Ln(12);
+					$tventas=0;
+					$this->fpdf->SetFont('Arial','',8);
+				  }
+				  $tventas++;
+
+				  $id = $key['id_vendedor'];
+
 				  $i++;
 				  $adicionales = $this->polizas_model->contar_adicionales($key['id_venta']);
 				  if($key['estatus_venta']=="P") $estatus_venta="Preliquidada";
@@ -577,19 +596,36 @@ class Reportes extends CI_Controller {
 			      elseif($key['estatus_venta']=="D") $estatus_venta="Pendiente de pago";
 
 				$this->fpdf->Cell(5,6,$i,0,0,'L');
+				$this->fpdf->Cell(70,6,strtoupper(utf8_decode($key['namev'].' '.$key['apev'])),1,0,'L');
 				$this->fpdf->Cell(15,6,$key['solicitud'],1,0,'L');
 				$this->fpdf->Cell(20,6,$key['identificacion'],1,0,'L');
-				$this->fpdf->Cell(40,6,strtoupper(utf8_decode($key['apellidos'].' '.$key['nombres'])),1,0,'L');
+				$this->fpdf->Cell(50,6,strtoupper(utf8_decode($key['apellidos'].' '.$key['nombres'])),1,0,'L');
 				$this->fpdf->Cell(30,6,utf8_decode($key['concepto']),1,0,'L');
 				$this->fpdf->Cell(15,6,utf8_decode($key['tpoliza']),1,0,'L');
 				$this->fpdf->Cell(15,6,utf8_decode($key['tplan']),1,0,'L');
 				$this->fpdf->Cell(10,6,utf8_decode($adicionales),1,0,'L');
 				$this->fpdf->Cell(15,6,utf8_decode($key['nsem']),1,0,'L');
-				$this->fpdf->Cell(25,6,$estatus_venta,1,0,'L');
+				$this->fpdf->Cell(30,6,$estatus_venta,1,0,'L');
 				$this->fpdf->Ln(6);
+
+				end($datos);
+				$end=key($datos);
+				if($end==$i-1){
+					$tventas=$tventas-1;
+					$this->fpdf->SetFont('Arial','B',10);
+					$this->fpdf->Ln(6);
+					$this->fpdf->Cell(5,6,'',0,0,'L');
+					$this->fpdf->Cell(270,6,'Total de ventas: '.$tventas,1,0,'R');
+					$this->fpdf->Ln(8);
+					$this->fpdf->Cell(5,6,'',0,0,'L');
+					$this->fpdf->Cell(270,6,'Total General: '.$i,1,0,'R');
+
+					//$tventas=0;
+					//$this->fpdf->SetFont('Arial','',8);
+				}
 			}
 		}else{
-		$this->fpdf->Cell(190,10,utf8_decode('NO HAY NADA QUE REPORTAR'),1,0,'C');
+		$this->fpdf->Cell(280,10,utf8_decode('NO HAY NADA QUE REPORTAR'),1,0,'C');
 
 		}
 

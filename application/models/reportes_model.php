@@ -15,6 +15,7 @@ class Reportes_model extends CI_Model{
 		$this->db->where('id_semana >=',$d_sem);
 		$this->db->where('id_semana <=',$h_sem);
 		$this->db->where('id_coordinador',$coo);
+		$this->db->where('estatus_venta !=','X');
 		$this->db->group_by('tpago');
 
 		$data = $this->db->get('public.t_ventas'); 
@@ -35,6 +36,7 @@ class Reportes_model extends CI_Model{
 		$this->db->where('id_semana >=',$d_sem);
 		$this->db->where('id_semana <=',$h_sem);
 		$this->db->where('id_coordinador',$coo);
+		$this->db->where('estatus_venta !=','X');
 		$this->db->group_by('concepto');
 
 		$data = $this->db->get('public.t_ventas'); 
@@ -52,6 +54,8 @@ class Reportes_model extends CI_Model{
 		$this->db->where('id_semana >=',$d_sem);
 		$this->db->where('id_semana <=',$h_sem);
 		$this->db->where('id_coordinador',$coo);
+		$this->db->where('estatus_venta !=','X');
+
 		$this->db->group_by('tpoliza');
 
 		$data = $this->db->get('public.t_ventas'); 
@@ -70,6 +74,8 @@ class Reportes_model extends CI_Model{
 		$this->db->where('id_semana >=',$d_sem);
 		$this->db->where('id_semana <=',$h_sem);
 		$this->db->where('id_coordinador',$coo);
+		$this->db->where('estatus_venta !=','X');
+		
 		$this->db->group_by('tpoliza, num_poliza');
 
 		$data = $this->db->get('public.t_ventas'); 

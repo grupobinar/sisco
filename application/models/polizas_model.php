@@ -184,7 +184,8 @@ class Polizas_model extends CI_Model{
 
 	function listventas2($f)
 	{
-		$this->db->select('id_venta, t_tomadores.identificacion, nsem, desde, hasta, referencia_pago, monto, cuotas_canceladas, t_ventas.fecha_registro, t_tomadores.nombres, t_tomadores.apellidos, t_tomadores.telefono, t_tomadores.correo, tplan, cobertura, tpoliza, tpago, tventa, estatus_venta, concepto, solicitud');
+		$this->db->select('id_venta, t_tomadores.identificacion, nsem, desde, hasta, referencia_pago, monto, cuotas_canceladas, t_ventas.fecha_registro, t_tomadores.nombres, t_tomadores.apellidos, t_tomadores.telefono, t_tomadores.correo, tplan, cobertura, tpoliza, tpago, tventa, estatus_venta, concepto, solicitud, t_vendedores.nombres as namev, t_vendedores.apellidos as apev, t_vendedores.id_vendedor');
+		$this->db->join('t_vendedores','t_vendedores.id_vendedor = t_ventas.id_vendedor','left');
 		$this->db->join('t_tomadores','t_tomadores.id_tomador = t_ventas.id_tomador','left');
 		$this->db->join('t_plan','t_plan.id_tplan = t_ventas.id_plan','left');
 		$this->db->join('t_polizas','t_polizas.id_poliza = t_ventas.id_poliza','left');
@@ -193,6 +194,7 @@ class Polizas_model extends CI_Model{
 		$this->db->join('t_semanas','t_semanas.id_semana = t_ventas.id_semana','left');
 		$this->db->join('t_concepto','t_concepto.id_concepto = t_ventas.tventa','left');
 		$this->db->where('t_ventas.fecha_registro', $f);
+		$this->db->order_by('t_vendedores.id_vendedor','ASC');
 
 
 		$listusuarios = $this->db->get('public.t_ventas');
