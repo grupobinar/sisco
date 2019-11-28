@@ -378,6 +378,7 @@ class Polizas_model extends CI_Model{
 		if ($rpago=="") $rpago="0";
 		if ($ccancelada=="") $ccancelada="0";
 		if ($monto=="") $monto="0";
+		if ($nsolicitud=="") $nsolicitud="0";
 
 		$identificacion=$nac.'-'.$cedula;
 		

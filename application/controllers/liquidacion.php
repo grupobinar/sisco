@@ -69,7 +69,7 @@ class Liquidacion extends CI_Controller {
 		
 			$vendedor=strtoupper($v['v']['apellidos'].' '.$v['v']['nombres']);
 			$this->mail->setFrom('grupobinar@gmail.com', 'SISCO MAIL');
-			$this->mail->addAddress('brujidat@gmail.com', $vendedor);     // Add a recipient
+			$this->mail->addAddress($v['v']['correo'], $vendedor);     // Add a recipient
 			$this->mail->addReplyTo('grupobinar@gmail.com', 'SISCO MAIL');
 			//***************************************************************
 			$html="";
