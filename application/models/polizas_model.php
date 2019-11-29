@@ -435,6 +435,7 @@ class Polizas_model extends CI_Model{
 				'id_vendedor'=>$cod_vendedor,
 				'id_usuario'=>$usuario,
 				'id_semana'=>$sem->row()->id_semana,
+				'id_sem'=>$sem->row()->id_semana,
 				'estatus_venta'=>$estatus,
 				'fecha_registro'=>date('Y-m-d'),
 			);
@@ -452,6 +453,7 @@ class Polizas_model extends CI_Model{
 				'id_vendedor'=>$cod_vendedor,
 				'id_usuario'=>$usuario,
 				'id_semana'=>$sem->row()->id_semana,
+				'id_sem'=>$sem->row()->id_semana,
 				'estatus_venta'=>$estatus,
 
 			);
@@ -497,6 +499,7 @@ class Polizas_model extends CI_Model{
 				'id_vendedor'=>$cod_vendedor,
 				'id_usuario'=>$usuario,
 				'id_semana'=>$sem->row()->id_semana,
+				'id_sem'=>$sem->row()->id_semana,
 				'estatus_venta'=>$estatus,
 			);
 
@@ -536,8 +539,12 @@ class Polizas_model extends CI_Model{
 	}
 
 	function procesar($id,$estatus){
+		$this->db->where('estatus !=','1');
+		$sem = $this->db->get('public.t_semanas');
+
 		$data = array(
 				'estatus_venta'=>$estatus,
+				'id_sem'=>$sem->row()->id_semana,
 			);
 
 		 	$this->db->where('id_venta', $id);
