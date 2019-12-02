@@ -195,7 +195,7 @@ class Reportes_model extends CI_Model{
 		$this->db->where("(estatus_venta = 'L' OR estatus_venta = 'D')");
 		//$this->db->or_where('estatus_venta', 'D');
 		//$this->db->where('t_semanas.nsem', $sem);
-		$this->db->where('(id_semana='.$sem.' or id_sem='.$sem.')',NULL,FALSE);
+		$this->db->where('(t_ventas.id_semana='.$sem.' or t_ventas.id_sem='.$sem.')',NULL,FALSE);
 
 
 
