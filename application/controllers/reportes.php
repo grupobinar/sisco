@@ -725,7 +725,9 @@ class Reportes extends CI_Controller {
 
 	public function cierre(){	
 
-		$cierre = $this->reportes_model->cierre('L',$_POST['sem']);
+    	$sem = $this->reportes_model->semana($_POST['sem']);
+
+		$cierre = $this->reportes_model->cierre('L',$sem['id_semana']);
 
 
 		$this->fpdf->AddPage('L');
