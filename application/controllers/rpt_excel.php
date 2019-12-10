@@ -79,14 +79,15 @@ class Rpt_excel extends CI_Controller {
         $this->excel->getActiveSheet()->getStyle('A7:B7')->applyFromArray($style2);
 
 
-        $this->excel->getActiveSheet()->setCellValue('A9', 'Asegurado');
-        $this->excel->getActiveSheet()->setCellValue('B9', 'Cedula');
-        $this->excel->getActiveSheet()->setCellValue('C9', 'Tipo de Venta');
-        $this->excel->getActiveSheet()->setCellValue('D9', 'Plan');
-        $this->excel->getActiveSheet()->setCellValue('E9', 'S.A');
-        $this->excel->getActiveSheet()->setCellValue('F9', 'Cuotas');
-        $this->excel->getActiveSheet()->setCellValue('G9', 'Comisión');
-        $this->excel->getActiveSheet()->getStyle("A9:G9")->applyFromArray($style);
+        $this->excel->getActiveSheet()->setCellValue('A9', 'Semana');
+        $this->excel->getActiveSheet()->setCellValue('B9', 'Asegurado');
+        $this->excel->getActiveSheet()->setCellValue('C9', 'Cedula');
+        $this->excel->getActiveSheet()->setCellValue('D9', 'Tipo de Venta');
+        $this->excel->getActiveSheet()->setCellValue('E9', 'Plan');
+        $this->excel->getActiveSheet()->setCellValue('F9', 'S.A');
+        $this->excel->getActiveSheet()->setCellValue('G9', 'Cuotas');
+        $this->excel->getActiveSheet()->setCellValue('H9', 'Comisión');
+        $this->excel->getActiveSheet()->getStyle("A9:H9")->applyFromArray($style);
         $comision_l=0;
 
         $i=10;
@@ -94,13 +95,19 @@ class Rpt_excel extends CI_Controller {
         foreach ($ventas as $key) {
             if(isset($key['tpoliza'])) $tpoliza = $key['tpoliza']; else  $tpoliza = 'NO APLICA';
 
-        	$this->excel->getActiveSheet()->setCellValue('A'.$i, strtoupper($key['apellidos'].' '.$key['nombres']));
-	        $this->excel->getActiveSheet()->setCellValue('B'.$i, $key['identificacion']);
-	        $this->excel->getActiveSheet()->setCellValue('C'.$i, strtoupper($key['concepto']));
-	        $this->excel->getActiveSheet()->setCellValue('D'.$i, $tpoliza);
-	        $this->excel->getActiveSheet()->setCellValue('E'.$i, number_format($key['suma'], 2, ',', '.'));
-	        $this->excel->getActiveSheet()->setCellValue('F'.$i, number_format($key['cuotas_canceladas'], 2, ',', '.'));
-	        $this->excel->getActiveSheet()->setCellValue('G'.$i, number_format($key['comision_liquidada'], 2, ',', '.'));
+            $this->excel->getActiveSheet()->setCellValue('A'.$i, $key['nsem']);
+        	$this->excel->getActiveSheet()->setCellValue('B'.$i, strtoupper($key['apellidos'].' '.$key['nombres']));
+	        $this->excel->getActiveSheet()->setCellValue('C'.$i, $key['identificacion']);
+	        $this->excel->getActiveSheet()->setCellValue('D'.$i, strtoupper($key['concepto']));
+	        $this->excel->getActiveSheet()->setCellValue('E'.$i, $tpoliza);
+	        $this->excel->getActiveSheet()->setCellValue('F'.$i, number_format($key['suma'], 2, ',', '.'));
+	        $this->excel->getActiveSheet()->setCellValue('G'.$i, number_format($key['cuotas_canceladas'], 2, ',', '.'));
+	        $this->excel->getActiveSheet()->setCellValue('H'.$i, number_format($key['comision_liquidada'], 2, ',', '.'));
+            
+            if ($key['id_semana']!=$key['id_sem']) {
+                $this->excel->getActiveSheet()->setCellValue('I'.$i, 'DOMICILIADA');
+            }
+
 	        $i++;
 			$comision_l=$comision_l+$key['comision_liquidada'];
 
@@ -108,8 +115,8 @@ class Rpt_excel extends CI_Controller {
 
         }else{
         	$this->excel->getActiveSheet()->setCellValue('A'.$i, 'No hay nada que reportar');
-        	$this->excel->getActiveSheet()->mergeCells('A'.$i.':G'.$i);
-       		$this->excel->getActiveSheet()->getStyle('A'.$i.':G'.$i)->applyFromArray($style);
+        	$this->excel->getActiveSheet()->mergeCells('A'.$i.':H'.$i);
+       		$this->excel->getActiveSheet()->getStyle('A'.$i.':H'.$i)->applyFromArray($style);
         }
         $i++;
 
@@ -120,14 +127,14 @@ class Rpt_excel extends CI_Controller {
 
         $i=$i+2;
 
-        $this->excel->getActiveSheet()->setCellValue('A'.$i, 'Asegurado');
-        $this->excel->getActiveSheet()->setCellValue('B'.$i, 'Cedula');
-        $this->excel->getActiveSheet()->setCellValue('C'.$i, 'Tipo de Venta');
-        $this->excel->getActiveSheet()->setCellValue('D'.$i, 'Poliza');
-        $this->excel->getActiveSheet()->setCellValue('E'.$i, 'S.A');
-        $this->excel->getActiveSheet()->setCellValue('F'.$i, 'Cuotas');
-        $this->excel->getActiveSheet()->setCellValue('G'.$i, 'Comisión');
-        $this->excel->getActiveSheet()->getStyle('A'.$i.':G'.$i)->applyFromArray($style);
+        $this->excel->getActiveSheet()->setCellValue('B'.$i, 'Asegurado');
+        $this->excel->getActiveSheet()->setCellValue('C'.$i, 'Cedula');
+        $this->excel->getActiveSheet()->setCellValue('D'.$i, 'Tipo de Venta');
+        $this->excel->getActiveSheet()->setCellValue('E'.$i, 'Poliza');
+        $this->excel->getActiveSheet()->setCellValue('F'.$i, 'S.A');
+        $this->excel->getActiveSheet()->setCellValue('G'.$i, 'Cuotas');
+        $this->excel->getActiveSheet()->setCellValue('H'.$i, 'Comisión');
+        $this->excel->getActiveSheet()->getStyle('B'.$i.':H'.$i)->applyFromArray($style);
 
         $extornos_l=0;
 
@@ -140,22 +147,22 @@ class Rpt_excel extends CI_Controller {
 
             if(isset($key['tpoliza'])) $tpoliza = $key['tpoliza']; else  $tpoliza = 'NO APLICA';
 
-        	$this->excel->getActiveSheet()->setCellValue('A'.$i, strtoupper($key['apellidos'].' '.$key['nombres']));
-	        $this->excel->getActiveSheet()->setCellValue('B'.$i, $key['identificacion']);
-	        $this->excel->getActiveSheet()->setCellValue('C'.$i, strtoupper($key['concepto']));
-	        $this->excel->getActiveSheet()->setCellValue('D'.$i, $tpoliza);
-	        $this->excel->getActiveSheet()->setCellValue('E'.$i, number_format($key['suma'], 2, ',', '.'));
-	        $this->excel->getActiveSheet()->setCellValue('F'.$i, number_format($key['cuotas_canceladas'], 2, ',', '.'));
-	        $this->excel->getActiveSheet()->setCellValue('G'.$i, number_format($key['monto_fraccionar'], 2, ',', '.'));
+        	$this->excel->getActiveSheet()->setCellValue('B'.$i, strtoupper($key['apellidos'].' '.$key['nombres']));
+	        $this->excel->getActiveSheet()->setCellValue('C'.$i, $key['identificacion']);
+	        $this->excel->getActiveSheet()->setCellValue('D'.$i, strtoupper($key['concepto']));
+	        $this->excel->getActiveSheet()->setCellValue('E'.$i, $tpoliza);
+	        $this->excel->getActiveSheet()->setCellValue('F'.$i, number_format($key['suma'], 2, ',', '.'));
+	        $this->excel->getActiveSheet()->setCellValue('G'.$i, number_format($key['cuotas_canceladas'], 2, ',', '.'));
+	        $this->excel->getActiveSheet()->setCellValue('H'.$i, number_format($key['monto_fraccionar'], 2, ',', '.'));
 	        $i++;
 
 	        $extornos_l = $extornos_l + $key['monto_fraccionar'];
 
         }
     	}else{
-        	$this->excel->getActiveSheet()->setCellValue('A'.$i, 'No hay nada que reportar');
-        	$this->excel->getActiveSheet()->mergeCells('A'.$i.':G'.$i);
-       		$this->excel->getActiveSheet()->getStyle('A'.$i.':G'.$i)->applyFromArray($style);
+        	$this->excel->getActiveSheet()->setCellValue('B'.$i, 'No hay nada que reportar');
+        	$this->excel->getActiveSheet()->mergeCells('B'.$i.':H'.$i);
+       		$this->excel->getActiveSheet()->getStyle('B'.$i.':H'.$i)->applyFromArray($style);
     	$i++;
 
         }
@@ -163,9 +170,9 @@ class Rpt_excel extends CI_Controller {
     	$i++;
     	$total=$comision_l-$extornos_l;
 
-        $this->excel->getActiveSheet()->setCellValue('F'.$i, 'TOTAL');
-        $this->excel->getActiveSheet()->setCellValue('G'.$i, number_format($total, 2, ',', '.'));
-        $this->excel->getActiveSheet()->getStyle('F'.$i.':G'.$i)->applyFromArray($style);
+        $this->excel->getActiveSheet()->setCellValue('G'.$i, 'TOTAL');
+        $this->excel->getActiveSheet()->setCellValue('H'.$i, number_format($total, 2, ',', '.'));
+        $this->excel->getActiveSheet()->getStyle('G'.$i.':H'.$i)->applyFromArray($style);
 
         $i=$i+2;
 
@@ -178,37 +185,40 @@ class Rpt_excel extends CI_Controller {
 
         $i=$i+2;
 
-        $this->excel->getActiveSheet()->setCellValue('A'.$i, 'Asegurado');
-        $this->excel->getActiveSheet()->mergeCells('A'.$i.':B'.$i);
-        $this->excel->getActiveSheet()->setCellValue('C'.$i, 'Cedula');
-        $this->excel->getActiveSheet()->setCellValue('D'.$i, 'Tipo de Venta');
-        $this->excel->getActiveSheet()->setCellValue('E'.$i, 'Plan');
-        $this->excel->getActiveSheet()->setCellValue('F'.$i, 'S.A');
-        $this->excel->getActiveSheet()->setCellValue('G'.$i, 'Cuotas');
-        $this->excel->getActiveSheet()->getStyle('A'.$i.':G'.$i)->applyFromArray($style);
+        $this->excel->getActiveSheet()->setCellValue('B'.$i, 'Asegurado');
+        $this->excel->getActiveSheet()->mergeCells('B'.$i.':C'.$i);
+        $this->excel->getActiveSheet()->setCellValue('D'.$i, 'Cedula');
+        $this->excel->getActiveSheet()->setCellValue('E'.$i, 'Tipo de Venta');
+        $this->excel->getActiveSheet()->setCellValue('F'.$i, 'Plan');
+        $this->excel->getActiveSheet()->setCellValue('G'.$i, 'S.A');
+        $this->excel->getActiveSheet()->setCellValue('H'.$i, 'Cuotas');
+        $this->excel->getActiveSheet()->getStyle('B'.$i.':H'.$i)->applyFromArray($style);
 
         $i++;
 
-if(count($ventasd)>0){
+    if(count($ventasd)>0){
         foreach ($ventasd as $key) {
             if(isset($key['tpoliza'])) $tpoliza = $key['tpoliza']; else  $tpoliza = 'NO APLICA';
 
-            $this->excel->getActiveSheet()->setCellValue('A'.$i, strtoupper($key['apellidos'].' '.$key['nombres']));
-            $this->excel->getActiveSheet()->mergeCells('A'.$i.':B'.$i);
-            $this->excel->getActiveSheet()->setCellValue('C'.$i, $key['identificacion']);
-            $this->excel->getActiveSheet()->setCellValue('D'.$i, strtoupper($key['concepto']));
-            $this->excel->getActiveSheet()->setCellValue('E'.$i, $tpoliza);
-            $this->excel->getActiveSheet()->setCellValue('F'.$i, number_format($key['suma'], 2, ',', '.'));
-            $this->excel->getActiveSheet()->setCellValue('G'.$i, number_format($key['cuotas_canceladas'], 2, ',', '.'));
+            $this->excel->getActiveSheet()->setCellValue('B'.$i, strtoupper($key['apellidos'].' '.$key['nombres']));
+            $this->excel->getActiveSheet()->mergeCells('B'.$i.':C'.$i);
+            $this->excel->getActiveSheet()->setCellValue('D'.$i, $key['identificacion']);
+            $this->excel->getActiveSheet()->setCellValue('E'.$i, strtoupper($key['concepto']));
+            $this->excel->getActiveSheet()->setCellValue('F'.$i, $tpoliza);
+            $this->excel->getActiveSheet()->setCellValue('G'.$i, number_format($key['suma'], 2, ',', '.'));
+            $this->excel->getActiveSheet()->setCellValue('H'.$i, number_format($key['cuotas_canceladas'], 2, ',', '.'));
+
+            
             $i++;
 
+
         }
 
-        }else{
-            $this->excel->getActiveSheet()->setCellValue('A'.$i, 'No hay nada que reportar');
-            $this->excel->getActiveSheet()->mergeCells('A'.$i.':G'.$i);
-            $this->excel->getActiveSheet()->getStyle('A'.$i.':G'.$i)->applyFromArray($style);
-        }
+    }else{
+            $this->excel->getActiveSheet()->setCellValue('B'.$i, 'No hay nada que reportar');
+            $this->excel->getActiveSheet()->mergeCells('B'.$i.':H'.$i);
+            $this->excel->getActiveSheet()->getStyle('B'.$i.':H'.$i)->applyFromArray($style);
+    }
 
         header('Content-Type: application/vnd.ms-excel');
         header('Content-Disposition: attachment;filename="'.$vendedor['cod_vendedor'].'_'.$vendedor['nsem'].'_'.$vendedor['apellidos'].'_'.$vendedor['nombres'].'.xls"');
@@ -424,6 +434,7 @@ if(count($ventasd)>0){
 
     public function cierre(){
         $this->excel->setActiveSheetIndex(0);
+        $sem = $this->reportes_model->semana($_POST['sem']);
         $this->excel->getActiveSheet()->setTitle('Reporte de Cierre');
         $this->excel->getActiveSheet()->getDefaultRowDimension()->setRowHeight(15); 
 
@@ -452,7 +463,7 @@ if(count($ventasd)>0){
         );
 
         $this->excel->getDefaultStyle()->applyFromArray($style2);
-        $this->excel->getActiveSheet()->setCellValue('A2', 'REPORTE DE CIERRE');
+        $this->excel->getActiveSheet()->setCellValue('A2', 'REPORTE DE CIERRE SEM '.$sem['nsem'].' desde: '.$sem['desde'].' hasta: '.$sem['hasta']);
         $this->excel->getActiveSheet()->mergeCells('A2:L2');
 
         $this->excel->getActiveSheet()->setCellValue('A4', 'COORDINADOR');
@@ -469,7 +480,7 @@ if(count($ventasd)>0){
         $this->excel->getActiveSheet()->setCellValue('L4', 'COMISION COORDINADOR');
         $this->excel->getActiveSheet()->getStyle("A4:L4")->applyFromArray($style);
 
-        $cierre = $this->reportes_model->cierre('L',$_POST['sem']);
+        $cierre = $this->reportes_model->cierre('L',$sem['id_semana']);
         
         $cc=0; $cv=0; $c_anterior=0; $v_anterior=0; $cct=0; $cvt=0; $i=4; $x=0;
 

@@ -246,12 +246,14 @@ class Reportes_model extends CI_Model{
 	{
 		$this->db->select('t_vendedores.id_vendedor, apellidos, nombres,  cod_vendedor, concepto, id_coordinador, nsem, desde, hasta, t_semanas.id_semana');
 		$this->db->where('cod_vendedor',$cod); 
-		$this->db->where('t_semanas.nsem',$sem); 
+		//$this->db->where('(t_ventas.id_semana='.$sem.' or id_sem='.$sem.')',NULL,FALSE); 
 		$this->db->join('t_vendedores','t_vendedores.id_vendedor = t_ventas.id_vendedor','left');
 		$this->db->join('t_semanas','t_semanas.id_semana = t_ventas.id_semana','left');
 		$this->db->join('t_concepto','t_concepto.id_concepto = t_ventas.tventa','left');
 
 		$data = $this->db->get('public.t_ventas'); 
+
+		//echo $this->db->last_query();
 
 		return $data->row_array();
 
@@ -280,7 +282,7 @@ class Reportes_model extends CI_Model{
 
 	function extornos_rpt_g($cod,$sem)
 	{
-		$this->db->select('t_tomadores.identificacion, t_tomadores.apellidos, t_tomadores.nombres, concepto, suma, cuotas_canceladas, monto_fraccionado, monto_fraccionado_c, t_motivos.motivo');
+		$this->db->select('t_tomadores.identificacion, t_tomadores.apellidos, t_tomadores.nombres, concepto, suma, cuotas_canceladas, monto_fraccionado, monto_fraccionado_c, t_motivos.motivo, t_ventas.id_semana, t_ventas.id_sem');
 		$this->db->where('t_vendedores.id_coordinador',$cod); 
 		$this->db->where('t_extornos.id_semana',$sem); 
 		$this->db->join('t_vendedores','t_vendedores.id_vendedor = t_ventas.id_vendedor','left');
@@ -303,19 +305,20 @@ class Reportes_model extends CI_Model{
 
 	function ventas($vendedor,$sem){
 
-		$this->db->select('apellidos, nombres, concepto, tpoliza, t_liquidacion.suma, cuotas_canceladas, identificacion, comision_liquidada, t_liquidacion.ult_mod , num_poliza');
+		$this->db->select('apellidos, nombres, concepto, tpoliza, t_liquidacion.suma, cuotas_canceladas, identificacion, comision_liquidada, t_liquidacion.ult_mod , num_poliza, nsem, t_ventas.id_semana, id_sem');
 		$this->db->join('t_tomadores','t_tomadores.id_tomador = t_ventas.id_tomador','left');
 		$this->db->join('t_concepto','t_concepto.id_concepto = t_ventas.tventa','left');
 		$this->db->join('t_tpoliza','t_tpoliza.id_tpoliza = t_ventas.id_tpoliza','left');
 		$this->db->join('t_liquidacion','t_liquidacion.id_venta = t_ventas.id_venta','left');
 		$this->db->join('t_polizas','t_polizas.id_poliza = t_ventas.id_poliza','left');
+		$this->db->join('t_semanas','t_semanas.id_semana = t_ventas.id_sem','left');
 
 
 		$this->db->where('id_vendedor',$vendedor); 
 		$this->db->where('estatus_venta ','L'); 
 		//$this->db->where('estatus_venta !=','D'); 
 		//$this->db->where('id_semana',$sem); 
-		$this->db->where('(id_semana='.$sem.' or id_sem='.$sem.')',NULL,FALSE);
+		$this->db->where('(t_ventas.id_semana='.$sem.' or id_sem='.$sem.')',NULL,FALSE);
 		//$this->db->or_where('id_sem',$sem); 
 
 		$data = $this->db->get('public.t_ventas'); 
@@ -351,10 +354,14 @@ class Reportes_model extends CI_Model{
 		$this->db->select('tventa, sum(comision_liquidada) as comision, sum(comision_c) as comision_c');
 		$this->db->join('t_ventas','t_ventas.id_venta = t_liquidacion.id_venta','left');
 		$this->db->where('id_vendedor',$vendedor); 
-		$this->db->where('t_ventas.id_semana',$sem); 
+		$this->db->where('(t_ventas.id_semana='.$sem.' or (id_sem='.$sem.' and tipo_pago=2))',NULL,FALSE);
+		//$this->db->where('t_ventas.id_semana',$sem); 
 		$this->db->group_by('tventa'); 
-		
+
+
 		$data = $this->db->get('public.t_liquidacion'); 
+		//echo ($this->db->last_query());
+
 
 		return $data->result_array();
 

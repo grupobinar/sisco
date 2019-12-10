@@ -256,11 +256,13 @@ class Reportes extends CI_Controller {
 	// DATOS DEL VENDEDOR ********************************************************************
 	//print_r($_POST);
 
+    $sem = $this->reportes_model->semana($_POST['sem']);
+
 	$vendedor = $this->reportes_model->vendedores_rpt_i($_POST['cod_vendedor'],$_POST['sem']);
 
     $coordinador = $this->reportes_model->coordinador_($vendedor['id_coordinador']);
 
-    $ventas = $this->reportes_model->ventas($vendedor['id_vendedor'],$vendedor['id_semana']);
+    $ventas = $this->reportes_model->ventas($vendedor['id_vendedor'],$sem['id_semana']);
 
 
 	//print_r(($ventas));
@@ -284,10 +286,11 @@ class Reportes extends CI_Controller {
 	$this->fpdf->Ln(15);
 
 	$this->fpdf->SetFont('Arial','B',8);
+	$this->fpdf->Cell(20,8,'Semana', 0, 0, 'C', True);
 	$this->fpdf->Cell(40,8,'Asegurado', 0, 0, 'C', True);
-	$this->fpdf->Cell(20,8,'Cedula',0,0,'C', True);
-	$this->fpdf->Cell(40,8,'Tipo Venta',0,0,'C', True);
-	$this->fpdf->Cell(30,8,'Poliza',0,0,'C', True);
+	$this->fpdf->Cell(15,8,'Cedula',0,0,'C', True);
+	$this->fpdf->Cell(35,8,'Tipo Venta',0,0,'C', True);
+	$this->fpdf->Cell(20,8,'Poliza',0,0,'C', True);
 	$this->fpdf->Cell(20,8,'Suma',0,0,'C', True);
 	$this->fpdf->Cell(20,8,'Cuotas',0,0,'C', True);
 	$this->fpdf->Cell(20,8,'Comision',0,0,'C', True);
@@ -299,11 +302,12 @@ class Reportes extends CI_Controller {
 	foreach ($ventas as $key) {
 
 		if(isset($key['tpoliza'])) $tpoliza = $key['tpoliza'].' '.$key['num_poliza']; else  $tpoliza = 'NO APLICA';
-		
+
+		$this->fpdf->Cell(20,6,$key['nsem'],1,0,'C');
 		$this->fpdf->Cell(40,6,strtoupper(utf8_decode($key['apellidos'].' '.$key['nombres'])),1,0, 'C');
-		$this->fpdf->Cell(20,6,$key['identificacion'],1,0,'C');
-		$this->fpdf->Cell(40,6,strtoupper(utf8_decode($key['concepto'])),1,0,'C');
-		$this->fpdf->Cell(30,6, $tpoliza,1,0,'C');
+		$this->fpdf->Cell(15,6,$key['identificacion'],1,0,'C');
+		$this->fpdf->Cell(35,6,strtoupper(utf8_decode($key['concepto'])),1,0,'C');
+		$this->fpdf->Cell(20,6, $tpoliza,1,0,'C');
 		$this->fpdf->Cell(20,6,number_format($key['suma'], 2, ',', '.'),1,0,'C');
 		$this->fpdf->Cell(20,6,number_format($key['cuotas_canceladas'], 2, ',', '.'),1,0,'C');
 		$this->fpdf->Cell(20,6,number_format($key['comision_liquidada'], 2, ',', '.'),1,0,'C');
@@ -313,7 +317,7 @@ class Reportes extends CI_Controller {
 		$this->fpdf->Ln(6);
 	}
 
-    $extornos = $this->reportes_model->extornos_rpt_i($vendedor['id_vendedor'],$vendedor['id_semana']);
+    $extornos = $this->reportes_model->extornos_rpt_i($vendedor['id_vendedor'],$sem['id_semana']);
 
     //print_r($extornos);
 
@@ -389,7 +393,7 @@ class Reportes extends CI_Controller {
 	$this->fpdf->SetFont('Arial','',6);
 
 
-	$ventas = $this->reportes_model->ventasd($vendedor['id_vendedor'],$vendedor['id_semana']);
+	$ventas = $this->reportes_model->ventasd($vendedor['id_vendedor'],$sem['id_semana']);
 	if (count($ventas)>0) {
 	foreach ($ventas as $key) {
 
@@ -737,6 +741,10 @@ class Reportes extends CI_Controller {
 		$this->fpdf->Ln(10);
 		$this->fpdf->Cell(280,10,utf8_decode('REPORTE DE CIERRE'),0,0,'C');
 		$this->fpdf->SetFont('Arial','',10);
+		$this->fpdf->Ln(5);
+		$this->fpdf->SetFont('Arial','',9);
+
+		$this->fpdf->Cell(280,10,'SEM '.$sem['nsem'].' desde: '.$sem['desde'].' hasta: '.$sem['hasta'] ,0,0,'C');
 		$this->fpdf->Ln(6);
 		
 		$this->fpdf->Ln(15);
