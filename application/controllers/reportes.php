@@ -254,10 +254,10 @@ class Reportes extends CI_Controller {
 	$this->fpdf->Ln(6);
 
 	// DATOS DEL VENDEDOR ********************************************************************
-	//print_r($_POST);
+//	print_r($_POST);
 
 	$vendedor = $this->reportes_model->vendedores_rpt_i($_POST['cod_vendedor'],$_POST['sem']);
-
+//print_r($vendedor);
     $coordinador = $this->reportes_model->coordinador_($vendedor['id_coordinador']);
 
     $ventas = $this->reportes_model->ventas($vendedor['id_vendedor'],$vendedor['id_semana']);

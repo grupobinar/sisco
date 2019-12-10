@@ -469,7 +469,8 @@ if(count($ventasd)>0){
         $this->excel->getActiveSheet()->setCellValue('L4', 'COMISION COORDINADOR');
         $this->excel->getActiveSheet()->getStyle("A4:L4")->applyFromArray($style);
 
-        $cierre = $this->reportes_model->cierre('L',$_POST['sem']);
+        $sem = $this->reportes_model->semana($_POST['sem']);
+        $cierre = $this->reportes_model->cierre('L',$sem['id_semana']);
         
         $cc=0; $cv=0; $c_anterior=0; $v_anterior=0; $cct=0; $cvt=0; $i=4; $x=0;
 
