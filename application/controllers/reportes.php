@@ -258,6 +258,8 @@ class Reportes extends CI_Controller {
 
     $sem = $this->reportes_model->semana($_POST['sem']);
 
+    //print_r($sem);
+
 	$vendedor = $this->reportes_model->vendedores_rpt_i($_POST['cod_vendedor'],$_POST['sem']);
 
     $coordinador = $this->reportes_model->coordinador_($vendedor['id_coordinador']);
@@ -269,7 +271,7 @@ class Reportes extends CI_Controller {
 
 	$this->fpdf->SetFont('Arial','',9);
 	$this->fpdf->SetFillColor(148, 196, 241); 
-	$this->fpdf->Cell(200,8,'SEM '.$vendedor['nsem'].' '.$vendedor['desde'].' AL '.$vendedor['hasta'],0,0,'C');
+	$this->fpdf->Cell(200,8,'SEM '.$sem['nsem'].' '.$sem['desde'].' AL '.$sem['hasta'],0,0,'C');
 	$this->fpdf->Ln(4);
 	$this->fpdf->Cell(200,8,utf8_decode('Vendedor: ['.$vendedor['cod_vendedor'].'] '.$vendedor['apellidos'].' '.$vendedor['nombres']), 0, 0, 'C');
 	$this->fpdf->Ln(4);
