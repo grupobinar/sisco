@@ -248,7 +248,7 @@ class Reportes_model extends CI_Model{
 		$this->db->where('cod_vendedor',$cod); 
 		//$this->db->where('(t_ventas.id_semana='.$sem.' or id_sem='.$sem.')',NULL,FALSE); 
 		$this->db->join('t_vendedores','t_vendedores.id_vendedor = t_ventas.id_vendedor','left');
-		$this->db->join('t_semanas','t_semanas.id_semana = t_ventas.id_semana','left');
+		$this->db->join('t_semanas','t_semanas.id_semana = t_ventas.id_sem','left');
 		$this->db->join('t_concepto','t_concepto.id_concepto = t_ventas.tventa','left');
 
 		$data = $this->db->get('public.t_ventas'); 

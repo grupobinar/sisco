@@ -21,13 +21,12 @@ class Rpt_excel extends CI_Controller {
         //$this->excel->getActiveSheet()->getStyle('A1')->getFont()->setBold(true);
         $this->excel->getActiveSheet()->getDefaultRowDimension()->setRowHeight(15); 
 
-        $sem = $this->reportes_model->semana($_POST['sem']);
-        
+
         $vendedor = $this->reportes_model->vendedores_rpt_i($_POST['cod_vendedor'],$_POST['sem']);
 
 	    $coordinador = $this->reportes_model->coordinador_($vendedor['id_coordinador']);
 
-	    $ventas = $this->reportes_model->ventas($vendedor['id_vendedor'],$sem['id_semana']);
+	    $ventas = $this->reportes_model->ventas($vendedor['id_vendedor'],$vendedor['id_semana']);
 
         $style = array(
 	        'alignment' => array('horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER, ),
@@ -65,7 +64,7 @@ class Rpt_excel extends CI_Controller {
         $this->excel->getActiveSheet()->setCellValue('A2', 'Estado de Cuenta de Comisiones');
         $this->excel->getActiveSheet()->mergeCells('A2:G2');
 
-        $this->excel->getActiveSheet()->setCellValue('A3', 'SEM '.$sem['nsem'].' '.$sem['desde'].' AL '.$sem['hasta']);
+        $this->excel->getActiveSheet()->setCellValue('A3', 'SEM '.$vendedor['nsem'].' '.$vendedor['desde'].' AL '.$vendedor['hasta']);
         $this->excel->getActiveSheet()->mergeCells('A3:G3');
 
         $this->excel->getActiveSheet()->setCellValue('A4', 'Vendedor: ['.$vendedor['cod_vendedor'].'] '.$vendedor['apellidos'].' '.$vendedor['nombres']);
@@ -178,7 +177,7 @@ class Rpt_excel extends CI_Controller {
         $i=$i+2;
 
 
-        $ventasd = $this->reportes_model->ventasd($vendedor['id_vendedor'],$sem['id_semana']);
+        $ventasd = $this->reportes_model->ventasd($vendedor['id_vendedor'],$vendedor['id_semana']);
         $this->excel->getActiveSheet()->setCellValue('A'.$i, 'VENTAS CON DOMICILIACION DE PAGO');
         $this->excel->getActiveSheet()->mergeCells('A'.$i.':D'.$i);
         $this->excel->getActiveSheet()->getStyle('A'.$i.':D'.$i)->applyFromArray($style2);
@@ -481,7 +480,10 @@ class Rpt_excel extends CI_Controller {
         $this->excel->getActiveSheet()->setCellValue('L4', 'COMISION COORDINADOR');
         $this->excel->getActiveSheet()->getStyle("A4:L4")->applyFromArray($style);
 
+<<<<< HEAD
         $sem = $this->reportes_model->semana($_POST['sem']);
+=======
+>>>>>>> 80bf1d223c309a29bbccb3dab8712c6e781aa58a
         $cierre = $this->reportes_model->cierre('L',$sem['id_semana']);
         
         $cc=0; $cv=0; $c_anterior=0; $v_anterior=0; $cct=0; $cvt=0; $i=4; $x=0;
