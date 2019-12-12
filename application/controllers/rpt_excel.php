@@ -178,7 +178,7 @@ class Rpt_excel extends CI_Controller {
         $i=$i+2;
 
 
-        $ventasd = $this->reportes_model->ventasd($vendedor['id_vendedor'],$vendedor['id_semana']);
+        $ventasd = $this->reportes_model->ventasd($vendedor['id_vendedor'],$sem['id_semana']);
         $this->excel->getActiveSheet()->setCellValue('A'.$i, 'VENTAS CON DOMICILIACION DE PAGO');
         $this->excel->getActiveSheet()->mergeCells('A'.$i.':D'.$i);
         $this->excel->getActiveSheet()->getStyle('A'.$i.':D'.$i)->applyFromArray($style2);
