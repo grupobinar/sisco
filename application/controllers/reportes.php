@@ -90,7 +90,7 @@ class Reportes extends CI_Controller {
 		$this->fpdf->Image(base_url().'assets/0.fw_.png',10,10,60);
 		$this->fpdf->SetFont('Arial','B',14);
 		$this->fpdf->Ln(8);
-		$this->fpdf->Cell(200,10,'Estado de cuenta General de Comisiones',0,0,'C');
+		$this->fpdf->Cell(200,10,'Relacion de pagos',0,0,'C');
 		
 		$this->fpdf->Ln(5);
 		$this->fpdf->SetFont('Arial','',9);
@@ -249,7 +249,7 @@ class Reportes extends CI_Controller {
 	$this->fpdf->SetFont('Arial','B',14);
 	$this->fpdf->Ln(6);
 
-	$this->fpdf->Cell(200,10,'Estado de cuenta de Comisiones',0,0,'C');
+	$this->fpdf->Cell(200,10,'Relacion de pagos',0,0,'C');
 	
 	$this->fpdf->Ln(6);
 
@@ -418,7 +418,7 @@ class Reportes extends CI_Controller {
 
 	$this->fpdf->SetFont('Arial','B',8);
 
-	$this->fpdf->Cell(275,10,':: La comision de las ventas con domiciliacion de pago sera calculada una vez comprobado el pago',0,0,'L');
+	$this->fpdf->Cell(275,10,':: Las ventas con domiciliacion de pago sera calculada una vez comprobado el pago',0,0,'L');
 
 
 	

@@ -85,7 +85,7 @@ class Liquidacion extends CI_Controller {
 					$html.='<td colspan="2">';
 						$html.='<table width="100%" style="background: #044767; height: 100px; color: white; font-size: 25px; font-weight: bold; ">';
 							$html.='<tr>';
-								$html.='<td style="padding: 5px; padding-left: 25px;">ESTADO DE CUENTA<p style="font-size: 13px;">SEM:'.$v['s']['nsem'].' | '.$v['s']['desde'].' - '.$v['s']['hasta'].'</p></td>';
+								$html.='<td style="padding: 5px; padding-left: 25px;">RELACION DE PAGOS<p style="font-size: 13px;">SEM:'.$v['s']['nsem'].' | '.$v['s']['desde'].' - '.$v['s']['hasta'].'</p></td>';
 								$html.='<td style="padding: 5px; padding-right: 25px; text-align: right;"><img src="http://grupobinar.com/wp-content/uploads/2019/10/leonardo_right_white.png" alt="Leonardo Tirado" width="200" height="50"></td>';
 							$html.='</tr>';
 						$html.='</table>';
@@ -101,7 +101,7 @@ class Liquidacion extends CI_Controller {
 				foreach ($v['vt'] as $key) {
 				
 				$html.='<tr style="vertical-align: middle;  color: #666666">';
-					$html.='<td style="padding: 15px; padding-top: 1px; padding-bottom: 1px;"> '.strtoupper($key['identificacion'].' '.$key['apellidos'].' '.$key['nombres']).' <br> '.strtoupper($key['concepto'].' '.$key['tpoliza'].' '.$key['num_poliza']).' </td>';
+					$html.='<td style="padding: 15px; padding-top: 1px; padding-bottom: 1px;"> '.strtoupper($key['concepto'].' '.$key['tpoliza'].' '.$key['num_poliza']).' </td>';
 					$html.='<td style="padding: 15px; padding-top: 1px; padding-bottom: 1px; text-align: right; color:green"> '.number_format($key['comision_liquidada'], 2, ',', '.').'</td>';
 				$html.='</tr>';
 				$html.='<tr><td style="padding: 15px; padding-top: 1px; padding-bottom: 1px; color:#cecece" colspan="2"><hr></td></tr>';
@@ -117,7 +117,7 @@ class Liquidacion extends CI_Controller {
 				$extornos=0;
 				
 				$html.='<tr style="vertical-align: middle;  color: #666666">';
-					$html.='<td style="padding: 15px; padding-top: 1px; padding-bottom: 1px;"><b style="color:red">[EXT]</b> '.strtoupper($key['identificacion'].' '.$key['apellidos'].' '.$key['nombres']).' <br> '.strtoupper($key['concepto'].' '.$key['tpoliza'].' '.$key['num_poliza'].' SEM:'.$key['nsem']).' </td>';
+					$html.='<td style="padding: 15px; padding-top: 1px; padding-bottom: 1px;"><b style="color:red">[EXT]</b> '.strtoupper($key['concepto'].' '.$key['tpoliza'].' '.$key['num_poliza'].' SEM:'.$key['nsem']).' </td>';
 					$html.='<td style="padding: 15px; padding-top: 1px; padding-bottom: 1px; text-align: right; color:red"> - '.number_format($key['monto_fraccionado'], 2, ',', '.').'</td>';
 				$html.='</tr>';
 				$html.='<tr><td style="padding: 15px; padding-top: 1px; padding-bottom: 1px; color:#cecece" colspan="2"><hr></td></tr>';
