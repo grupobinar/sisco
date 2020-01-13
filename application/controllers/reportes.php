@@ -289,8 +289,8 @@ class Reportes extends CI_Controller {
 
 	$this->fpdf->SetFont('Arial','B',8);
 	$this->fpdf->Cell(20,8,'Semana', 0, 0, 'C', True);
-	$this->fpdf->Cell(40,8,'Asegurado', 0, 0, 'C', True);
-	$this->fpdf->Cell(15,8,'Cedula',0,0,'C', True);
+	$this->fpdf->Cell(40,8,'', 0, 0, 'C', True);
+	$this->fpdf->Cell(15,8,'',0,0,'C', True);
 	$this->fpdf->Cell(35,8,'Tipo Venta',0,0,'C', True);
 	$this->fpdf->Cell(20,8,'Poliza',0,0,'C', True);
 	$this->fpdf->Cell(20,8,'Suma',0,0,'C', True);
@@ -306,8 +306,8 @@ class Reportes extends CI_Controller {
 		if(isset($key['tpoliza'])) $tpoliza = $key['tpoliza'].' '.$key['num_poliza']; else  $tpoliza = 'NO APLICA';
 
 		$this->fpdf->Cell(20,6,$key['nsem'],1,0,'C');
-		$this->fpdf->Cell(40,6,strtoupper(utf8_decode($key['apellidos'].' '.$key['nombres'])),1,0, 'C');
-		$this->fpdf->Cell(15,6,$key['identificacion'],1,0,'C');
+		$this->fpdf->Cell(40,6,'',1,0, 'C');
+		$this->fpdf->Cell(15,6,'',1,0,'C');
 		$this->fpdf->Cell(35,6,strtoupper(utf8_decode($key['concepto'])),1,0,'C');
 		$this->fpdf->Cell(20,6, $tpoliza,1,0,'C');
 		$this->fpdf->Cell(20,6,number_format($key['suma'], 2, ',', '.'),1,0,'C');
@@ -334,8 +334,8 @@ class Reportes extends CI_Controller {
 
 	$this->fpdf->SetFont('Arial','B',8);
 
-	$this->fpdf->Cell(40,8,'Asegurado', 0, 0, 'C', True);
-	$this->fpdf->Cell(20,8,'Cedula',0,0,'C', True);
+	$this->fpdf->Cell(40,8,'', 0, 0, 'C', True);
+	$this->fpdf->Cell(20,8,'',0,0,'C', True);
 	$this->fpdf->Cell(40,8,'Tipo Venta',0,0,'C', True);
 	$this->fpdf->Cell(30,8,'Poliza',0,0,'C', True);
 	$this->fpdf->Cell(20,8,'Suma',0,0,'C', True);
@@ -353,8 +353,8 @@ class Reportes extends CI_Controller {
 		if(isset($key['tpoliza'])) $tpoliza = $key['tpoliza'].' '.$key['num_poliza']; else  $tpoliza = 'NO APLICA';
 
 
-		$this->fpdf->Cell(40,6,strtoupper(utf8_decode($key['apellidos'].' '.$key['nombres'])),1,0, 'C');
-		$this->fpdf->Cell(20,6,$key['identificacion'],1,0,'C');
+		$this->fpdf->Cell(40,6,'',1,0, 'C');
+		$this->fpdf->Cell(20,6,'',1,0,'C');
 		$this->fpdf->Cell(40,6,strtoupper(utf8_decode($key['concepto'])),1,0,'C');
 		$this->fpdf->Cell(30,6,$tpoliza,1,0,'C');
 		$this->fpdf->Cell(20,6,number_format($key['suma'], 2, ',', '.'),1,0,'C');
@@ -384,8 +384,8 @@ class Reportes extends CI_Controller {
 	$this->fpdf->Ln(15);
 
 	$this->fpdf->SetFont('Arial','B',8);
-	$this->fpdf->Cell(50,8,'Asegurado', 0, 0, 'C', True);
-	$this->fpdf->Cell(20,8,'Cedula',0,0,'C', True);
+	$this->fpdf->Cell(50,8,'', 0, 0, 'C', True);
+	$this->fpdf->Cell(20,8,'',0,0,'C', True);
 	$this->fpdf->Cell(40,8,'Tipo Venta',0,0,'C', True);
 	$this->fpdf->Cell(30,8,'Poliza',0,0,'C', True);
 	$this->fpdf->Cell(30,8,'Suma',0,0,'C', True);
@@ -401,8 +401,8 @@ class Reportes extends CI_Controller {
 
 		if(isset($key['tpoliza'])) $tpoliza = $key['tpoliza'].' '.$key['num_poliza']; else  $tpoliza = 'NO APLICA';
 		
-		$this->fpdf->Cell(50,6,strtoupper(utf8_decode($key['apellidos'].' '.$key['nombres'])),1,0, 'C');
-		$this->fpdf->Cell(20,6,$key['identificacion'],1,0,'C');
+		$this->fpdf->Cell(50,6,'',1,0, 'C');
+		$this->fpdf->Cell(20,6,'',1,0,'C');
 		$this->fpdf->Cell(40,6,strtoupper(utf8_decode($key['concepto'])),1,0,'C');
 		$this->fpdf->Cell(30,6, $tpoliza,1,0,'C');
 		$this->fpdf->Cell(30,6,number_format($key['suma'], 2, ',', '.'),1,0,'C');
