@@ -77,6 +77,16 @@ class Reportes extends CI_Controller {
 		$this->load->view('layout/footer');
 	}
 
+	public function rpt_dom(){
+		
+		$data['vendedores'] = $this->reportes_model->e_listvendedores();
+
+		$this->load->view('layout/header');
+		$this->load->view('layout/nav');
+		$this->load->view('reportes/domiciliadas', $data);
+		$this->load->view('layout/footer');
+	}
+
     public function porcoordinador(){
 
 
@@ -847,4 +857,57 @@ class Reportes extends CI_Controller {
 		$this->fpdf->Output();
 	}
 
+
+
+	public function domiciliadas(){	
+
+		//print_r($_POST);
+
+		$this->fpdf->AddPage();
+		$this->fpdf->Image(base_url().'assets/0.fw_.png',8,10,60);
+
+		$this->fpdf->SetFont('Arial','B',12);
+		$this->fpdf->Ln(15);
+    	//$sem = $this->reportes_model->semana2($_POST['sem']);
+
+    	$datos = $this->polizas_model->listventas3($_POST['cod_vendedor']);
+
+		$this->fpdf->Cell(180,6,'Ventas domiciliadas' ,0,0,'L');
+
+		$this->fpdf->Ln(15);
+
+		$this->fpdf->SetFont('Arial','B',10);
+
+		$this->fpdf->Cell(20,8,'Solicitud',1,0,'C');
+		$this->fpdf->Cell(20,8,'Cedula',1,0,'C');
+		$this->fpdf->Cell(60,8,'Tomador',1,0,'C');
+		$this->fpdf->Cell(35,8,'T. venta',1,0,'C');
+		$this->fpdf->Cell(20,8,'Poliza',1,0,'C');
+		$this->fpdf->Cell(20,8,'Plan',1,0,'C');
+		$this->fpdf->Cell(10,8,'Sem.',1,0,'C');
+
+		$this->fpdf->Ln(8);
+
+		$this->fpdf->SetFont('Arial','',8);
+
+
+		foreach ($datos as $key) {
+
+			$this->fpdf->Cell(1,6,'',0,0,'L');
+			$this->fpdf->Cell(20,6,$key['solicitud'],0,0,'L');
+			$this->fpdf->Cell(20,6,$key['identificacion'],0,0,'L');
+			$this->fpdf->Cell(60,6,$key['apellidos'].' '.$key['nombres'],0,0,'L');
+			$this->fpdf->Cell(35,6,$key['concepto'],0,0,'L');
+			$this->fpdf->Cell(20,6,$key['tpoliza'],0,0,'L');
+			$this->fpdf->Cell(20,6,$key['tplan'],0,0,'L');
+			$this->fpdf->Cell(10,6,$key['nsem'],0,0,'L');
+
+
+			$this->fpdf->Ln(6);
+			
+		}
+
+
+		$this->fpdf->Output();
+	}
 }

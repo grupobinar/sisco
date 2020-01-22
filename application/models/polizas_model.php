@@ -207,6 +207,32 @@ class Polizas_model extends CI_Model{
 		}
 	}
 
+	function listventas3($f)
+	{
+		$this->db->select('id_venta, t_tomadores.identificacion, nsem, desde, hasta, referencia_pago, monto, cuotas_canceladas, t_ventas.fecha_registro, t_tomadores.nombres, t_tomadores.apellidos, tplan, cobertura, tpoliza, tpago, tventa, estatus_venta, concepto, solicitud');
+		$this->db->join('t_vendedores','t_vendedores.id_vendedor = t_ventas.id_vendedor','left');
+		$this->db->join('t_tomadores','t_tomadores.id_tomador = t_ventas.id_tomador','left');
+		$this->db->join('t_plan','t_plan.id_tplan = t_ventas.id_plan','left');
+		$this->db->join('t_polizas','t_polizas.id_poliza = t_ventas.id_poliza','left');
+		$this->db->join('t_tpoliza','t_tpoliza.id_tpoliza = t_ventas.id_tpoliza','left');
+		$this->db->join('t_tpago','t_tpago.id_tpago = t_ventas.tipo_pago','left');
+		$this->db->join('t_semanas','t_semanas.id_semana = t_ventas.id_semana','left');
+		$this->db->join('t_concepto','t_concepto.id_concepto = t_ventas.tventa','left');
+		$this->db->where('t_ventas.estatus_venta', 'D');
+		$this->db->where('t_vendedores.cod_vendedor', $f);
+		$this->db->order_by('t_ventas.id_semana','ASC');
+
+
+		$listusuarios = $this->db->get('public.t_ventas');
+
+		//echo $this->db->last_query();
+
+		if($listusuarios->num_rows()>0)
+		{
+			 return $listusuarios->result_array();
+		}
+	}
+
 	function listventasd()
 	{
 		$this->db->select('id_venta, t_tomadores.identificacion, nsem, desde, hasta, referencia_pago, monto, cuotas_canceladas, t_ventas.fecha_registro, t_tomadores.nombres, t_tomadores.apellidos, t_tomadores.telefono, t_tomadores.correo, tplan, cobertura, tpoliza, tpago, tventa, estatus_venta');
