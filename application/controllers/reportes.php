@@ -100,7 +100,7 @@ class Reportes extends CI_Controller {
 		$this->fpdf->Image(base_url().'assets/0.fw_.png',10,10,60);
 		$this->fpdf->SetFont('Arial','B',14);
 		$this->fpdf->Ln(8);
-		$this->fpdf->Cell(200,10,'Estado de cuenta General de Comisiones',0,0,'C');
+		$this->fpdf->Cell(200,10,'Relacion de pagos',0,0,'C');
 		
 		$this->fpdf->Ln(5);
 		$this->fpdf->SetFont('Arial','',9);
@@ -259,7 +259,7 @@ class Reportes extends CI_Controller {
 	$this->fpdf->SetFont('Arial','B',14);
 	$this->fpdf->Ln(6);
 
-	$this->fpdf->Cell(200,10,'Estado de cuenta de Comisiones',0,0,'C');
+	$this->fpdf->Cell(200,10,'Relacion de pagos',0,0,'C');
 	
 	$this->fpdf->Ln(6);
 
@@ -299,8 +299,8 @@ class Reportes extends CI_Controller {
 
 	$this->fpdf->SetFont('Arial','B',8);
 	$this->fpdf->Cell(20,8,'Semana', 0, 0, 'C', True);
-	$this->fpdf->Cell(40,8,'Asegurado', 0, 0, 'C', True);
-	$this->fpdf->Cell(15,8,'Cedula',0,0,'C', True);
+	$this->fpdf->Cell(40,8,'', 0, 0, 'C', True);
+	$this->fpdf->Cell(15,8,'',0,0,'C', True);
 	$this->fpdf->Cell(35,8,'Tipo Venta',0,0,'C', True);
 	$this->fpdf->Cell(20,8,'Poliza',0,0,'C', True);
 	$this->fpdf->Cell(20,8,'Suma',0,0,'C', True);
@@ -316,8 +316,8 @@ class Reportes extends CI_Controller {
 		if(isset($key['tpoliza'])) $tpoliza = $key['tpoliza'].' '.$key['num_poliza']; else  $tpoliza = 'NO APLICA';
 
 		$this->fpdf->Cell(20,6,$key['nsem'],1,0,'C');
-		$this->fpdf->Cell(40,6,strtoupper(utf8_decode($key['apellidos'].' '.$key['nombres'])),1,0, 'C');
-		$this->fpdf->Cell(15,6,$key['identificacion'],1,0,'C');
+		$this->fpdf->Cell(40,6,'',1,0, 'C');
+		$this->fpdf->Cell(15,6,'',1,0,'C');
 		$this->fpdf->Cell(35,6,strtoupper(utf8_decode($key['concepto'])),1,0,'C');
 		$this->fpdf->Cell(20,6, $tpoliza,1,0,'C');
 		$this->fpdf->Cell(20,6,number_format($key['suma'], 2, ',', '.'),1,0,'C');
@@ -344,8 +344,8 @@ class Reportes extends CI_Controller {
 
 	$this->fpdf->SetFont('Arial','B',8);
 
-	$this->fpdf->Cell(40,8,'Asegurado', 0, 0, 'C', True);
-	$this->fpdf->Cell(20,8,'Cedula',0,0,'C', True);
+	$this->fpdf->Cell(40,8,'', 0, 0, 'C', True);
+	$this->fpdf->Cell(20,8,'',0,0,'C', True);
 	$this->fpdf->Cell(40,8,'Tipo Venta',0,0,'C', True);
 	$this->fpdf->Cell(30,8,'Poliza',0,0,'C', True);
 	$this->fpdf->Cell(20,8,'Suma',0,0,'C', True);
@@ -363,8 +363,8 @@ class Reportes extends CI_Controller {
 		if(isset($key['tpoliza'])) $tpoliza = $key['tpoliza'].' '.$key['num_poliza']; else  $tpoliza = 'NO APLICA';
 
 
-		$this->fpdf->Cell(40,6,strtoupper(utf8_decode($key['apellidos'].' '.$key['nombres'])),1,0, 'C');
-		$this->fpdf->Cell(20,6,$key['identificacion'],1,0,'C');
+		$this->fpdf->Cell(40,6,'',1,0, 'C');
+		$this->fpdf->Cell(20,6,'',1,0,'C');
 		$this->fpdf->Cell(40,6,strtoupper(utf8_decode($key['concepto'])),1,0,'C');
 		$this->fpdf->Cell(30,6,$tpoliza,1,0,'C');
 		$this->fpdf->Cell(20,6,number_format($key['suma'], 2, ',', '.'),1,0,'C');
@@ -394,8 +394,8 @@ class Reportes extends CI_Controller {
 	$this->fpdf->Ln(15);
 
 	$this->fpdf->SetFont('Arial','B',8);
-	$this->fpdf->Cell(50,8,'Asegurado', 0, 0, 'C', True);
-	$this->fpdf->Cell(20,8,'Cedula',0,0,'C', True);
+	$this->fpdf->Cell(50,8,'', 0, 0, 'C', True);
+	$this->fpdf->Cell(20,8,'',0,0,'C', True);
 	$this->fpdf->Cell(40,8,'Tipo Venta',0,0,'C', True);
 	$this->fpdf->Cell(30,8,'Poliza',0,0,'C', True);
 	$this->fpdf->Cell(30,8,'Suma',0,0,'C', True);
@@ -411,8 +411,8 @@ class Reportes extends CI_Controller {
 
 		if(isset($key['tpoliza'])) $tpoliza = $key['tpoliza'].' '.$key['num_poliza']; else  $tpoliza = 'NO APLICA';
 		
-		$this->fpdf->Cell(50,6,strtoupper(utf8_decode($key['apellidos'].' '.$key['nombres'])),1,0, 'C');
-		$this->fpdf->Cell(20,6,$key['identificacion'],1,0,'C');
+		$this->fpdf->Cell(50,6,'',1,0, 'C');
+		$this->fpdf->Cell(20,6,'',1,0,'C');
 		$this->fpdf->Cell(40,6,strtoupper(utf8_decode($key['concepto'])),1,0,'C');
 		$this->fpdf->Cell(30,6, $tpoliza,1,0,'C');
 		$this->fpdf->Cell(30,6,number_format($key['suma'], 2, ',', '.'),1,0,'C');
@@ -428,7 +428,7 @@ class Reportes extends CI_Controller {
 
 	$this->fpdf->SetFont('Arial','B',8);
 
-	$this->fpdf->Cell(275,10,':: La comision de las ventas con domiciliacion de pago sera calculada una vez comprobado el pago',0,0,'L');
+	$this->fpdf->Cell(275,10,':: Las ventas con domiciliacion de pago sera calculada una vez comprobado el pago',0,0,'L');
 
 
 	

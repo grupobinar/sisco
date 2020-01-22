@@ -62,7 +62,7 @@ class Rpt_excel extends CI_Controller {
         );
 
         $this->excel->getDefaultStyle()->applyFromArray($style3);
-        $this->excel->getActiveSheet()->setCellValue('A2', 'Estado de Cuenta de Comisiones');
+        $this->excel->getActiveSheet()->setCellValue('A2', 'Relacion de pagos');
         $this->excel->getActiveSheet()->mergeCells('A2:G2');
 
         $this->excel->getActiveSheet()->setCellValue('A3', 'SEM '.$sem['nsem'].' '.$sem['desde'].' AL '.$sem['hasta']);
@@ -270,7 +270,7 @@ class Rpt_excel extends CI_Controller {
 	    );
 
         $this->excel->getDefaultStyle()->applyFromArray($style2);
-        $this->excel->getActiveSheet()->setCellValue('A2', 'Estado de Cuenta de Comisiones General');
+        $this->excel->getActiveSheet()->setCellValue('A2', 'Relacion de pagos General');
         $this->excel->getActiveSheet()->mergeCells('A2:G2');
 
         $this->excel->getActiveSheet()->setCellValue('A3', 'SEM '.$sem['nsem'].' '.$sem['desde'].' AL '.$sem['hasta']);
