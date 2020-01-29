@@ -584,7 +584,9 @@ class Config_model extends CI_Model{
 
 	    // buscando ultima semana en la base de datos para aumentarla en 1, si es la ultima semana del año comienza de nuevo en 1
 
-	    $this->db->select_max("nsem");
+	    $this->db->select("nsem");
+		$this->db->order_by('t_semanas.id_semana', 'desc');
+
 	    $nsem = $this->db->get('public.t_semanas');
 
 	    if ($numsemanas<=$nsem->row()->nsem) $numerosemana=1;
