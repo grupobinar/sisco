@@ -861,8 +861,6 @@ class Reportes extends CI_Controller {
 
 	public function domiciliadas(){	
 
-		//print_r($_POST);
-
 		$this->fpdf->AddPage();
 		$this->fpdf->Image(base_url().'assets/0.fw_.png',8,10,60);
 
@@ -871,8 +869,13 @@ class Reportes extends CI_Controller {
     	//$sem = $this->reportes_model->semana2($_POST['sem']);
 
     	$datos = $this->polizas_model->listventas3($_POST['cod_vendedor']);
+    	$vendedor = $this->reportes_model->vendedor($_POST['cod_vendedor']);
 
 		$this->fpdf->Cell(180,6,'Ventas domiciliadas' ,0,0,'L');
+
+		$this->fpdf->Ln(8);
+
+		$this->fpdf->Cell(180,6,'Vendedor: '.$vendedor['apellidos'].' '.$vendedor['nombres'] ,0,0,'L');
 
 		$this->fpdf->Ln(15);
 

@@ -248,10 +248,14 @@ class Polizas_model extends CI_Model{
 			$this->db->where('t_vendedores.id_coordinador', $this->session->userdata('id_usuario'));
 		}
 
-			$this->db->where('t_ventas.estatus_venta', 'D');
+		$this->db->where('t_ventas.estatus_venta', 'D');
+
 
 
 		$listusuarios = $this->db->get('public.t_ventas');
+
+		//echo $this->db->last_query();
+
 
 		if($listusuarios->num_rows()>0)
 		{

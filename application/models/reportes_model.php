@@ -119,6 +119,17 @@ class Reportes_model extends CI_Model{
 
 	}
 
+	function vendedor($id)
+	{
+
+		$this->db->where('t_vendedores.cod_vendedor',$id); 
+		$data = $this->db->get('public.t_vendedores'); 
+
+		return $data->row_array();
+
+
+	}
+
 	function coordinador_($id)
 	{
 

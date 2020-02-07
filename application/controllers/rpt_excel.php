@@ -8,7 +8,8 @@ class Rpt_excel extends CI_Controller {
 		parent::__construct();
 		$this->load->helper('url');
     	$this->load->helper('form');
-    	$this->load->model('reportes_model');
+        $this->load->model('reportes_model');
+    	$this->load->model('polizas_model');
     	$this->load->library('session');
     	$this->load->library('excel');
 
@@ -566,8 +567,9 @@ class Rpt_excel extends CI_Controller {
     }
 
     public function domiciliadas(){
+       // print_r($_POST);
+       // break;
         $this->excel->setActiveSheetIndex(0);
-        $sem = $this->reportes_model->semana($_POST['sem']);
         $this->excel->getActiveSheet()->setTitle('Ventas Domiciliadas');
         $this->excel->getActiveSheet()->getDefaultRowDimension()->setRowHeight(15); 
 
@@ -595,102 +597,44 @@ class Rpt_excel extends CI_Controller {
             ),
         );
 
-        $this->excel->getDefaultStyle()->applyFromArray($style2);
-        $this->excel->getActiveSheet()->setCellValue('A2', 'REPORTE DE CIERRE SEM '.$sem['nsem'].' desde: '.$sem['desde'].' hasta: '.$sem['hasta']);
-        $this->excel->getActiveSheet()->mergeCells('A2:L2');
-
-        $this->excel->getActiveSheet()->setCellValue('A4', 'COORDINADOR');
-        $this->excel->getActiveSheet()->setCellValue('B4', 'VENDEDOR');
-        $this->excel->getActiveSheet()->setCellValue('C4', 'SOLICITUD');
-        $this->excel->getActiveSheet()->setCellValue('D4', 'CEDULA');
-        $this->excel->getActiveSheet()->setCellValue('E4', 'TOMADOR');
-        $this->excel->getActiveSheet()->setCellValue('F4', 'TIPO DE VENTA');
-        $this->excel->getActiveSheet()->setCellValue('G4', 'POLIZA');
-        $this->excel->getActiveSheet()->setCellValue('H4', 'ADICIONALES');
-        $this->excel->getActiveSheet()->setCellValue('I4', 'CUOTAS CANCELADAS');
-        $this->excel->getActiveSheet()->setCellValue('J4', 'ESTATUS');
-        $this->excel->getActiveSheet()->setCellValue('K4', 'COMISION VENDEDOR');
-        $this->excel->getActiveSheet()->setCellValue('L4', 'COMISION COORDINADOR');
-        $this->excel->getActiveSheet()->getStyle("A4:L4")->applyFromArray($style);
-
-        $sem = $this->reportes_model->semana($_POST['sem']);
-        $cierre = $this->reportes_model->cierre('L',$sem['id_semana']);
+        $vendedor = $this->reportes_model->vendedor($_POST['cod_vendedor']);
         
-        $cc=0; $cv=0; $c_anterior=0; $v_anterior=0; $cct=0; $cvt=0; $i=4; $x=0;
+        $this->excel->getDefaultStyle()->applyFromArray($style2);
+        $this->excel->getActiveSheet()->setCellValue('A1', 'REPORTE VENTAS DOMICILIADAS');
+        $this->excel->getActiveSheet()->setCellValue('A2', 'VENDEDOR: '.$vendedor['apellidos'].' '.$vendedor['nombres']);
+        $this->excel->getActiveSheet()->mergeCells('A1:G1');
+        $this->excel->getActiveSheet()->mergeCells('A2:G2');
 
-        if (count($cierre)>0) {
+        $this->excel->getActiveSheet()->setCellValue('A4', 'SOLICITUD');
+        $this->excel->getActiveSheet()->setCellValue('B4', 'CEDULA');
+        $this->excel->getActiveSheet()->setCellValue('C4', 'TOMADOR');
+        $this->excel->getActiveSheet()->setCellValue('D4', 'TIPO DE VENTA');
+        $this->excel->getActiveSheet()->setCellValue('E4', 'POLIZA');
+        $this->excel->getActiveSheet()->setCellValue('F4', 'PLAN');
+        $this->excel->getActiveSheet()->setCellValue('G4', 'SEMANA');
+        $this->excel->getActiveSheet()->getStyle("A4:G4")->applyFromArray($style);
 
-        foreach ($cierre as $key) {
+        $datos = $this->polizas_model->listventas3($_POST['cod_vendedor']);
+
+        if (count($datos)>0) {
+            $i=4;
+        foreach ($datos as $key) {
             $i++;
 
-            if (($v_anterior!=$key['id_vendedor']) and ($v_anterior!=0)) {
-                $i=$i+1;
-                $this->excel->getActiveSheet()->setCellValue('J'.$i, 'TOTAL');
-                $this->excel->getActiveSheet()->setCellValue('K'.$i, number_format($cv, 2, ',', '.'));
-  
-                if (($c_anterior!=$key['id_user']) and ($c_anterior!=0)) {
-                    $this->excel->getActiveSheet()->setCellValue('L'.$i, number_format($cc, 2, ',', '.'));
-                    $cc=0;
-                    $this->excel->getActiveSheet()->getStyle("L".$i)->applyFromArray($style);
-                }
-                $this->excel->getActiveSheet()->getStyle("J".$i.":K".$i)->applyFromArray($style);
+            $this->excel->getActiveSheet()->setCellValue('A'.$i, $key['solicitud']);
+            $this->excel->getActiveSheet()->setCellValue('B'.$i, $key['identificacion']);
+            $this->excel->getActiveSheet()->setCellValue('C'.$i, $key['nombres'].' '.$key['apellidos']);
+            $this->excel->getActiveSheet()->setCellValue('D'.$i, $key['concepto']);
+            $this->excel->getActiveSheet()->setCellValue('E'.$i, $key['tpoliza']);
+            $this->excel->getActiveSheet()->setCellValue('F'.$i, $key['tplan']);
+            $this->excel->getActiveSheet()->setCellValue('G'.$i, $key['nsem']);
 
-                $cv=0;
-                $i=$i+2;
-                
             }
-
-            $cad=$this->reportes_model->contar_adicionales($key['id_venta']);
-
-              if($key['estatus_venta']=="P") {$estatus_venta="PRE";}
-              elseif($key['estatus_venta']=="L") {$estatus_venta="LIQ";}
-              elseif($key['estatus_venta']=="O") {$estatus_venta="LIQ"; }
-              elseif($key['estatus_venta']=="D") {$estatus_venta="DOM";}
-
-            $cv=$cv+$key['comision_liquidada'];
-            $cc=$cc+$key['comision_c'];
-
-            $cvt=$cvt+$key['comision_liquidada'];
-            $cct=$cct+$key['comision_c'];
-
-            $this->excel->getActiveSheet()->setCellValue('A'.$i, ucwords(strtolower($key['ap_c'].' '.$key['name_c'])));
-            $this->excel->getActiveSheet()->setCellValue('B'.$i, ucwords(strtolower($key['ap_v'].' '.$key['name_v'])));
-            $this->excel->getActiveSheet()->setCellValue('C'.$i, $key['solicitud']);
-            $this->excel->getActiveSheet()->setCellValue('D'.$i, $key['identificacion']);
-            $this->excel->getActiveSheet()->setCellValue('E'.$i, ucwords(strtolower($key['ap_t'].' '.$key['name_t'])));
-            $this->excel->getActiveSheet()->setCellValue('F'.$i, ucwords(($key['concepto'])));
-            $this->excel->getActiveSheet()->setCellValue('G'.$i, $key['tpoliza'].' '.$key['num_poliza']);
-            $this->excel->getActiveSheet()->setCellValue('H'.$i, $cad);
-            $this->excel->getActiveSheet()->setCellValue('I'.$i, $key['cuotas_canceladas']);
-            $this->excel->getActiveSheet()->setCellValue('J'.$i, $estatus_venta);
-            $this->excel->getActiveSheet()->setCellValue('K'.$i, number_format($key['comision_liquidada'], 2, ',', '.'));
-            $this->excel->getActiveSheet()->setCellValue('L'.$i, number_format($key['comision_c'], 2, ',', '.'));
-
-            $v_anterior = $key['id_vendedor'];
-            $c_anterior = $key['id_user'];
 
         }
 
-        $i=$i+2;
-        $this->excel->getActiveSheet()->setCellValue('J'.$i, 'TOTAL');
-        $this->excel->getActiveSheet()->setCellValue('K'.$i, number_format($cv, 2, ',', '.'));
-        $this->excel->getActiveSheet()->setCellValue('L'.$i, number_format($cc, 2, ',', '.'));
-        $this->excel->getActiveSheet()->getStyle("J".$i.":L".$i)->applyFromArray($style);
-
-        $i=$i+2;
-        $this->excel->getActiveSheet()->setCellValue('J'.$i, 'TOTAL GENERAL');
-        $this->excel->getActiveSheet()->setCellValue('K'.$i, number_format($cvt, 2, ',', '.'));
-        $this->excel->getActiveSheet()->setCellValue('L'.$i, number_format($cct, 2, ',', '.'));
-        $this->excel->getActiveSheet()->getStyle("J".$i.":L".$i)->applyFromArray($style);
-
-    }else{
-        $this->excel->getActiveSheet()->setCellValue('A'.$i, 'NO HAY NADA QUE REPORTAR');
-        $this->excel->getActiveSheet()->getStyle("A".$i.":L".$i)->applyFromArray($style);
-        $this->excel->getActiveSheet()->mergeCells("A".$i.":L".$i);
-    }
-
         header('Content-Type: application/vnd.ms-excel');
-        header('Content-Disposition: attachment;filename="Reporte_por_coordinador.xls"');
+        header('Content-Disposition: attachment;filename="Reporte_domiciliadas.xls"');
         header('Cache-Control: max-age=0'); //no cache
         $objWriter = PHPExcel_IOFactory::createWriter($this->excel, 'Excel5');
         // Forzamos a la descarga
