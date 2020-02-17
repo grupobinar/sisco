@@ -21,6 +21,14 @@ class Config_model extends CI_Model{
 
 	}
 
+	function eliminar($id,$tb,$name_id){
+
+			$this->db->where($name_id, $id);
+			$this->db->delete($tb);
+			//echo $this->db->last_query();
+
+	}
+
 	function guardar_tpago($tpago,$fecha,$usuario){
 
 		  	$data = array(

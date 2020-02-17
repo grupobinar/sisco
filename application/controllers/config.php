@@ -216,6 +216,17 @@ class Config extends CI_Controller {
 		//echo $guser;
 	}	
 
+	public function eliminar()
+	{ // eliminar tipo de cobro
+
+		$guser = $this->config_model->eliminar($_POST['id'],$_POST['tb'],$_POST['id_name']);
+
+		//$this->session->set_flashdata('message', [ "Registro Eliminado", 'success']);
+		echo "Registro Eliminado con exito";
+		//header('Location: '.$_SERVER['HTTP_REFERER']);
+		//echo $guser;
+	}	
+
 	// planes de las polizas
 
 	public function plan()

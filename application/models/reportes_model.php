@@ -96,6 +96,28 @@ class Reportes_model extends CI_Model{
 
 	}
 
+	function emails()
+	{
+
+		$data = $this->db->get('public.t_email'); 
+
+		return $data->result_array();
+
+
+	}
+
+	function semanaMail()
+	{
+
+		$this->db->order_by('id_semana','desc'); 
+		$this->db->where('estatus','1'); 
+		$data = $this->db->get('public.t_semanas'); 
+
+		return $data->row_array();
+
+
+	}
+
 	function semana2($sem)
 	{
 

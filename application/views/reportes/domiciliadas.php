@@ -1,4 +1,3 @@
-
 <?php  print_r($_ci_vars['conceptos']); ?>
 <div class="col-lg-12"> <br> </div>
 <div class="col-lg-3"></div> 
