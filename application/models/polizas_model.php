@@ -209,7 +209,7 @@ class Polizas_model extends CI_Model{
 
 	function listventas3($f)
 	{
-		$this->db->select('id_venta, t_tomadores.identificacion, nsem, desde, hasta, referencia_pago, monto, cuotas_canceladas, t_ventas.fecha_registro, t_tomadores.nombres, t_tomadores.apellidos, tplan, cobertura, tpoliza, tpago, tventa, estatus_venta, concepto, solicitud');
+		$this->db->select('id_venta, t_tomadores.identificacion, nsem, desde, hasta, referencia_pago, monto, cuotas_canceladas, t_ventas.fecha_registro, t_tomadores.nombres, t_tomadores.apellidos, tplan, cobertura, tpoliza, tpago, tventa, estatus_venta, concepto, solicitud, desde, hasta');
 		$this->db->join('t_vendedores','t_vendedores.id_vendedor = t_ventas.id_vendedor','left');
 		$this->db->join('t_tomadores','t_tomadores.id_tomador = t_ventas.id_tomador','left');
 		$this->db->join('t_plan','t_plan.id_tplan = t_ventas.id_plan','left');

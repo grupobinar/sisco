@@ -141,6 +141,19 @@ class Reportes_model extends CI_Model{
 
 	}
 
+	function coordinadorMail()
+	{
+
+		$this->db->where('t_usuarios.id_rol','3'); 
+		$this->db->where('t_usuarios.estatus','0'); 
+		$this->db->join('t_personas','t_personas.id_persona = t_usuarios.id_persona','left');
+		$data = $this->db->get('public.t_usuarios'); 
+
+		return $data->result_array();
+
+
+	}
+
 	function vendedor($id)
 	{
 
@@ -176,10 +189,13 @@ class Reportes_model extends CI_Model{
 	function contar_adicionales2($id,$sem){
 
 		$this->db->select('COUNT(*) as total');
-		$this->db->join('t_ventas','t_ventas.id_venta = t_adicionales.id_venta','left');
+		//$this->db->join('t_ventas','t_ventas.id_venta = t_adicionales.id_venta','left');
+		$this->db->where('id_venta','2');
 		$this->db->where('id_vendedor',$id);
 		$this->db->where('id_semana',$sem);
-		$adicionales_count = $this->db->get('public.t_adicionales');
+		$this->db->where('estatus_venta !=','X');
+
+		$adicionales_count = $this->db->get('public.t_ventas');
 
 		return $adicionales_count->row()->total;
 	}
@@ -190,6 +206,8 @@ class Reportes_model extends CI_Model{
 		$this->db->where('id_vendedor',$id);
 		$this->db->where('id_tpoliza','5');
 		$this->db->where('id_semana',$sem);
+		$this->db->where('estatus_venta !=','X');
+
 
 		$adicionales_count = $this->db->get('public.t_ventas');
 
@@ -202,6 +220,8 @@ class Reportes_model extends CI_Model{
 		$this->db->where('id_vendedor',$id);
 		$this->db->where('id_venta','3');
 		$this->db->where('id_semana',$sem);
+		$this->db->where('estatus_venta !=','X');
+
 
 		$adicionales_count = $this->db->get('public.t_ventas');
 
@@ -463,6 +483,8 @@ class Reportes_model extends CI_Model{
 		$this->db->where('id_vendedor',$v);
 		$this->db->where('id_semana',$s);
 		$this->db->where('tventa','1');
+		$this->db->where('estatus_venta !=','X');
+		//$this->db->where('estatus','0');
 		$this->db->where('t_ventas.id_tpoliza !=','5');
 
 		$data1 = $this->db->get('public.t_ventas'); 

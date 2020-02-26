@@ -730,6 +730,9 @@ class Reportes extends CI_Controller {
 						$this->fpdf->Cell(30,6,$ac,1,0,'L');
 						$this->fpdf->Ln(7);
 						$sum = 0;
+						$ad = 0;
+						$vi = 0;
+						$ac = 0;
 					}
 
 				}
@@ -861,7 +864,7 @@ class Reportes extends CI_Controller {
 
 	public function domiciliadas(){	
 
-		$this->fpdf->AddPage();
+		$this->fpdf->AddPage('L');
 		$this->fpdf->Image(base_url().'assets/0.fw_.png',8,10,60);
 
 		$this->fpdf->SetFont('Arial','B',12);
@@ -882,12 +885,14 @@ class Reportes extends CI_Controller {
 		$this->fpdf->SetFont('Arial','B',10);
 
 		$this->fpdf->Cell(20,8,'Solicitud',1,0,'C');
-		$this->fpdf->Cell(20,8,'Cedula',1,0,'C');
+		$this->fpdf->Cell(30,8,'Cedula',1,0,'C');
 		$this->fpdf->Cell(60,8,'Tomador',1,0,'C');
 		$this->fpdf->Cell(35,8,'T. venta',1,0,'C');
 		$this->fpdf->Cell(20,8,'Poliza',1,0,'C');
 		$this->fpdf->Cell(20,8,'Plan',1,0,'C');
 		$this->fpdf->Cell(10,8,'Sem.',1,0,'C');
+		$this->fpdf->Cell(40,8,'Fecha.',1,0,'C');
+		$this->fpdf->Cell(30,8,'Dias.',1,0,'C');
 
 		$this->fpdf->Ln(8);
 
@@ -898,12 +903,19 @@ class Reportes extends CI_Controller {
 
 			$this->fpdf->Cell(1,6,'',0,0,'L');
 			$this->fpdf->Cell(20,6,$key['solicitud'],0,0,'L');
-			$this->fpdf->Cell(20,6,$key['identificacion'],0,0,'L');
+			$this->fpdf->Cell(30,6,$key['identificacion'],0,0,'L');
 			$this->fpdf->Cell(60,6,$key['apellidos'].' '.$key['nombres'],0,0,'L');
-			$this->fpdf->Cell(35,6,$key['concepto'],0,0,'L');
-			$this->fpdf->Cell(20,6,$key['tpoliza'],0,0,'L');
-			$this->fpdf->Cell(20,6,$key['tplan'],0,0,'L');
-			$this->fpdf->Cell(10,6,$key['nsem'],0,0,'L');
+			$this->fpdf->Cell(35,6,$key['concepto'],0,0,'C');
+			$this->fpdf->Cell(20,6,$key['tpoliza'],0,0,'C');
+			$this->fpdf->Cell(20,6,$key['tplan'],0,0,'C');
+			$this->fpdf->Cell(10,6,$key['nsem'],0,0,'C');
+			$this->fpdf->Cell(40,6,$key['desde'].' / '.$key['hasta'],0,0,'C');
+
+			$date1 = new DateTime($key['hasta']);
+			$date2 = new DateTime(date('Y-m-d'));
+			$diff = $date1->diff($date2);
+
+			$this->fpdf->Cell(30,6,$diff->days,0,0,'C');
 
 
 			$this->fpdf->Ln(6);

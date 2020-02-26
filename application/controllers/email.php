@@ -138,12 +138,126 @@ class Email extends CI_Controller {
 		$this->fpdf->SetFont('Arial','B',9);
 		$this->fpdf->Cell(280,6,'NO HAY NADA QUE REPORTAR',1,0,'C');
 	}
-		$dest='/var/www/html/sisco/assets/cierre_prueba.pdf';
+		$dest='/var/www/html/sisco/assets/cierre.pdf';
 		$this->fpdf->Output('F', $dest);
 		$data = $this->reportes_model->emails();
 		foreach ($data as $key => $val) {
 			$this->sendMail($dest,$val['email']);
 		}
+	}
+
+	public function metricas(){	
+
+		$sem = $this->reportes_model->semanaMail();
+		$co = $this->reportes_model->coordinadorMail();
+
+		//print_r($co);
+
+		foreach ($co as $coo) {
+			
+		$this->fpdf->AddPage();
+		$this->fpdf->Image(base_url().'assets/0.fw_.png',8,10,60);
+
+		$this->fpdf->SetFont('Arial','B',16);
+		$this->fpdf->Ln(10);
+		$this->fpdf->Cell(180,10,utf8_decode('ESTADISTICAS'),0,0,'C');
+		$this->fpdf->SetFont('Arial','',10);
+		$this->fpdf->Ln(5);
+		$this->fpdf->Cell(180,8,'Desde '.$sem[desde].' hasta '.$sem[hasta],0,0,'C');
+		$this->fpdf->Ln(5);
+		$this->fpdf->Cell(180,8,'Coordinador: '.$coo['apellidos'].' '.$coo['nombres'],0,0,'C');
+		
+		$this->fpdf->Ln(15);
+		$this->fpdf->SetFont('Arial','B',10);
+
+		// METRICAS POR TIPO DE PAGO *****************************************************************
+
+		$data = $this->reportes_model->metrica_tpago($sem['id_semana'], $sem['id_semana'], $coo['id_user']);
+
+		$this->fpdf->SetFillColor(148, 196, 241); 
+		$this->fpdf->Cell(180,8,'Metricas por tipo de pago',1,0,'L', true);
+		$this->fpdf->Ln(8);
+		$this->fpdf->Cell(60,8,'Tipo de pago',1,0,'L', true);
+		$this->fpdf->Cell(60,8,'Num. Ventas',1,0,'L', true);
+		$this->fpdf->Cell(60,8,'Monto Total Cobrado',1,0,'L', true);
+		$this->fpdf->Ln(8);
+
+		foreach ($data as $key) {
+			$this->fpdf->Cell(60,6,$key['tpago'],1,0,'L');
+			$this->fpdf->Cell(60,6,$key['total'],1,0,'L');
+			$this->fpdf->Cell(60,6,number_format($key['suma'], 2, ',', '.'),1,0,'L');
+			$this->fpdf->Ln(6);
+		}
+		
+		$this->fpdf->Ln(6);
+
+
+		// METRICAS POR TIPO DE VENTA *****************************************************************
+
+		$data = $this->reportes_model->metrica_tventa($sem['id_semana'], $sem['id_semana'], $coo['id_user']);
+
+		$this->fpdf->SetFillColor(148, 196, 241); 
+		$this->fpdf->Cell(180,8,'Metricas por tipo de venta',1,0,'L', true);
+		$this->fpdf->Ln(8);
+		$this->fpdf->Cell(90,8,'Tipo de venta',1,0,'L', true);
+		$this->fpdf->Cell(90,8,'Numero de Ventas',1,0,'L', true);
+		$this->fpdf->Ln(8);
+
+		foreach ($data as $key) {
+			$this->fpdf->Cell(90,6,utf8_decode($key['concepto']),1,0,'L');
+			$this->fpdf->Cell(90,6,$key['total'],1,0,'L');
+			$this->fpdf->Ln(6);
+		}
+		$this->fpdf->Ln(6);
+
+
+		// METRICAS POR TIPO DE POLIZA *****************************************************************
+
+		$data = $this->reportes_model->metrica_tpoliza($sem['id_semana'], $sem['id_semana'], $coo['id_user']);
+
+		$this->fpdf->SetFillColor(148, 196, 241); 
+		$this->fpdf->Cell(180,8,'Metricas por tipo de poliza',1,0,'L', true);
+		$this->fpdf->Ln(8);
+		$this->fpdf->Cell(90,8,'Tipo de poliza',1,0,'L', true);
+		$this->fpdf->Cell(90,8,'Numero de Ventas',1,0,'L', true);
+		$this->fpdf->Ln(8);
+
+		foreach ($data as $key) {
+			if ($key['tpoliza']=="") $key['tpoliza']="Act de datos / Adicionales";
+
+			$this->fpdf->Cell(90,6,$key['tpoliza'],1,0,'L');
+			$this->fpdf->Cell(90,6,$key['total'],1,0,'L');
+			$this->fpdf->Ln(6);
+		}
+		$this->fpdf->Ln(6);
+
+
+		// METRICAS POR TIPO DE POLIZA Y MODULO ********************************************************
+
+		$data = $this->reportes_model->metrica_tpolizam($sem['id_semana'], $sem['id_semana'], $coo['id_user']);
+
+		$this->fpdf->SetFillColor(148, 196, 241); 
+		$this->fpdf->Cell(180,8,'Metricas por tipo de poliza',1,0,'L', true);
+		$this->fpdf->Ln(8);
+		$this->fpdf->Cell(60,8,'Tipo de poliza',1,0,'L', true);
+		$this->fpdf->Cell(60,8,'Modulo',1,0,'L', true);
+		$this->fpdf->Cell(60,8,'Numero de Ventas',1,0,'L', true);
+		$this->fpdf->Ln(8);
+
+		foreach ($data as $key) {
+			if ($key['tpoliza']=="") $key['tpoliza']="Act de datos / Adicionales";
+
+			$this->fpdf->Cell(60,6,$key['tpoliza'],1,0,'L');
+			$this->fpdf->Cell(60,6,$key['num_poliza'],1,0,'L');
+			$this->fpdf->Cell(60,6,$key['total'],1,0,'L');
+			$this->fpdf->Ln(6);
+		}
+
+		// CUADRO RESUMEN *****************************************************************************
+		}
+
+		$dest='/var/www/html/sisco/assets/metricas1.pdf';
+		$this->fpdf->Output('F', $dest);
 	}
 
 	public function sendMail($pdf,$e){
@@ -153,7 +267,7 @@ class Email extends CI_Controller {
 			$this->mail->SMTPAuth   = true;                                   // Enable SMTP authentication
 			$this->mail->Username   = 'grupobinar@gmail.com';                     // SMTP username
 			$this->mail->Password   = 'Guitarrita86!';                               // SMTP password
-			//$this->mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;         // Enable TLS encryption; `PHPMailer::ENCRYPTION_SMTPS` also accepted
+
 			$this->mail->Port       = 587;                                    // TCP port to connect to
 		
 			$this->mail->setFrom('grupobinar@gmail.com', 'SISCO MAIL');
