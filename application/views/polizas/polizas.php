@@ -1,5 +1,3 @@
-<?php //print_r($_ci_vars[tpoliza]); ?>
-<?php  //print_r($_ci_vars) ?>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
 
 <script>
@@ -210,8 +208,6 @@ $(document).ready(function(){
         this.value = this.value.replace(/[^0-9\.]/g,'');
     });
 
-   
-
     $("#guardar").click(function() {
       if ($("#cobertura").val() == "") { alert("Todos los campos son obligatorios"); return false; }
       if ($("#suma").val() == "") { alert("Todos los campos son obligatorios"); return false; }
@@ -240,9 +236,8 @@ $(document).ready(function(){
 
     $(".desactivar").click(function() {
 
-      var id=$(this).attr("id");
-
-        $("#id_desactivar").val(id);
+      var id=$(this).attr("id");  
+      $("#id_desactivar").val(id);
 
     });
 
@@ -253,12 +248,8 @@ $(document).ready(function(){
       $.post("<?php echo base_url() ?>/index.php/polizas/desactivarPoliza", { id:$("#id_desactivar").val() }, function(data){
 
         $("#row_desactivar").html("<div><p class='text-light-blue'>"+data+"</p></div>");
-
         $("#fila_"+ide).hide();
-
         $("#btn_desactivar").css("display", "none").delay(1000);
-
-
         $("#_desctivar").val("Cerrar");
 
 

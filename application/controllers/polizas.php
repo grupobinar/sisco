@@ -154,10 +154,8 @@ class Polizas extends CI_Controller {
 			$usuario
 		);
 
-		//echo "<script> alert('".$guser."') </script>";
 		$this->session->set_flashdata('message', [ 'Poliza Modificada con exito', 'success']);
 		header('Location: '.$_SERVER['HTTP_REFERER']);
-		//redirect('/polizas', 'refresh');
 	}
 
 	public function guardar(){
