@@ -1,7 +1,4 @@
 <?php 
-/*echo "<pre>";
-print_r($_ci_vars);
-echo "</pre>";*/
 	  if($_ci_vars['poliza']['tventa']==1) $tventa = "Venta de poliza";
       elseif($_ci_vars['poliza']['tventa']==2) $tventa = "Adicionales";
       elseif($_ci_vars['poliza']['tventa']==3) $tventa = "Actualización de Datos";

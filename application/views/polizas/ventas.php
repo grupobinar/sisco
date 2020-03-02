@@ -1,6 +1,3 @@
-<?php //echo "<pre>"; print_r($_ci_vars); echo "</pre>";?>
-
-
 <!-- #lista de usuarios ############################################################################-->
 <div class="col-lg-12"> 
  <div class="col-lg-12"><br></div>
@@ -311,6 +308,13 @@ $(document).ready(function(){
       if(($("#tventa").val()!=3)) {
         if (($("#nsolicitud").val() == "")) { alert("Todos los campos son obligatorios"); return false; }  
 
+      }
+      if ($("#tventa").val()==2) {
+        if ($('#adicionales').prop('checked')) {
+           if ($("#ad_name").val() == "") {
+              alert("Debe agregar al menos un adicional"); return false;
+           }
+        }
       }
         if ($("#cedula").val() == "") { alert("Todos los campos son obligatorios"); return false; }
         if ($("#nombres").val() == "") { alert("Todos los campos son obligatorios"); return false; }
