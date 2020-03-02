@@ -16,7 +16,7 @@ class Liquidacion extends CI_Controller {
 	public function index()
 	{
 
-		$data = $this->liquidacion_model->listventas('A');
+		$data = $this->liquidacion_model->listventas('X');
 
 		$cc = $this->liquidacion_model->comision_coordinador();
 
@@ -35,8 +35,8 @@ class Liquidacion extends CI_Controller {
 			$lista[$i]["nombres"]=$sheet->nombres;
 			$lista[$i]["apellidos"]=$sheet->apellidos;
 			$lista[$i]["telefono"]=$sheet->telefono;
-			$lista[$i]["ventas"]=$this->liquidacion_model->contar($sheet->id_vendedor,$sheet->id_semana,'A');		
-			$lista[$i]["comision"]=$this->liquidacion_model->ventas_vendedor($sheet->id_vendedor,$sheet->id_semana,0,'A',0);
+			$lista[$i]["ventas"]=$this->liquidacion_model->contar($sheet->id_vendedor,$sheet->id_semana,'X');		
+			$lista[$i]["comision"]=$this->liquidacion_model->ventas_vendedor($sheet->id_vendedor,$sheet->id_semana,0,'X',0);
 			$lista[$i]["comision_c"]=$lista[$i]["comision"]*($cc->comision_c/100);		
 
 			}
@@ -160,7 +160,7 @@ class Liquidacion extends CI_Controller {
 		$id=$_GET['id'];
 		$sem=$_GET['sem'];
 
-		$data=$this->liquidacion_model->detallePreliquidacion($id,$sem,'A');
+		$data=$this->liquidacion_model->detallePreliquidacion($id,$sem,'X');
 
 		$cc = $this->liquidacion_model->comision_coordinador();
 
@@ -180,7 +180,7 @@ class Liquidacion extends CI_Controller {
 			$lista[$i]["factor"]=$sheet->factor;
 			$lista[$i]["cpagadas"]=$sheet->cuotas_canceladas;
 			$lista[$i]["adicionales"]=$this->liquidacion_model->contar_adicionales($sheet->id_venta);
-			$lista[$i]["comision"]=$this->liquidacion_model->ventas_vendedor($sheet->id_vendedor,$sheet->id_semana,$sheet->id_venta,'A',0);
+			$lista[$i]["comision"]=$this->liquidacion_model->ventas_vendedor($sheet->id_vendedor,$sheet->id_semana,$sheet->id_venta,'X',0);
 			$lista[$i]["comision_c"]=$lista[$i]["comision"]*($cc->comision_c/100);		
 
 			}
@@ -245,7 +245,7 @@ class Liquidacion extends CI_Controller {
 
 	public function preliquidar(){
 
-		$guser = $this->liquidacion_model->preliquidar();
+		$guser = $this->liquidacion_model->preliquidar('X');
 
 		echo "<script> alert('".$guser."') </script>";
 
@@ -262,7 +262,7 @@ class Liquidacion extends CI_Controller {
 
 			$this->liquidacion_model->ventas_vendedor($sheet->id_vendedor,$sheet->id_semana,0,'P',1);
 
-			$this->sendMail($sheet->id_vendedor,$sheet->id_semana);
+			//$this->sendMail($sheet->id_vendedor,$sheet->id_semana);
 
 		}
 		}
