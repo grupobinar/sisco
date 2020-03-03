@@ -74,7 +74,20 @@ class Polizas_model extends CI_Model{
 
     }
 
-	function editar($tpoliza,$plan,$cobertura,$suma,$id_poliza,$fecha,$usuario){
+    function semana()
+	{
+
+		$this->db->where('estatus','0'); 
+		$data = $this->db->get('public.t_semanas'); 
+
+		return $data->row_array();
+
+
+	}
+
+	function editar($tpoliza,$plan,$cobertura,$suma,$id_poliza,$fecha,$usuario,$modulo){
+
+		$sem = $this->semana();
 
 
 		  	$data = array(
