@@ -1,5 +1,4 @@
 
-<?php// print_r($_ci_vars); ?>
 <div class="col-lg-12"> <br> </div>
 <div class="col-lg-12"> 
   <div class="box box-primary" style="padding: 10px">

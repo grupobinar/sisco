@@ -44,6 +44,18 @@
 
 <div class="col-lg-12"><br></div>
 
+<div class="col-lg-12 box">
+  <table width="50%" style="margin: 20px">
+    <tr>
+      <th>% a pagar en ventas domiciliadas</th>
+      <td><?php $vd = $_ci_vars['ccoordinador']->dom*100; echo $vd."% de la comision calculada";?></td>
+      <td><a class="btn btn-sm btn-default editCoordinador" id="<?php echo $_ci_vars['ccoordinador']->id_ccoordinador ?>" data-toggle="modal" data-target="#editCoordinador"><i class="fa fa-pencil"></i></a></td>
+    </tr>
+  </table>
+</div>
+
+<div class="col-lg-12"><br></div>
+
 <div class="col-lg-12 box"> 
  <div class="col-lg-12"><br></div>
  <table id="example1" class="table table-bordered table-striped" style="padding: 10px;">

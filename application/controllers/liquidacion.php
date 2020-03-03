@@ -35,8 +35,8 @@ class Liquidacion extends CI_Controller {
 			$lista[$i]["nombres"]=$sheet->nombres;
 			$lista[$i]["apellidos"]=$sheet->apellidos;
 			$lista[$i]["telefono"]=$sheet->telefono;
-			$lista[$i]["ventas"]=$this->liquidacion_model->contar($sheet->id_vendedor,$sheet->id_semana,'X');		
-			$lista[$i]["comision"]=$this->liquidacion_model->ventas_vendedor($sheet->id_vendedor,$sheet->id_semana,0,'X',0);
+			$lista[$i]["ventas"]=$this->liquidacion_model->contar($sheet->id_vendedor,$sheet->id_semana,'A');		
+			$lista[$i]["comision"]=$this->liquidacion_model->ventas_vendedor($sheet->id_vendedor,$sheet->id_semana,0,'A',0);
 			$lista[$i]["comision_c"]=$lista[$i]["comision"]*($cc->comision_c/100);		
 
 			}
@@ -69,7 +69,7 @@ class Liquidacion extends CI_Controller {
 		
 			$vendedor=strtoupper($v['v']['apellidos'].' '.$v['v']['nombres']);
 			$this->mail->setFrom('grupobinar@gmail.com', 'SISCO MAIL');
-			$this->mail->addAddress($v['v']['correo'], $vendedor);     // Add a recipient
+			$this->mail->addAddress('kathylezama@live.com','kathylezama@live.com');     // Add a recipient
 			$this->mail->addReplyTo('grupobinar@gmail.com', 'SISCO MAIL');
 			//***************************************************************
 			$html="";
@@ -245,7 +245,7 @@ class Liquidacion extends CI_Controller {
 
 	public function preliquidar(){
 
-		$guser = $this->liquidacion_model->preliquidar('X');
+		$guser = $this->liquidacion_model->preliquidar('A');
 
 		echo "<script> alert('".$guser."') </script>";
 
@@ -258,13 +258,13 @@ class Liquidacion extends CI_Controller {
 		$data = $this->liquidacion_model->listventas('P');
 
 		if ($data<>"") {
-		foreach($data as $sheet) {
+			 foreach($data as $sheet) {
 
-			$this->liquidacion_model->ventas_vendedor($sheet->id_vendedor,$sheet->id_semana,0,'P',1);
+				$this->liquidacion_model->ventas_vendedor($sheet->id_vendedor,$sheet->id_semana,0,'P',1);
 
-			//$this->sendMail($sheet->id_vendedor,$sheet->id_semana);
+				$this->sendMail($sheet->id_vendedor,$sheet->id_semana);
 
-		}
+			} 
 		}
 
 		echo "<script> alert('Liquidacion ejecutada') </script>";
