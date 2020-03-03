@@ -16,7 +16,7 @@ class Liquidacion extends CI_Controller {
 	public function index()
 	{
 
-		$data = $this->liquidacion_model->listventas('X');
+		$data = $this->liquidacion_model->listventas('A');
 
 		$cc = $this->liquidacion_model->comision_coordinador();
 
