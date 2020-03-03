@@ -66,7 +66,7 @@
       <td><?php echo ucwords($key['planc']);?></td>
       <td><?php echo ucwords($key['concepto']);?></td>
       <td><?php echo ucwords($key['calculo']);?></td>
-      <td><?php if ($key['base']==1) echo "Sobre la suma asegurada"; elseif($key['base']==2) echo "sobre la comisión"; elseif($key['base']==3) echo "NO APLICA"; ?></td>
+      <td><?php if ($key['base']==1) echo "Sobre la prima mensual"; elseif($key['base']==2) echo "sobre la comisión"; elseif($key['base']==3) echo "NO APLICA"; ?></td>
       <td><?php echo number_format($key['cuota'], 2, ',', '.');?></td>
       <td><?php echo $key['min'];?></td>
       <td><?php echo $key['max'];?></td>
