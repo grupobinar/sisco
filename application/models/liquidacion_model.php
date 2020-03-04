@@ -25,6 +25,7 @@ class Liquidacion_model extends CI_Model{
 				$this->db->where('id_comision','0');
 				$this->db->or_where('id_comision ','2');
 		}
+		$this->db->where('estatus_venta !=','E');
 		
 		$listusuarios = $this->db->get('public.t_ventas');
 
@@ -55,6 +56,7 @@ class Liquidacion_model extends CI_Model{
 				$this->db->where('id_comision','0');
 				$this->db->or_where('id_comision ','2');
 		}
+		$this->db->where('estatus_venta !=','E');
 		
 		$listusuarios = $this->db->get('public.t_ventas');
 
@@ -92,6 +94,8 @@ class Liquidacion_model extends CI_Model{
 			$this->db->where('id_comision ','0');
 			$this->db->or_where('id_comision ','2');
 		}
+		$this->db->where('estatus_venta !=','E');
+
 		$this->db->where('id_semana',$sem);
 		$listusuarios = $this->db->get('public.t_ventas');
 
@@ -104,7 +108,7 @@ class Liquidacion_model extends CI_Model{
 
 	function detallePreliquidacion($id,$sem,$estatus){
 
-		$this->db->select('nsem, id_venta, cuotas_canceladas, tplan, suma, factor, tpoliza, tventa, id_vendedor, t_ventas.id_semana');
+		$this->db->select('solicitud, nsem, id_venta, cuotas_canceladas, tplan, suma, factor, tpoliza, tventa, id_vendedor, t_ventas.id_semana');
 		$this->db->join('t_plan','t_plan.id_tplan = t_ventas.id_plan','left');
 		$this->db->join('t_polizas','t_polizas.id_poliza = t_ventas.id_poliza','left');
 		$this->db->join('t_tpoliza','t_tpoliza.id_tpoliza = t_ventas.id_tpoliza','left');
@@ -122,6 +126,7 @@ class Liquidacion_model extends CI_Model{
 			$this->db->where('id_comision ','0');
 			$this->db->or_where('id_comision ','2');
 		}
+		$this->db->where('estatus_venta !=','E');
 		$listusuarios = $this->db->get('public.t_ventas');
 
 		//echo $this->db->last_query();
@@ -181,6 +186,7 @@ class Liquidacion_model extends CI_Model{
 				$this->db->where('id_comision ','0');
 				$this->db->or_where('id_comision ','2');
 			}
+			$this->db->where('estatus_venta !=','E');
 			$this->db->where('id_semana',$sem);
 			$this->db->where('id_vendedor',$id);
 		}
@@ -221,6 +227,7 @@ class Liquidacion_model extends CI_Model{
 					$this->db->where('id_comision ','0');
 					$this->db->or_where('id_comision ','2');
 				}
+				$this->db->where('estatus_venta !=','E');
 				$this->db->where('id_semana',$sem);
 				$this->db->where('id_plan',$key['id_plan']);
 				$this->db->where('id_poliza',$key['id_poliza']);

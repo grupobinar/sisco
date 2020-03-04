@@ -7,7 +7,8 @@
 		<th colspan="10">Comision por venta</th>
 	</tr>
 	<tr style="font-size: 13px;">
-		<th>Semana:</th>
+		<th>Sem:</th>
+		<th>Solicitud:</th>
 		<th>Tipo de venta:</th>
 		<th>Tipo de poliza:</th>
 		<th>Plan:</th>
@@ -29,6 +30,7 @@
 	?>
 		<tr style="font-size: 13px;">
 			<td><?php echo $key['nsem'];?></td>
+			<td><?php echo $key['solicitud'];?></td>
 			<td><?php echo $tventa;?></td>
 			<td><?php if(isset($key['tpoliza'])) echo ucwords($key['tpoliza']); else echo "N/A"?></td>
 			<td><?php if(isset($key['tplan'])) echo ucwords($key['tplan']); else echo "N/A"?></td>
@@ -53,7 +55,7 @@
 		</tr>
 	<?php }?>
 		<tr>
-		<th colspan="8" style="text-align: right;">Total:</th>
+		<th colspan="9" style="text-align: right;">Total:</th>
 		<th style="text-align: right;"><?php echo number_format($comision, 2, ',', '.'); ?></th>
 		<th style="text-align: right;"><?php echo number_format($comision_c, 2, ',', '.'); ?></th>
 		<td></td>

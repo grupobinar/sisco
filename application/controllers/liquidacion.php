@@ -170,6 +170,7 @@ class Liquidacion extends CI_Controller {
 		foreach($data as $sheet) {
 			$i++;		
 			
+			$lista[$i]["solicitud"]=$sheet->solicitud;
 			$lista[$i]["nsem"]=$sheet->nsem;
 			$lista[$i]["id_venta"]=$sheet->id_venta;
 			$lista[$i]["id_vendedor"]=$id;
