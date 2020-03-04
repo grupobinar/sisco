@@ -7,6 +7,7 @@
 		<th colspan="10">Comision por venta</th>
 	</tr>
 	<tr style="font-size: 13px;">
+		<th>Semana:</th>
 		<th>Tipo de venta:</th>
 		<th>Tipo de poliza:</th>
 		<th>Plan:</th>
@@ -27,6 +28,7 @@
 	      $comision_c=$comision_c+$key['comision_c'];
 	?>
 		<tr style="font-size: 13px;">
+			<td><?php echo $key['nsem'];?></td>
 			<td><?php echo $tventa;?></td>
 			<td><?php if(isset($key['tpoliza'])) echo ucwords($key['tpoliza']); else echo "N/A"?></td>
 			<td><?php if(isset($key['tplan'])) echo ucwords($key['tplan']); else echo "N/A"?></td>

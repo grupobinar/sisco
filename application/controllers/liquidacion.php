@@ -160,7 +160,7 @@ class Liquidacion extends CI_Controller {
 		$id=$_GET['id'];
 		$sem=$_GET['sem'];
 
-		$data=$this->liquidacion_model->detallePreliquidacion($id,$sem,'X');
+		$data=$this->liquidacion_model->detallePreliquidacion($id,$sem,'A');
 
 		$cc = $this->liquidacion_model->comision_coordinador();
 
@@ -170,6 +170,7 @@ class Liquidacion extends CI_Controller {
 		foreach($data as $sheet) {
 			$i++;		
 			
+			$lista[$i]["nsem"]=$sheet->nsem;
 			$lista[$i]["id_venta"]=$sheet->id_venta;
 			$lista[$i]["id_vendedor"]=$id;
 			$lista[$i]["tventa"]=$sheet->tventa;
