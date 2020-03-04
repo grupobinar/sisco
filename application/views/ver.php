@@ -53,7 +53,7 @@
 		</tr>
 	<?php }?>
 		<tr>
-		<th colspan="7" style="text-align: right;">Total:</th>
+		<th colspan="8" style="text-align: right;">Total:</th>
 		<th style="text-align: right;"><?php echo number_format($comision, 2, ',', '.'); ?></th>
 		<th style="text-align: right;"><?php echo number_format($comision_c, 2, ',', '.'); ?></th>
 		<td></td>
