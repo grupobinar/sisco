@@ -372,12 +372,12 @@ class Liquidacion_model extends CI_Model{
 			$this->db->select('comision_c, dom');
 			$comision_co = $this->db->get('public.t_ccoordinador');
 			
-			if(($key['estatus_venta']=="D") or ($key['id_sem']!=$key['id_semana'])){
+			/* if(($key['estatus_venta']=="D") or ($key['id_sem']!=$key['id_semana'])){
 				$c = $c * $comision_co->row()->dom;
 				//echo "aqui";
 				//echo $c.'-';
 
-			}
+			} */
 
 			$cco=$c*($comision_co->row()->comision_c/100);
 
