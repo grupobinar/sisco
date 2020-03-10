@@ -14,19 +14,21 @@ class Liquidacion_model extends CI_Model{
 		$this->db->join('t_vendedores','t_vendedores.id_vendedor = t_ventas.id_vendedor','left');
 		$this->db->join('t_semanas','t_semanas.id_semana = t_ventas.id_semana','left');
 		$this->db->where('t_semanas.estatus','1');
+		
+		$this->db->where('estatus_venta !=','E');
 		if($estatus=='A'){
-				$this->db->where('id_comision ','0');
-				$this->db->where('estatus_venta !=','X');
-				$this->db->where('estatus_venta !=','P');
-				$this->db->where('estatus_venta !=','L');
+			$this->db->where('id_comision ','0');
+			$this->db->where('estatus_venta !=','X');
+			$this->db->where('estatus_venta !=','P');
+			$this->db->where('estatus_venta !=','L');
 		}elseif($estatus=='P'){
 				$this->db->where('estatus_venta !=','X');
 				$this->db->where('estatus_venta !=','L');
 				$this->db->where('id_comision','0');
 				$this->db->or_where('id_comision ','2');
+		}elseif($estatus=='K'){
+				$this->db->where('estatus_venta','P');
 		}
-		$this->db->where('estatus_venta !=','E');
-		
 		$listusuarios = $this->db->get('public.t_ventas');
 
 		//echo $this->db->last_query();
@@ -115,6 +117,8 @@ class Liquidacion_model extends CI_Model{
 		$this->db->join('t_semanas','t_semanas.id_semana = t_ventas.id_semana','left');
 		$this->db->where('id_vendedor',$id);
 		$this->db->where('t_ventas.id_semana',$sem);
+		
+		$this->db->where('estatus_venta !=','E');
 		if($estatus=='A'){
 			$this->db->where('estatus_venta !=','X');
 			$this->db->where('estatus_venta !=','P');
@@ -123,10 +127,12 @@ class Liquidacion_model extends CI_Model{
 		}elseif($estatus=='P'){
 			$this->db->where('estatus_venta !=','X');
 			$this->db->where('estatus_venta !=','L');
+			$this->db->where('estatus_venta !=','D');
 			$this->db->where('id_comision ','0');
 			$this->db->or_where('id_comision ','2');
+		}elseif($estatus=='K'){
+			$this->db->where('estatus_venta','P');
 		}
-		$this->db->where('estatus_venta !=','E');
 		$listusuarios = $this->db->get('public.t_ventas');
 
 		//echo $this->db->last_query();
@@ -175,6 +181,10 @@ class Liquidacion_model extends CI_Model{
 		{
 			$this->db->where('id_venta',$v);
 		}else{
+			
+			$this->db->where('estatus_venta !=','E');
+			$this->db->where('id_semana',$sem);
+			$this->db->where('id_vendedor',$id);
 			if($estatus=='A'){
 				$this->db->where('id_comision ','0');
 				$this->db->where('estatus_venta !=','X');
@@ -185,16 +195,15 @@ class Liquidacion_model extends CI_Model{
 				$this->db->where('estatus_venta !=','L');
 				$this->db->where('id_comision ','0');
 				$this->db->or_where('id_comision ','2');
+			}elseif($estatus=='K'){
+				$this->db->where('estatus_venta','P');
 			}
-			$this->db->where('estatus_venta !=','E');
-			$this->db->where('id_semana',$sem);
-			$this->db->where('id_vendedor',$id);
 		}
 		 
 
 		$listusuarios = $this->db->get('public.t_ventas');
 
-		 /* echo $this->db->last_query();
+		/* echo $this->db->last_query();
 		echo "<br>"; 
 		echo "<br>";  */
 
@@ -502,14 +511,14 @@ class Liquidacion_model extends CI_Model{
 			$this->db->where('estatus_venta ','A');
 			$this->db->update('t_ventas', $data);
 
-			$data = array(
+			/* $data = array(
 				'id_comision'=>'2'
 			);
 
 
 			$this->db->where('estatus_venta ','D');
 			$this->db->where('id_comision ','0');
-			$this->db->update('t_ventas', $data);
+			$this->db->update('t_ventas', $data); */
 
 			return "Pre-Liquidación ejecutada";
 

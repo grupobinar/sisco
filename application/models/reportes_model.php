@@ -437,7 +437,7 @@ class Reportes_model extends CI_Model{
 
 	function e_listsemana()
 	{
-		$data=$this->db->query("SELECT * FROM t_semanas where estatus=1 and id_semana in (select id_semana from t_ventas where estatus_venta='L') order by nsem asc");
+		$data=$this->db->query("SELECT * FROM t_semanas where estatus=1 and id_semana in (select id_semana from t_ventas where estatus_venta='L') or id_semana in (select id_sem from t_ventas where estatus_venta='L') order by id_semana asc");
 
 		if($data->num_rows()>0)
 		{

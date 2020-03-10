@@ -210,7 +210,8 @@ class Liquidacion extends CI_Controller {
 		if ($data<>"") {
 		foreach($data as $sheet) {
 			$i++;		
-			
+			$lista[$i]["solicitud"]=$sheet->solicitud;
+			$lista[$i]["nsem"]=$sheet->nsem;
 			$lista[$i]["id_venta"]=$sheet->id_venta;
 			$lista[$i]["id_vendedor"]=$id;
 			$lista[$i]["tventa"]=$sheet->tventa;
@@ -262,9 +263,9 @@ class Liquidacion extends CI_Controller {
 		if ($data<>"") {
 			 foreach($data as $sheet) {
 
-				$this->liquidacion_model->ventas_vendedor($sheet->id_vendedor,$sheet->id_semana,0,'P',1);
+				$this->liquidacion_model->ventas_vendedor($sheet->id_vendedor,$sheet->id_semana,0,'K',1);
 
-				$this->sendMail($sheet->id_vendedor,$sheet->id_semana);
+				//$this->sendMail($sheet->id_vendedor,$sheet->id_semana);
 
 			} 
 		}
