@@ -141,10 +141,12 @@
                 </select>
               </div>
 
-              <div class="col-lg-6"><b>Cobertura</b></div>
-              <div class="col-lg-6"><b>Suma asegurada</b></div>
-              <div class="col-lg-6"><input type="text" name="cobertura_e" id="cobertura_e" class="form-control letras"></div>
-              <div class="col-lg-6"><input type="text" name="suma_e" id="suma_e" class="form-control decimales"></div>
+              <div class="col-lg-4"><b>Cobertura</b></div>
+              <div class="col-lg-4"><b>Modulo</b></div>
+              <div class="col-lg-4"><b>Suma asegurada</b></div>
+              <div class="col-lg-4"><input type="text" name="cobertura_e" id="cobertura_e" class="form-control letras"></div>
+              <div class="col-lg-4"><input type="text" name="modulo_e" id="modulo_e" class="form-control"></div>
+              <div class="col-lg-4"><input type="text" name="suma_e" id="suma_e" class="form-control decimales"></div>
               <input type="hidden" name="id_poliza" id="id_poliza">
 
         </div>
@@ -227,6 +229,7 @@ $(document).ready(function(){
         $("#plan_e option[value='"+result[2]+"']").attr('selected', 'selected');
 
         $("#suma_e").val(result[4]);
+        $("#modulo_e").val(result[5]);
         $("#id_poliza").val(result[0]);
 
         result="";

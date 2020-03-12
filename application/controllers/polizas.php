@@ -141,6 +141,7 @@ class Polizas extends CI_Controller {
 		$cobertura=$_POST['cobertura_e'];
 		$suma=$_POST['suma_e'];
 		$id_poliza=$_POST['id_poliza'];
+		$modulo=$_POST['modulo_e'];
 		$fecha=date("d/m/Y");
 		$usuario = $this->session->userdata('id_usuario');	
 		
@@ -151,7 +152,8 @@ class Polizas extends CI_Controller {
 			$suma,
 			$id_poliza,
 			$fecha,
-			$usuario
+			$usuario,
+			$modulo
 		);
 
 		$this->session->set_flashdata('message', [ 'Poliza Modificada con exito', 'success']);
@@ -187,7 +189,7 @@ class Polizas extends CI_Controller {
 
 		$guser = $this->polizas_model->buscarPoliza($_POST['id']);
 
-		echo $guser->id_poliza.':'.$guser->id_tpoliza.':'.$guser->id_plan.':'.$guser->cobertura.':'.$guser->suma;
+		echo $guser->id_poliza.':'.$guser->id_tpoliza.':'.$guser->id_plan.':'.$guser->cobertura.':'.$guser->suma.':'.$guser->num_poliza;
 	}
 
 	public function desactivarPoliza(){

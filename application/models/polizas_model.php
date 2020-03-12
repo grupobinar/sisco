@@ -85,24 +85,49 @@ class Polizas_model extends CI_Model{
 
 	}
 
+	function semana_c()
+	{
+
+		$this->db->where('estatus','1'); 
+		$this->db->order_by('id_semana','desc'); 
+		$data = $this->db->get('public.t_semanas'); 
+
+		return $data->row_array();
+
+
+	}
+
 	function editar($tpoliza,$plan,$cobertura,$suma,$id_poliza,$fecha,$usuario,$modulo){
 
-		$sem = $this->semana();
+			$sem = $this->semana();
+			$semc = $this->semana_c();
 
+			$dataa = array(
+				'estatus'=>'2',
+				'num_poliza'=>$modulo,	
+				'id_sem_f'=>$semc['id_semana'],
+				'ult_mod'=>date('Y-m-d')
+				);
+
+			$this->db->where('id_poliza', $id_poliza);
+			$this->db->update('public.t_polizas', $dataa);
 
 		  	$data = array(
-			'id_tpoliza'=>$tpoliza,
-			'id_plan'=>$plan,	
-			'cobertura'=>$cobertura,	
-			'suma'=>$suma,	
-			'id_usuario'=>$usuario,
+				'id_tpoliza'=>$tpoliza,
+				'id_rel'=>$id_poliza,	
+				'id_plan'=>$plan,	
+				'cobertura'=>$cobertura,	
+				'num_poliza'=>$modulo,	
+				'suma'=>$suma,	
+				'id_usuario'=>$usuario,
+				'fecha_registro'=>date('Y-m-d'),
+				'ult_mod'=>date('Y-m-d'),
+				'id_sem_i'=>$sem['id_semana'],
 			);
 
 
-			$this->db->where('id_poliza', $id_poliza);
-			$this->db->update('t_polizas', $data);
-
-			
+			//$this->db->where('id_poliza', $id_poliza);
+			$this->db->insert('public.t_polizas', $data);
 
 			$retorno="Usuario Modificado";
 

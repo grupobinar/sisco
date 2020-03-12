@@ -372,12 +372,13 @@ class Liquidacion_model extends CI_Model{
 			$this->db->select('comision_c, dom');
 			$comision_co = $this->db->get('public.t_ccoordinador');
 			
-			/* if(($key['estatus_venta']=="D") or ($key['id_sem']!=$key['id_semana'])){
+			if(($key['estatus_venta']=="D") ){
 				$c = $c * $comision_co->row()->dom;
 				//echo "aqui";
 				//echo $c.'-';
+				//or ($key['id_sem']!=$key['id_semana'])
 
-			} */
+			}
 
 			$cco=$c*($comision_co->row()->comision_c/100);
 
@@ -511,14 +512,14 @@ class Liquidacion_model extends CI_Model{
 			$this->db->where('estatus_venta ','A');
 			$this->db->update('t_ventas', $data);
 
-			/* $data = array(
+			$data = array(
 				'id_comision'=>'2'
 			);
 
 
 			$this->db->where('estatus_venta ','D');
 			$this->db->where('id_comision ','0');
-			$this->db->update('t_ventas', $data); */
+			$this->db->update('t_ventas', $data);
 
 			return "Pre-Liquidación ejecutada";
 
