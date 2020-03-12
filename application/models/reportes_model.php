@@ -266,21 +266,27 @@ class Reportes_model extends CI_Model{
 		$this->db->where('id_vendedor',$vendedor); 
 		$this->db->where('id_semana',$sem); 
 		$this->db->where('estatus_venta','L'); 
+		$this->db->or_where("(estatus_venta = 'D' AND id_comision='1' AND id_semana = '".$sem."' AND id_vendedor = '".$vendedor."')");
 		$this->db->group_by('tventa');
 
 		$data = $this->db->get('public.t_ventas'); 
 
+		//echo $this->db->last_query();
+
+
 		return $data->result_array();
+
 
 	}
 
 	function vendedores_rpt_general($coordinador,$sem)
 	{
+
 		$this->db->select('t_vendedores.id_vendedor, apellidos, nombres, cod_vendedor, concepto');
-		$this->db->where('id_coordinador',$coordinador); 
-		//$this->db->where('t_ventas.id_semana',$sem); 
+		$this->db->where('id_coordinador',$coordinador);
+		$this->db->where('t_ventas.id_comision','1'); 
 		$this->db->where('(id_semana='.$sem.' or id_sem='.$sem.')',NULL,FALSE);
-		$this->db->where('t_ventas.estatus_venta','L'); 
+		$this->db->where("(estatus_venta='L' or (estatus_venta='D' and id_comision='1'))",NULL,FALSE);
 		$this->db->join('t_ventas','t_ventas.id_vendedor = t_vendedores.id_vendedor','left');
 		$this->db->join('t_concepto','t_concepto.id_concepto = t_ventas.tventa','left');
 		$this->db->group_by('t_vendedores.id_vendedor, apellidos, nombres, cod_vendedor, concepto');
@@ -368,14 +374,14 @@ class Reportes_model extends CI_Model{
 
 
 		$this->db->where('id_vendedor',$vendedor); 
-		$this->db->where('estatus_venta ','L'); 
+		//$this->db->where('estatus_venta ','L'); 
 		//$this->db->where('estatus_venta !=','D'); 
 		//$this->db->where('id_semana',$sem); 
 		$this->db->where('(t_ventas.id_semana='.$sem.' or id_sem='.$sem.')',NULL,FALSE);
 		//$this->db->or_where('id_sem',$sem); 
 
 		$data = $this->db->get('public.t_ventas'); 
-		//return $this->db->last_query();
+		//echo $this->db->last_query();
 
 
 		return $data->result_array();

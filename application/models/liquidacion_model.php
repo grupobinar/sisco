@@ -127,7 +127,7 @@ class Liquidacion_model extends CI_Model{
 		}elseif($estatus=='P'){
 			$this->db->where('estatus_venta !=','X');
 			$this->db->where('estatus_venta !=','L');
-			$this->db->where('estatus_venta !=','D');
+			//$this->db->where('estatus_venta !=','D');
 			$this->db->where('id_comision ','0');
 			$this->db->or_where('id_comision ','2');
 		}elseif($estatus=='K'){
@@ -518,6 +518,7 @@ class Liquidacion_model extends CI_Model{
 
 
 			$this->db->where('estatus_venta ','D');
+			$this->db->where('id_semana >=','81');
 			$this->db->where('id_comision ','0');
 			$this->db->update('t_ventas', $data);
 

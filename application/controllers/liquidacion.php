@@ -263,7 +263,7 @@ class Liquidacion extends CI_Controller {
 		if ($data<>"") {
 			 foreach($data as $sheet) {
 
-				$this->liquidacion_model->ventas_vendedor($sheet->id_vendedor,$sheet->id_semana,0,'K',1);
+				$this->liquidacion_model->ventas_vendedor($sheet->id_vendedor,$sheet->id_semana,0,'P',1);
 
 				//$this->sendMail($sheet->id_vendedor,$sheet->id_semana);
 
