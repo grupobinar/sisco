@@ -181,7 +181,7 @@ class Liquidacion_model extends CI_Model{
 		{
 			$this->db->where('id_venta',$v);
 		}else{
-			
+		 	
 			$this->db->where('estatus_venta !=','E');
 			$this->db->where('id_semana',$sem);
 			$this->db->where('id_vendedor',$id);

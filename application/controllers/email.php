@@ -374,7 +374,7 @@ class Email extends CI_Controller {
 			$this->mail->Port       = 587;                                    // TCP port to connect to
 		
 			$this->mail->setFrom('grupobinar@gmail.com', 'SISCO MAIL');
-			$this->mail->addAddress('kathylezama@live.com','kathylezama@live.com');     // Add a recipient
+			$this->mail->addAddress($e,$e);     // Add a recipient
 			$this->mail->addReplyTo('grupobinar@gmail.com', 'SISCO MAIL');
 			foreach ($pdf as $p) {
 				$this->mail->AddAttachment($p);
