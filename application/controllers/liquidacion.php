@@ -182,7 +182,7 @@ class Liquidacion extends CI_Controller {
 			$lista[$i]["factor"]=$sheet->factor;
 			$lista[$i]["cpagadas"]=$sheet->cuotas_canceladas;
 			$lista[$i]["adicionales"]=$this->liquidacion_model->contar_adicionales($sheet->id_venta);
-			$lista[$i]["comision"]=$this->liquidacion_model->ventas_vendedor($sheet->id_vendedor,$sheet->id_semana,$sheet->id_venta,'X',0);
+			$lista[$i]["comision"]=$this->liquidacion_model->ventas_vendedor($sheet->id_vendedor,$sheet->id_semana,$sheet->id_venta,'A',0);
 			$lista[$i]["comision_c"]=$lista[$i]["comision"]*($cc->comision_c/100);		
 
 			}

@@ -68,3 +68,19 @@ ALTER TABLE public.t_ccoordinador
 -- Agregar primer registro tabla t_ccoordinador
 
 INSERT INTO t_ccoordinador (comision_c) values ('20');
+
+CREATE TABLE public.t_estatus_venta
+(
+    id_estatus_venta bigserial NOT NULL,
+    id_venta integer,
+    estatus_venta character varying(1) NOT NULL,
+    id_usuario integer,
+    fecha_registro timestamp without time zone,
+    ult_mod timestamp without time zone,
+    estatus integer DEFAULT 0,
+    CONSTRAINT pk_es PRIMARY KEY (id_estatus_venta)
+)
+WITH (
+    OIDS = FALSE
+)
+TABLESPACE pg_default;

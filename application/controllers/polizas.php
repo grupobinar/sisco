@@ -73,7 +73,6 @@ class Polizas extends CI_Controller {
 		$tpoliza=$_POST['tpoliza'];
 		$tpago=$_POST['tpago'];
 		$tedad=$_POST['tedad'];
-
 		$tventa=$_POST['tventa'];
 		$nsolicitud=$_POST['nsolicitud'];
 		$correo=$_POST['correo'];
@@ -85,9 +84,7 @@ class Polizas extends CI_Controller {
 		$ad_name=$_POST['ad_name'];
 		$ad_edad=$_POST['adicional_edad'];
 		$ad_parent=$_POST['adicional_parent'];
-
 		
-		//FIXME: ACOMODAR LAS FECHAS A DIAS MES Y AÑO
 		$fecha=date("Y-m-d");
 		$usuario = $this->session->userdata('id_usuario');	
 		
@@ -215,21 +212,14 @@ class Polizas extends CI_Controller {
 
 	}
 
-
-
 		public function ventas()
 	{
 
 		$datos['vendedores'] = $this->polizas_model->listvendedores();
-
 		$datos['ventas'] = $this->polizas_model->listventas();
-
 		$datos['tpoliza'] = $this->polizas_model->listtpoliza();
-
 		$datos['plan'] = $this->polizas_model->listplan();
-
 		$datos['parentesco'] = $this->polizas_model->listparent();
-
 		$data = $this->polizas_model->listtpago();
 
 		$i=0;
@@ -259,15 +249,10 @@ class Polizas extends CI_Controller {
 	{
 
 		$datos['vendedores'] = $this->polizas_model->listvendedores();
-
 		$datos['ventas'] = $this->polizas_model->listventasd();
-
 		$datos['tpoliza'] = $this->polizas_model->listtpoliza();
-
 		$datos['plan'] = $this->polizas_model->listplan();
-
 		$datos['parentesco'] = $this->polizas_model->listparent();
-
 		$data = $this->polizas_model->listtpago();
 
 		$i=0;
@@ -310,6 +295,7 @@ class Polizas extends CI_Controller {
 		$data['poliza'] = $this->polizas_model->buscarventa($_GET['id']);
 		
 		$data['adicionales'] = $this->polizas_model->listadicionales($_GET['id']);
+		$data['seguimiento'] = $this->polizas_model->listestatusventa($_GET['id']);
 
 
 		$this->load->view('layout/header');

@@ -408,7 +408,7 @@ class Reportes extends CI_Controller {
 	
 		$this->fpdf->Ln(6);
 	}}else{
-		$this->fpdf->Cell(120,6,'NO HAY NADA QUE REPORTAR',1,0,'C');
+		$this->fpdf->Cell(135,6,'NO HAY NADA QUE REPORTAR',1,0,'C');
 		$this->fpdf->Ln(6);
 
 

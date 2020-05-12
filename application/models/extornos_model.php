@@ -16,9 +16,11 @@ class Extornos_model extends CI_Model{
 		$this->db->join('t_vendedores','t_vendedores.id_vendedor = t_ventas.id_vendedor','left');
 		$this->db->join('t_semanas','t_semanas.id_semana = t_ventas.id_semana','left');
 		$this->db->join('t_liquidacion','t_liquidacion.id_venta = t_ventas.id_venta','left');
+		$this->db->join('t_estatus_venta','t_estatus_venta.id_venta = t_ventas.id_venta','left');
+		$this->db->where_in('t_estatus_venta.estatus_venta',['L','LP']);
+		$this->db->where('t_estatus_venta.estatus','0');
 		$this->db->where('cod_vendedor',$id);
 		$this->db->where('nsem',$sem);
-		$this->db->where('estatus_venta','L');
 		$listusuarios = $this->db->get('public.t_ventas');
 
 		//echo $this->db->last_query();
@@ -34,7 +36,7 @@ class Extornos_model extends CI_Model{
 	function e_listvendedores()
 	{
 
-		$data=$this->db->query("SELECT * FROM t_vendedores where id_vendedor in (select id_vendedor from t_ventas where estatus_venta='L')");
+		$data=$this->db->query("SELECT * FROM t_vendedores where id_vendedor in (select id_vendedor from t_ventas as v, t_estatus_venta as e where e.estatus_venta='L' and v.id_venta = e.id_venta and e.estatus=0)");
 		
 		//echo $this->db->last_query();
 
@@ -47,7 +49,7 @@ class Extornos_model extends CI_Model{
 
 	function e_listsemana()
 	{
-		$data=$this->db->query("SELECT * FROM t_semanas where estatus=1 and id_semana in (select id_semana from t_ventas where estatus_venta='L') order by nsem asc");
+		$data=$this->db->query("SELECT * FROM t_semanas where estatus=1 and id_semana in (select id_semana from t_ventas as v, t_estatus_venta as e where e.estatus_venta='L' and v.id_venta = e.id_venta and e.estatus=0) order by nsem asc");
 
 		if($data->num_rows()>0)
 		{
@@ -75,12 +77,22 @@ class Extornos_model extends CI_Model{
 			$this->db->insert('public.t_extornos',$data);
 
 			$data = array(
-				'estatus_venta'=>'E',
+				'estatus'=>'1',
 			);
-
-			$this->db->set($data);
+	
 			$this->db->where('id_venta', $id_venta);
-			$this->db->update('t_ventas');
+			$this->db->update('t_estatus_venta', $data);
+
+			$data = array(
+				'id_venta'=>$id_venta,
+				'estatus_venta'=>'E',
+				'fecha_registro'=>date('Y-m-d'),
+				'ult_mod'=>date('Y-m-d')
+		
+			);
+		
+			$this->db->insert('public.t_estatus_venta',$data);
+
 
 
 			$retorno="Venta Extornada";

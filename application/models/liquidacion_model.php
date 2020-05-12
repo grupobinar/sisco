@@ -13,22 +13,18 @@ class Liquidacion_model extends CI_Model{
 		$this->db->select('t_vendedores.id_vendedor,identificacion, nsem, desde, hasta, nombres, apellidos, telefono, t_semanas.id_semana');
 		$this->db->join('t_vendedores','t_vendedores.id_vendedor = t_ventas.id_vendedor','left');
 		$this->db->join('t_semanas','t_semanas.id_semana = t_ventas.id_semana','left');
+		$this->db->join('t_estatus_venta','t_estatus_venta.id_venta = t_ventas.id_venta','left');
 		$this->db->where('t_semanas.estatus','1');
-		
-		$this->db->where('estatus_venta !=','E');
+
 		if($estatus=='A'){
-			$this->db->where('id_comision ','0');
-			$this->db->where('estatus_venta !=','X');
-			$this->db->where('estatus_venta !=','P');
-			$this->db->where('estatus_venta !=','L');
-		}elseif($estatus=='P'){
-				$this->db->where('estatus_venta !=','X');
-				$this->db->where('estatus_venta !=','L');
-				$this->db->where('id_comision','0');
-				$this->db->or_where('id_comision ','2');
-		}elseif($estatus=='K'){
-				$this->db->where('estatus_venta','P');
+			$this->db->where_in('t_estatus_venta.estatus_venta',['A','D']);
 		}
+		if($estatus=='P'){
+			$this->db->where_in('t_estatus_venta.estatus_venta',['P','PP']);
+		}
+
+		$this->db->where('t_estatus_venta.estatus','0');
+
 		$listusuarios = $this->db->get('public.t_ventas');
 
 		//echo $this->db->last_query();
@@ -84,19 +80,17 @@ class Liquidacion_model extends CI_Model{
 	function contar($id,$sem,$estatus)
 	{
 		$this->db->select('COUNT(*) as total');
+		$this->db->join('t_estatus_venta','t_estatus_venta.id_venta = t_ventas.id_venta','left');
 		$this->db->where('id_vendedor',$id);
+
 		if($estatus=='A'){
-			$this->db->where('id_comision ','0');
-			$this->db->where('estatus_venta !=','X');
-			$this->db->where('estatus_venta !=','P');
-			$this->db->where('estatus_venta !=','L');
-		}elseif($estatus=='P'){
-			$this->db->where('estatus_venta !=','X');
-			$this->db->where('estatus_venta !=','L');
-			$this->db->where('id_comision ','0');
-			$this->db->or_where('id_comision ','2');
+			$this->db->where_in('t_estatus_venta.estatus_venta',['A','D']);
 		}
-		$this->db->where('estatus_venta !=','E');
+		if($estatus=='P'){
+			$this->db->where_in('t_estatus_venta.estatus_venta',['P','PP']);
+		}
+
+		$this->db->where('t_estatus_venta.estatus','0');
 
 		$this->db->where('id_semana',$sem);
 		$listusuarios = $this->db->get('public.t_ventas');
@@ -110,29 +104,24 @@ class Liquidacion_model extends CI_Model{
 
 	function detallePreliquidacion($id,$sem,$estatus){
 
-		$this->db->select('solicitud, nsem, id_venta, cuotas_canceladas, tplan, suma, factor, tpoliza, tventa, id_vendedor, t_ventas.id_semana');
+		$this->db->select('solicitud, nsem, t_ventas.id_venta, cuotas_canceladas, tplan, suma, factor, tpoliza, tventa, id_vendedor, t_ventas.id_semana');
 		$this->db->join('t_plan','t_plan.id_tplan = t_ventas.id_plan','left');
 		$this->db->join('t_polizas','t_polizas.id_poliza = t_ventas.id_poliza','left');
 		$this->db->join('t_tpoliza','t_tpoliza.id_tpoliza = t_ventas.id_tpoliza','left');
 		$this->db->join('t_semanas','t_semanas.id_semana = t_ventas.id_semana','left');
+		$this->db->join('t_estatus_venta','t_estatus_venta.id_venta = t_ventas.id_venta','left');
 		$this->db->where('id_vendedor',$id);
 		$this->db->where('t_ventas.id_semana',$sem);
-		
-		$this->db->where('estatus_venta !=','E');
+
 		if($estatus=='A'){
-			$this->db->where('estatus_venta !=','X');
-			$this->db->where('estatus_venta !=','P');
-			$this->db->where('estatus_venta !=','L');
-			$this->db->where('id_comision ','0');
-		}elseif($estatus=='P'){
-			$this->db->where('estatus_venta !=','X');
-			$this->db->where('estatus_venta !=','L');
-			//$this->db->where('estatus_venta !=','D');
-			$this->db->where('id_comision ','0');
-			$this->db->or_where('id_comision ','2');
-		}elseif($estatus=='K'){
-			$this->db->where('estatus_venta','P');
+			$this->db->where_in('t_estatus_venta.estatus_venta',['A','D']);
 		}
+		if($estatus=='P'){
+			$this->db->where_in('t_estatus_venta.estatus_venta',['P','PP']);
+		}
+
+		$this->db->where('t_estatus_venta.estatus','0');
+		
 		$listusuarios = $this->db->get('public.t_ventas');
 
 		//echo $this->db->last_query();
@@ -150,6 +139,7 @@ class Liquidacion_model extends CI_Model{
 
 		$this->db->select('COUNT(*) as total');
 		$this->db->where('id_venta',$id);
+		
 		$adicionales_count = $this->db->get('public.t_adicionales');
 
 		return $adicionales_count->row()->total;
@@ -170,42 +160,35 @@ class Liquidacion_model extends CI_Model{
 
 	function ventas_vendedor($id,$sem,$v,$estatus,$e){
 
-		$this->db->select('cuotas_canceladas, suma, id_comision, id_semana, id_sem, tventa, factor, t_ventas.id_plan, id_venta, t_ventas.id_poliza, t_ventas.id_tpoliza, tedad, estatus_venta');
+		$this->db->select('cuotas_canceladas, suma, id_comision, id_semana, id_sem, tventa, factor, t_ventas.id_plan, t_ventas.id_venta, t_ventas.id_poliza, t_ventas.id_tpoliza, tedad, t_estatus_venta.estatus_venta');
 		$this->db->join('t_tomadores','t_tomadores.id_tomador = t_ventas.id_tomador','left');
 		$this->db->join('t_plan','t_plan.id_tplan = t_ventas.id_plan','left');
 		$this->db->join('t_polizas','t_polizas.id_poliza = t_ventas.id_poliza','left');
 		$this->db->join('t_tpoliza','t_tpoliza.id_tpoliza = t_ventas.id_tpoliza','left');
+		$this->db->join('t_estatus_venta','t_estatus_venta.id_venta = t_ventas.id_venta','left');
 		 
 		
 		if($v>0) 
 		{
-			$this->db->where('id_venta',$v);
+			$this->db->where('t_ventas.id_venta',$v);
 		}else{
-		 	
-			$this->db->where('estatus_venta !=','E');
-			$this->db->where('id_semana',$sem);
-			$this->db->where('id_vendedor',$id);
+
 			if($estatus=='A'){
-				$this->db->where('id_comision ','0');
-				$this->db->where('estatus_venta !=','X');
-				$this->db->where('estatus_venta !=','P');
-				$this->db->where('estatus_venta !=','L');
-			}elseif($estatus=='P'){
-				$this->db->where('estatus_venta !=','X');
-				$this->db->where('estatus_venta !=','L');
-				$this->db->where('id_comision ','0');
-				$this->db->or_where('id_comision ','2');
-			}elseif($estatus=='K'){
-				$this->db->where('estatus_venta','P');
+				$this->db->where_in('t_estatus_venta.estatus_venta',['A','D']);
 			}
+			if($estatus=='P'){
+				$this->db->where_in('t_estatus_venta.estatus_venta',['P','PP']);
+			}
+			$this->db->where('id_vendedor',$id);
+
 		}
 		 
-
+		$this->db->where('t_estatus_venta.estatus','0');
 		$listusuarios = $this->db->get('public.t_ventas');
 
 		/* echo $this->db->last_query();
 		echo "<br>"; 
-		echo "<br>";  */
+		echo "<br>";  */ 
 
 
 
@@ -223,20 +206,19 @@ class Liquidacion_model extends CI_Model{
 			foreach ($listusuarios->result_array() as $key) {
 
 				$this->db->select('id_plan,id_poliza, COUNT(*) as total');
+				$this->db->join('t_estatus_venta','t_estatus_venta.id_venta = t_ventas.id_venta','left');
 				$this->db->group_by('id_plan, id_poliza');
-				$this->db->where('id_vendedor',$id);
+
 				if($estatus=='A'){
-					$this->db->where('id_comision ','0');
-					$this->db->where('estatus_venta !=','X');
-					$this->db->where('estatus_venta !=','P');
-					$this->db->where('estatus_venta !=','L');
-				}elseif($estatus=='P'){
-					$this->db->where('estatus_venta !=','X');
-					$this->db->where('estatus_venta !=','L');
-					$this->db->where('id_comision ','0');
-					$this->db->or_where('id_comision ','2');
+					$this->db->where_in('t_estatus_venta.estatus_venta',['A','D']);
 				}
-				$this->db->where('estatus_venta !=','E');
+				if($estatus=='P'){
+					$this->db->where_in('t_estatus_venta.estatus_venta',['P','PP']);
+				}
+					
+				$this->db->where('t_estatus_venta.estatus','0');
+				$this->db->where('id_vendedor',$id);
+
 				$this->db->where('id_semana',$sem);
 				$this->db->where('id_plan',$key['id_plan']);
 				$this->db->where('id_poliza',$key['id_poliza']);
@@ -369,16 +351,26 @@ class Liquidacion_model extends CI_Model{
 
 				}
 
-			$this->db->select('comision_c, dom');
+			$this->db->select('comision_c');
 			$comision_co = $this->db->get('public.t_ccoordinador');
-			
-			if(($key['estatus_venta']=="D") ){
-				$c = $c * $comision_co->row()->dom;
-				//echo "aqui";
-				//echo $c.'-';
-				//or ($key['id_sem']!=$key['id_semana'])
 
+			$this->db->select('dom_i, dom_f');
+			$this->db->where('id_sem_i <=',$key['id_semana']);
+			$this->db->where('id_sem_f >=',$key['id_semana']);
+			$dom = $this->db->get('public.t_fdomiciliadas');
+			//echo $this->db->last_query();
+
+			//echo "<br><br>"; echo $c; echo "<br><br>";
+
+			
+			if(($key['estatus_venta']=="D")||($key['estatus_venta']=="PP")){
+				$c = $c * $dom->row()->dom_i;
 			}
+			if($key['id_sem']!=$key['id_semana']){
+				$c = $c * $dom->row()->dom_f;
+			}
+
+			//echo $c; echo "<br><br>";
 
 			$cco=$c*($comision_co->row()->comision_c/100);
 
@@ -397,20 +389,28 @@ class Liquidacion_model extends CI_Model{
 				);
 
 				$this->db->insert('public.t_liquidacion',$data);
+				$id_liquidacion =  $this->db->insert_id();
 
-				if (($key['estatus_venta']=='D')) {
-					$data = array(
-						'id_comision'=>'1'
-					);
-				}else{
-					$data = array(
-						'estatus_venta'=>'L',
-						'id_comision'=>'1'
-					);
-				}
-
+				$data = array(
+					'estatus'=>'1',
+				);
+	
 				$this->db->where('id_venta', $key['id_venta']);
-				$this->db->update('t_ventas', $data);
+				$this->db->update('t_estatus_venta', $data);
+
+				if($key['estatus_venta']=='P') { $b='L'; $s="0";}
+				else {$b='LP'; $s="0";}
+				$data = array(
+					'id_venta'=>$key['id_venta'],
+					'estatus_venta'=>$b,
+					'estatus'=>$s,
+					'liquidacion'=>$id_liquidacion,
+					'fecha_registro'=>date('Y-m-d'),
+					'ult_mod'=>date('Y-m-d')
+			
+				);
+			
+				$this->db->insert('public.t_estatus_venta',$data);
 
 				$cex=$comision;
 				$cex_c=$comision_c;
@@ -489,8 +489,8 @@ class Liquidacion_model extends CI_Model{
 
 			$x=0; $a=0;
 
-			/* echo $key['identificacion']." ".$key['nsem']." c. >> ".$c."<br>";
-			echo " comision. >> ".$comision."<br>"; */
+			 /*echo $key['identificacion']." ".$key['nsem']." c. >> ".$c."<br>";
+			echo " comision. >> ".$comision."<br>";  */
 
 			
 
@@ -504,25 +504,39 @@ class Liquidacion_model extends CI_Model{
 
 	function preliquidar($estatus){
 
+		$this->db->where_in('t_estatus_venta.estatus_venta',['A','D']);
+		$this->db->where('t_estatus_venta.estatus','0');
+
+		$listusuarios = $this->db->get('public.t_estatus_venta');
+
+		if($listusuarios->num_rows()>0)
+		{
+			$venta=$listusuarios->result_array();
+		}
+
+		$data = array(
+			'estatus'=>'1',
+		);
+
+		$this->db->where_in('t_estatus_venta.estatus_venta',['A','D']);
+		$this->db->where('t_estatus_venta.estatus','0');
+		$this->db->update('t_estatus_venta', $data);
+
+		foreach($venta as $v){
+		if($v['estatus_venta']=='A') $e='P';
+		else $e='PP';
 			$data = array(
-				'estatus_venta'=>'P'
+				'id_venta'=>$v['id_venta'],
+				'estatus_venta'=>$e,
+				'fecha_registro'=>date('Y-m-d'),
+				'ult_mod'=>date('Y-m-d')
 			);
+		
+		$this->db->insert('public.t_estatus_venta',$data);
 
+		}
 
-			$this->db->where('estatus_venta ','A');
-			$this->db->update('t_ventas', $data);
-
-			$data = array(
-				'id_comision'=>'2'
-			);
-
-
-			$this->db->where('estatus_venta ','D');
-			$this->db->where('id_semana >=','81');
-			$this->db->where('id_comision ','0');
-			$this->db->update('t_ventas', $data);
-
-			return "Pre-Liquidación ejecutada";
+		return "Pre-Liquidación ejecutada";
 
 	}
 

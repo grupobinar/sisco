@@ -25,7 +25,7 @@
     </tr>
     </thead>
     <tbody>
-    <?php if ($_ci_vars[ventas]<>"") { foreach ($_ci_vars[ventas] as $key) { 
+    <?php if ($_ci_vars[ventas]<>"") { $id_ant=0; foreach ($_ci_vars[ventas] as $key) { if($key['id_venta']!=$id_ant){
       if($key['tventa']==1) $tventa = "Venta de poliza";
       elseif($key['tventa']==2) $tventa = "Adicionales";
       elseif($key['tventa']==3) $tventa = "Actualización de Datos";
@@ -34,6 +34,7 @@
       elseif($key['estatus_venta']=="X") {$estatus_venta="Anulada"; $clase="text-red";}
       elseif($key['estatus_venta']=="A") {$estatus_venta="Activa"; $clase="text-green";}
       elseif($key['estatus_venta']=="L") {$estatus_venta="Liquidada"; $clase="";}
+      elseif($key['estatus_venta']=="LP") {$estatus_venta="Liquidacion Parcial"; $clase="";}
       elseif($key['estatus_venta']=="O") {$estatus_venta="Liquidada"; $clase="";}
       elseif($key['estatus_venta']=="E") {$estatus_venta="Extornada"; $clase="text-blue";}
       elseif($key['estatus_venta']=="D") {$estatus_venta="Pendiente de pago"; $clase="text-red";}
@@ -45,7 +46,6 @@
       <td><?php echo ucwords($tventa);?></td>
       <td><?php if(isset($key['tpoliza'])) echo ucwords($key['tpoliza']); else echo "N/A";?></td>
       <td><?php if(isset($key['tplan'])) echo ucwords($key['tplan']); else echo "N/A";?></td>
-<!--       <td><?php // if(isset($key['cobertura'])) echo ucwords($key['cobertura']); else echo "N/A";?></td> -->      
       <td><a href="#" title="<?php echo $key['desde'].' | '.$key['hasta'] ?>"><?php echo ucwords($key['nsem']);?></a></td>
       <td><?php echo ucwords($estatus_venta);?></td>
       <td><a href="<?php echo base_url().'index.php/polizas/ver_ventas?id='.$key['id_venta']?>" class="btn btn-default" type="button"><i class="fa fa-eye"></i></a>
@@ -54,7 +54,7 @@
         <?php } ?>
       </td>
     </tr>
-    <?php }} ?>
+      <?php } $id_ant=$key['id_venta']; }} ?>
     </tfoot>
   </table>
 

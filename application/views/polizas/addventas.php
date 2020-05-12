@@ -121,3 +121,46 @@
 	<?php } ?>
 
 </table>
+
+<table class="table" style="background-color: white; margin-bottom: 10px;">
+	<tr>
+		<th colspan="4">Seguimiento</th>
+	</tr>
+	<tr style="font-size: 13px;">
+		<th>#</th>
+		<th>Estatus</th>
+		<th>Fecha de Registro</th>
+	</tr>
+
+	<?php 
+
+	if(isset($_ci_vars['seguimiento'])){
+		$i=1;
+		foreach ($_ci_vars['seguimiento'] as $key) {
+
+	  if($key['estatus_venta']=="P") {$estatus_venta="Preliquidada"; $clase="";}
+      elseif($key['estatus_venta']=="X") {$estatus_venta="Anulada"; $clase="text-red";}
+      elseif($key['estatus_venta']=="A") {$estatus_venta="Activa"; $clase="text-green";}
+      elseif($key['estatus_venta']=="L") {$estatus_venta="Liquidada"; $clase="";}
+      elseif($key['estatus_venta']=="O") {$estatus_venta="Liquidada"; $clase="";}
+      elseif($key['estatus_venta']=="E") {$estatus_venta="Extornada"; $clase="text-blue";}
+	  elseif($key['estatus_venta']=="D") {$estatus_venta="Pendiente de pago"; $clase="text-red";}
+	  elseif($key['estatus_venta']=="LP") {$estatus_venta="Liquidacion Parcial"; $clase="";}
+	  elseif($key['estatus_venta']=="PP") {$estatus_venta="Pre-Liquidacion Parcial"; $clase="";}
+
+	?>
+
+	<tr style="font-size: 13px;">
+		<td><?php echo $i;?></td>
+		<td><?php echo $estatus_venta;?></td>
+		<td><?php echo $key['fecha_registro'];?></td>
+	</tr>
+
+	<?php $i++; }}else { ?>
+
+		<tr style="font-size: 13px;">
+			<td colspan="3" style="text-align: center;"><b class="text-red">No hay datos para el seguimiento</b></td>
+		</tr>
+	<?php } ?>
+
+</table>
