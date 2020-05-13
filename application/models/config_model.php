@@ -112,7 +112,7 @@ class Config_model extends CI_Model{
 
 	function ccoordinador()
 	{
-		$this->db->select('comision_c, id_ccoordinador, dom');
+		$this->db->select('comision_c, id_ccoordinador');
 		$listusuarios = $this->db->get('public.t_ccoordinador');
 		return $listusuarios->row();
 	}

@@ -17,7 +17,6 @@
       <th>Plan</th>
      <!--  <th>cobertura</th> -->
       <th>Semana</th>
-      <th>Estatus</th>
       <th><i class="fa fa-cogs"></i> Opciones</th>
     </tr>
     </thead>
@@ -26,13 +25,6 @@
       if($key['tventa']==1) $tventa = "Venta de poliza";
       elseif($key['tventa']==2) $tventa = "Adicionales";
       elseif($key['tventa']==3) $tventa = "Actualización de Datos";
-
-      if($key['estatus_venta']=="P") {$estatus_venta="Preliquidada"; $clase="";}
-      elseif($key['estatus_venta']=="X") {$estatus_venta="Anulada"; $clase="text-red";}
-      elseif($key['estatus_venta']=="A") {$estatus_venta="Activa"; $clase="text-green";}
-      elseif($key['estatus_venta']=="L") {$estatus_venta="Liquidada"; $clase="";}
-      elseif($key['estatus_venta']=="E") {$estatus_venta="Extornada"; $clase="text-blue";}
-      elseif($key['estatus_venta']=="D") {$estatus_venta="Pendiente de pago"; $clase="text-red";}
     ?>
     <tr class="<?php echo $clase?>">
       <td><?php echo ucwords($key['identificacion']);?></td>
@@ -42,7 +34,6 @@
       <td><?php if(isset($key['tplan'])) echo ucwords($key['tplan']); else echo "N/A";?></td>
 <!--       <td><?php // if(isset($key['cobertura'])) echo ucwords($key['cobertura']); else echo "N/A";?></td> -->      
       <td><a href="#" title="<?php echo $key['desde'].' | '.$key['hasta'] ?>"><?php echo ucwords($key['nsem']);?></a></td>
-      <td><?php echo ucwords($estatus_venta);?></td>
       <td>
         <a href="<?php echo base_url().'index.php/polizas/procesar?id='.$key['id_venta'].'&op=A'?>" title="APROBAR" class="btn btn-default" type="button" id="aprobar"><i class="fa fa-check"></i></a>
         <a href="<?php echo base_url().'index.php/polizas/procesar?id='.$key['id_venta'].'&op=X'?>" title="ANULAR" class="btn btn-default" type="button" id="anular"><i class="fa fa-close"></i></a>
