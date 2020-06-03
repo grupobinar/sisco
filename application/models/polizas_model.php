@@ -671,6 +671,9 @@ class Polizas_model extends CI_Model{
 
 		$this->db->where('estatus !=','1');
 		$sem = $this->db->get('public.t_semanas');
+		echo $this->db->last_query();
+		print_r($sem->row());
+		//break;
 		
 		$data = array(
 			'estatus'=>'1',

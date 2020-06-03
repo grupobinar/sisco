@@ -405,7 +405,7 @@ class Liquidacion_model extends CI_Model{
 					'estatus_venta'=>$b,
 					'estatus'=>$s,
 					'liquidacion'=>$id_liquidacion,
-					'sem_l'=>$sem,
+					'sem_l'=>$key['id_sem'],
 					'fecha_registro'=>date('Y-m-d'),
 					'ult_mod'=>date('Y-m-d')
 			

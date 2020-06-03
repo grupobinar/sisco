@@ -285,7 +285,7 @@ class Polizas extends CI_Controller {
 
 		echo "<script> alert('".$guser."') </script>";
 
-		redirect('/polizas/ventasd', 'refresh');
+		//redirect('/polizas/ventasd', 'refresh');
 
 
 
